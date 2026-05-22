@@ -1,0 +1,27 @@
+# RACASO benchmark suite — pinned versions for reproducibility.
+#
+# Phase 1: core dependencies for the harness, tests, and CSV/plotting.
+# Phase 2 will add the four currently-unvendored baselines (muon, lion,
+# sophia, soap). See bench/optimizers/README.md for the vendoring
+# checklist.
+#
+# Mirror these pins in Muogi/bench/requirements_bench.txt so the
+# head-to-head comparisons share package versions.
+
+# Core (Phase 1).
+torch==2.5.1
+pandas==2.2.3
+pytest==8.3.4
+
+# Plotting (Phase 4 — pinned now to lock the env).
+matplotlib==3.9.2
+
+# Baselines pinned via pip — Phase 2 additions (uncomment as each lands):
+# lion-pytorch==0.2.2
+#
+# Baselines vendored directly into bench/optimizers/ (no pip pin needed):
+#   yogi   — copied from morpheus/training/optimizers/yogi.py at commit 08980f58
+#   muon   — vendor from Keller Jordan reference (Phase 2)
+#   sophia — vendor from Liuhong99/Sophia (Phase 2)
+#   soap   — vendor from Vyas et al. reference (Phase 2)
+#   racaso — imported live from RACASO/racaso.py (this repo)
