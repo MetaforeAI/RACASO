@@ -40,6 +40,26 @@ RACASO takes a different path. It keeps SOAP's rotation-into-privileged-basis pr
 
 A companion paper, RAMuogi [Christopher 2026b], develops a spectral-orthogonalization optimizer using a related failure-safety chain pattern. The two optimizers occupy different positions in the parameter-group stack (RACASO: 2-D parameters with non-trivial off-diagonal curvature; RAMuogi: 2-D parameters with row-spread pathology under matrix-orthogonalization steps) and compose at the per-organ assignment level.
 
+### 1.5 Lineage
+
+This paper is one of three (RACASO, Muogi/RAMuogi, Liger) describing optimizers developed sequentially against distinct production failure modes in the Morpheus architecture. The version history (with logs):
+
+1. **SOAP** worked on the X-organ (cross-branch interaction surface) until a branching-norm aggregation introduced second-order coupling that broke its Kronecker factorization assumption.
+
+2. **Muogi v1** (`logs/v17_2_muogi/`) was the first response: Yogi-injected NS5 with relative-threshold spread cap.
+
+3. **Muogi v2** (`logs/v17_3_muogi_v2_attempt1..4/`) iterated through four attempts on the safety chain. Each NaN-or-divergence in earlier attempts surfaced a specific class of failure that became one of the documented safety layers. Attempt 4 reached a stable configuration.
+
+4. **RAMuogi** (`logs/v17_4_ramuogi/`) added the RAdam cold-start gate (L4) on top of Muogi v2, completing the four-layer chain.
+
+5. **RACASO** (`logs/v17_5_racaso/` + `v17_5_racaso_attempt1..3/`) was the next iteration: rotated-basis Adam + Hutchinson HVP + Sophia clipping. Four attempts. Attempts 1 and 3 NaN'd out on the X-organ with **the same branching-norm second-order coupling pathology that originally broke SOAP** — same upstream cause, different downstream symptom because RACASO's machinery exposed it through its Hutchinson HVP path rather than SOAP's Kronecker covariance path. Each NaN was a diagnostic surface that produced one of RACASO's safety layers; specifically the L5 absorb-and-continue documented in §6/§7 of this paper was designed and debugged in this iteration sequence. **Attempt 2 ran clean** (`grad[x] ≈ 4.62`, finite `Δ total`), demonstrating that with the safety chain completed the optimizer reaches a working state. Attempt 3's later failure at a different config exposed an additional surface that the L5 absorb subsequently subsumed.
+
+6. After L5 cleared the DivBackward0 hazard, we noticed the same absorb pattern made it viable to *return to SOAP* on X — the L5 was not RACASO-specific, it was a general pattern for surviving the divergent-2nd-derivative regime that had broken SOAP originally. **SOAP + Shampoo** with the L5-equivalent absorb in place produced a configuration that outperforms RACASO on X. Shampoo's Kronecker maintenance is more efficient than RACASO's full eigendecomp + HVP refresh; the `shampoo[x]` production log (`logs/neo*/`) shows `eig_fallback=0` consistently across runs. RACASO's surviving contribution is the **safety-chain pattern as field-useful infrastructure**, the documented L5 DivBackward0 class (which applies to any second-order-aware optimizer, not just RACASO), and the engineering provenance in §7 (eight attempts to integrate Hutchinson with PyTorch eager autograd) that future second-order optimizer authors can read to skip our mistakes.
+
+7. **Liger** (`logs/neo_v2.2/`) was born from a different failure mode on the RAH (Recursive Adaptive Hub) organ — not X. RAMuogi's `ns5_ok=0` diagnostic on RAH (`logs/neo_v2.1/`) showed that RAH's gradients arrive *already* well-conditioned from upstream RMSNorm; spectral preconditioning was 100% wasted compute. Liger dispatches by parameter dimensionality: Lion on matrices (bounded direction without preconditioning), Yogi on scalars (burst-safe variance handling). RAMuogi's dispatch-by-ndim observation survived; only the matrix-side update rule changed.
+
+The four optimizers do not compete; they solve different problem classes. SOAP+Shampoo beats RACASO on X (carrying RACASO's L5 absorb as the unlock). Muogi/RAMuogi pioneered the safety-chain pattern. RACASO documented the second-derivative failure surface and the engineering provenance. Liger is the right tool for RAH. We publish all four because the failure-and-response sequence is the actual scientific record. See §8.10 for measured numbers from the production traces.
+
 ---
 
 ## 2. The Architecture of RACASO
