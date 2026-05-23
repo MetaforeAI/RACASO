@@ -69,7 +69,7 @@ quoting tricks. `plot_bench.load_results` parses the column back to
 |--------------------|---------------------------------|--------|
 | adam               | implemented                     | `torch.optim.Adam` |
 | adamw              | implemented                     | `torch.optim.AdamW` |
-| yogi               | implemented (vendored)          | `bench/optimizers/yogi.py` (from Morpheus) |
+| yogi               | implemented (vendored)          | `bench/optimizers/yogi.py` (Zaheer et al. 2018) |
 | muon               | NotImplementedError             | Keller Jordan reference — vendor in Phase 2 |
 | lion               | NotImplementedError             | `lion-pytorch` or vendored |
 | sophia             | NotImplementedError             | official `Liuhong99/Sophia` |
@@ -95,7 +95,7 @@ bench/
 │   ├── README.md                   # canonical configs + vendoring checklist
 │   ├── __init__.py
 │   ├── wrappers.py                 # build_optimizer dispatch
-│   └── yogi.py                     # vendored from Morpheus
+│   └── yogi.py                     # vendored (Zaheer et al. 2018)
 ├── run_bench.py                    # harness — run_one + --sweep
 ├── plot_bench.py                   # load_results + plot stubs
 └── tests/
@@ -106,7 +106,7 @@ bench/
 ## Constraints (from `CLAUDE.md`)
 
 - This bench imports only `torch` (plus `pandas` for plotting). It does
-  not import Morpheus, Triton, or anything that fires CUDA/Triton
+  not import any heavyweight upstream, Triton, or anything that fires CUDA/Triton
   autotune at import time.
 - AST-parse every file before committing:
   `python -c "import ast; ast.parse(open(p).read())"`.

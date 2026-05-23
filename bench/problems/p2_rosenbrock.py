@@ -30,7 +30,7 @@ class P2aRosenbrock2D(BenchProblem):
     converged_tol = 1e-4
 
     def init_params(self) -> List[torch.Tensor]:
-        w = torch.tensor([-1.2, 1.0], dtype=torch.float64)
+        w = torch.tensor([-1.2, 1.0], dtype=torch.float64, device=self.device)
         w.requires_grad_(True)
         return [w]
 
@@ -51,7 +51,7 @@ class P2bRosenbrockN100(BenchProblem):
     _N: int = 100
 
     def init_params(self) -> List[torch.Tensor]:
-        w = torch.full((self._N,), -1.2, dtype=torch.float64)
+        w = torch.full((self._N,), -1.2, dtype=torch.float64, device=self.device)
         w.requires_grad_(True)
         return [w]
 

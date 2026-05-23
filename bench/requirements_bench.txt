@@ -20,7 +20,7 @@ matplotlib==3.9.2
 # lion-pytorch==0.2.2
 #
 # Baselines vendored directly into bench/optimizers/ (no pip pin needed):
-#   yogi   — copied from morpheus/training/optimizers/yogi.py at commit 08980f58
+#   yogi   — Zaheer et al. 2018; vendored at bench/optimizers/yogi.py
 #   muon   — vendor from Keller Jordan reference (Phase 2)
 #   sophia — vendor from Liuhong99/Sophia (Phase 2)
 #   soap   — vendor from Vyas et al. reference (Phase 2)

@@ -10,7 +10,7 @@ Run with::
     pytest RACASO/bench/tests/test_infrastructure.py
 
 Hard rule (per CLAUDE.md): tests that ``import torch`` must run in a
-clean Python process — pytest qualifies (no Morpheus/Triton import).
+clean Python process — pytest qualifies (no heavyweight/Triton import).
 """
 
 from __future__ import annotations

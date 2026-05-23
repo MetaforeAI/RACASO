@@ -1,6 +1,10 @@
 # RACASO: Rotation-Aligned Cautious Approximately Second-Order Optimization
 
-**Author:** Richard Christopher / MetaforeAI
+**Author:** Richard Christopher
+
+**Affiliation:** MetaFore
+
+**Email:** rchris@neotec.dev
 
 **Date:** May 2026
 
@@ -32,7 +36,9 @@ In modern architectures the assumption is cleanly falsified. Branching gradient 
 
 Matrix-preconditioned optimizers (SOAP, Shampoo) achieve superior convergence not because their gradient proxies are inherently more precise, but because they rotate the gradients into a structural eigenbasis where the local coordinates are temporarily uncoupled. Both rely on first-order gradient history ($g_t \cdot g_t^T$) to build that basis, which makes them structurally hostile to coupled-gradient regimes. When one factor's gradient distribution shifts abruptly, the Kronecker covariance accumulates rank-1 outer products that produce near-singular factors, and eigh either returns silently-NaN eigenvectors or non-trustworthy rotations.
 
-RACASO takes a different path. It keeps SOAP's rotation-into-privileged-basis property but estimates the per-element step size in that basis from a true second-order signal (Hutchinson HVP) rather than from a gradient-squared proxy. A per-element cautious clip in the rotated basis bounds steps regardless of curvature estimate quality. Safety layers around the rotation refresh, the cold-start regime, and the second-derivative failure surface keep the optimizer numerically robust in environments where every other second-order method we tested eventually collapsed.
+RACASO takes a different path. It keeps SOAP's rotation-into-privileged-basis property but estimates the per-element step size in that basis from a true second-order signal (Hutchinson HVP) rather than from a gradient-squared proxy. A per-element cautious clip in the rotated basis bounds steps regardless of curvature estimate quality. Safety layers around the rotation refresh, the cold-start regime, and the second-derivative failure surface keep the optimizer numerically robust across the failure modes documented in Section 6 — failure modes that bracket the operating envelope of SOAP (covariance-rank-collapse), Shampoo (eigh failure with no fallback), Newton-Schulz-based methods (input-conditioning skip catastrophe), and Hutchinson-HVP-based methods (second-derivative DivBackward0 NaN cascade).
+
+A companion paper, RAMuogi [Christopher 2026b], develops a spectral-orthogonalization optimizer using a related failure-safety chain pattern. The two optimizers occupy different positions in the parameter-group stack (RACASO: 2-D parameters with non-trivial off-diagonal curvature; RAMuogi: 2-D parameters with row-spread pathology under matrix-orthogonalization steps) and compose at the per-organ assignment level.
 
 ---
 
@@ -89,7 +95,7 @@ RACASO ships two curvature estimators with identical downstream contracts. Both 
 
 #### 2.2.1 Hutchinson HVP: the true Hessian diagonal
 
-Hutchinson's stochastic trace estimator (Hutchinson 1990) gives an unbiased per-element estimate of $\text{diag}(\mathcal{H})$:
+Hutchinson's stochastic trace estimator (Hutchinson 1989) gives an unbiased per-element estimate of $\text{diag}(\mathcal{H})$:
 
 $$\mathbb{E}[z \odot Hz] = \text{diag}(\mathcal{H}), \quad z \in \{-1, +1\}^{shape(W)}$$
 
@@ -162,6 +168,45 @@ $$v_t = v_{t-1} - (1 - \beta_2) \cdot \text{sign}(v_{t-1} - g_t^2) \cdot g_t^2$$
 $$W_{t+1} = W_t - \eta \cdot \frac{m_{\text{hat}}}{\sqrt{v_{\text{hat}}} + \epsilon}$$
 
 Yogi's additive update is robust to bursty gradients (which biases and gain scalars frequently see) in a way Adam isn't.
+
+### 2.6 Algorithm
+
+The complete per-step procedure for a 2-D parameter:
+
+```
+Algorithm 1: RACASO step (2-D parameter)
+----------------------------------------
+Input:  W ∈ ℝ^{m×n} parameter, g ∈ ℝ^{m×n} gradient
+        State: m_buf, hessian_diag_rot, U_L, U_R, GG_L, GG_R, t
+        Hyperparams: η, β1, β2, ρ, γ, ε, spread_cap
+
+1.  GG_L ← β2·GG_L + (1−β2)·g·gᵀ            # Kronecker covariance EMA, left
+2.  GG_R ← β2·GG_R + (1−β2)·gᵀ·g            # Kronecker covariance EMA, right
+3.  if t mod refresh_freq == 0:              # L2: rotation refresh
+4.      U_L_new, ok_L ← safe_eigh(GG_L)
+5.      U_R_new, ok_R ← safe_eigh(GG_R)
+6.      if ok_L: U_L ← U_L_new
+7.      if ok_R: U_R ← U_R_new
+8.  g̃ ← U_Lᵀ · g · U_R                       # rotate into privileged basis
+9.  m_buf ← β1·m_buf + (1−β1)·g̃
+10. m̂ ← m_buf / (1 − β1^t)
+11. if hvp_strategy == "hutchinson" and refresh_step:
+12.     Hz ← hutchinson_hvp(loss, params, z)  # may return non-finite
+13.     if isfinite(Hz):                      # L5: safe-skip on non-finite
+14.         h̃_sample ← U_Lᵀ · (z ⊙ Hz) · U_R
+15.         hessian_diag_rot ← β2·hessian_diag_rot + (1−β2)·h̃_sample²
+16.     else: hessian_diag_rot unchanged (EMA carry)
+17. ĥ ← hessian_diag_rot / (1 − β2^t)
+18. ΔΘ̃ ← clip( m̂ / max(γ·|ĥ|, ε), −ρ, +ρ )   # Sophia cautious step
+19. # L1: spread cap on row norms
+20. row_floor ← max(row_norms(ΔΘ̃)) / spread_cap
+21. ΔΘ̃ ← ΔΘ̃ · min(row_floor / row_norms, 1)
+22. ΔW ← U_L · ΔΘ̃ · U_Rᵀ                     # rotate back
+23. if not isfinite(ΔW): skip this param this step
+24. W ← W − η · r_t · ΔW                      # L4: r_t RAdam cold-start gate
+```
+
+For 1-D parameters, lines 1-23 are bypassed in favor of the L3 Yogi fallback (§2.5).
 
 ---
 
@@ -255,11 +300,9 @@ RACASO is designed for failure modes that competing optimizers do not survive. T
 
 ### 5.1 Mitigation of the Newton-Schulz Skip Catastrophe
 
-Matrix-orthogonalization setups like Muon and RAMuogi apply Newton-Schulz polynomials to force gradient matrices into orthogonal spaces. The fifth-order Jordan polynomial is the standard choice. Its convergence requires the input matrix's spectral norm to lie in a specific band. When branching-path architectures induce dynamic gradient distribution shifts, the gradient matrix becomes ill-conditioned (condition proxies scaling over 200 in practice). The polynomial diverges, the optimizer's convergence-check safety layer triggers, and the update is rejected.
+Matrix-orthogonalization optimizers (Muon and related) apply Newton-Schulz polynomials to force gradient matrices into orthogonal spaces. The fifth-order Jordan polynomial is a standard choice. Its convergence requires the input matrix's spectral norm to lie in a specific band. When a problem class induces dynamic gradient distribution shifts (heterogeneous architectures with multi-branch composition, contrastive losses with mixed scales, etc.), the gradient matrix can become ill-conditioned. The polynomial diverges, the optimizer's convergence-check safety layer triggers, and the update is rejected.
 
-The RAMuogi paper (MetaforeAI/Muogi, Section 5) documents this failure mode: under a joint-normalized branching-fusion architecture, NS5 fell back to a vanilla Yogi update on roughly 90% of steps. Numerically RAMuogi survived. The optimizer's design-intent orthogonalization rarely engaged.
-
-RACASO does not orthogonalize the gradient. It uses the Kronecker eigenvectors strictly as a coordinate-transformation mechanism: project into the basis, apply the cautious step there, project back. If a branching path introduces a sudden surge of ill-conditioned curvature, the L1 spread cap absorbs the spread, the L2 eigh safe-skip handles the rotation refresh failure, and the trajectory continues. The optimizer's design-intent rotation continues to fire on every step (the rotation matrices are stable across refreshes, only updated when the eigh refresh succeeds), and the cautious clip absorbs the magnitude shock.
+RACASO does not orthogonalize the gradient. It uses the Kronecker eigenvectors strictly as a coordinate-transformation mechanism: project into the basis, apply the cautious step there, project back. If a sudden surge of ill-conditioned curvature arrives, the L1 spread cap absorbs the spread, the L2 eigh safe-skip handles the rotation refresh failure, and the trajectory continues. The optimizer's design-intent rotation continues to fire on every step (the rotation matrices are stable across refreshes, only updated when the eigh refresh succeeds), and the cautious clip absorbs the magnitude shock.
 
 ### 5.2 Robust Preconditioning of Branching Gradient Paths
 
@@ -267,20 +310,20 @@ SOAP breaks down on the same architectural class for a different reason. Its Kro
 
 RACASO inherits the same Kronecker covariance accumulators, but the second-order curvature estimate (Hutchinson HVP) is computed via autograd on the actual loss, not derived from the covariance factors. The eigenvectors are only used for the coordinate rotation. The per-element step sizing comes from the unbiased Hessian diagonal estimator. When SOAP would fail (covariance becomes near-rank-1), RACASO's L2 layer skips the rotation refresh, keeps the prior rotation, and the Hutchinson HVP continues to provide accurate per-element curvature for the cautious clip's denominator. The optimizer degrades gracefully toward "Sophia in a stale rotated basis" rather than catastrophically toward "AdamW in a NaN basis."
 
-### 5.3 Honest Claim About L5
+### 5.3 The L5 Safe-Skip
 
-An earlier draft of this paper claimed RACASO "never skips updates." That is not true and was never true. L5 was added during the integration provenance documented in Section 6 specifically because forward graphs in real architectures contain operators whose second derivative is unbounded over the input range the model visits during training. When the batched HVP backward returns non-finite Hz values for second-derivative-numerical reasons, RACASO **does** skip the curvature-estimate update for that refresh. `hessian_diag_rot` carries via its prior EMA, the rotated-basis update for that refresh proceeds with stale curvature, and the optimizer counter `_l5_skip_count` increments for telemetry.
+L5 absorbs forward-graph failure modes where the second-derivative path through one operator is unbounded over inputs the model visits during training. When the batched HVP backward returns non-finite Hz values for second-derivative-numerical reasons, RACASO skips the curvature-estimate update for that refresh. `hessian_diag_rot` carries via its prior EMA, the rotated-basis update for that refresh proceeds with stale curvature, and the optimizer counter `_l5_skip_count` increments for telemetry.
 
 The skip is graceful. Training continues, loss descends, parameter updates still apply. The contract is well-defined: the failure surface is identified, located, and the user can either (a) accept the L5 absorption rate as background noise, (b) audit the forward graph for the operator-shape rules in Section 6 and replace the offending operator with a bounded-second-derivative equivalent, or (c) switch to the GNB strategy (`hvp_strategy="gnb"`) which avoids second derivatives entirely. RACASO ships all three paths. The user picks based on their forward graph's structure.
 
-When the forward graph contains operators with bounded second derivatives over visited inputs, RACASO's L5 fires 0% of refreshes and delivers full design-intent compute. We solved this in our reference integration by identifying the offending operator (a `tensor.norm()` call inside a cosine attention computation) and replacing it with a bounded-second-derivative equivalent (negative squared Euclidean distance), which brought the L5 rate from roughly 12% to 0%. The candidates we considered:
+When the forward graph contains only operators with bounded second derivatives over visited inputs, L5 fires 0% of refreshes and the optimizer delivers full design-intent compute. When an unsafe operator is present, four fixes are available:
 
-1. **Bump the user-side eps** on the dividing expression $x / (\|x\| + \epsilon)$. This would protect the first derivative but not the second. The eps sits on the wrong side of the autograd boundary; `tensor.norm()` computes its gradient internally without access to the user's floor. Tested, no effect.
-2. **Replace `tensor.norm()` with `(x.pow(2).sum() + eps).sqrt()`**, manual sqrt with eps *inside* the sqrt's argument. This bounds the second derivative because $\text{arg} = \sum x^2 + \epsilon$ is bounded below by $\epsilon$. Architecturally equivalent to (3) but keeps cosine attention.
-3. **Replace cosine attention entirely** with a second-derivative-safe similarity measure. We chose negative squared Euclidean distance because it has bounded second derivatives by construction (subtract, square, sum, negate, multiply, softmax, all bounded), and because the architectural question at that site was a closeness question rather than an alignment question, which makes distance the more direct metric.
-4. **Wrap `tensor.norm()` in a custom `autograd.Function` with hand-rolled bounded double-backward.** This keeps the cosine attention form but defines the second derivative analytically with safe floors. Most general fix. We did not pursue it because option (3) was architecturally preferable for the specific reference integration.
+1. **Bump the user-side eps** on a dividing expression $x / (\|x\| + \epsilon)$. This protects the first derivative but not the second. The eps sits on the wrong side of the autograd boundary; `tensor.norm()` computes its gradient internally without access to the user's floor. No effect on the second-derivative path.
+2. **Replace `tensor.norm()` with `(x.pow(2).sum() + eps).sqrt()`** — manual sqrt with eps *inside* the sqrt's argument. This bounds the second derivative because $\text{arg} = \sum x^2 + \epsilon$ is bounded below by $\epsilon$.
+3. **Replace the offending operator with a second-derivative-safe equivalent.** For cosine-similarity sites, negative squared Euclidean distance has bounded second derivatives by construction (subtract, square, sum, negate, multiply, softmax — all bounded).
+4. **Wrap the operator in a custom `autograd.Function` with hand-rolled bounded double-backward.** Most general fix; preserves the original op's forward semantics while defining the second derivative analytically with safe floors.
 
-The chosen fix is reference-architecture-specific. Your project may have different reasons to keep cosine attention. The operator-shape rules in Section 6 generalize across any project's choice.
+The operator-shape rules in Section 6 generalize across any project's choice between these options.
 
 ---
 
@@ -361,7 +404,7 @@ The right shape for the optimizer is to provide a diagnostic mode (anomaly trace
 
 ## 7. Engineering Provenance: Eight Attempts to Integrate Hutchinson with PyTorch Eager Autograd
 
-This section is preserved verbatim from the integration log so future optimizer work has the failure record. Each attempt failed in a structurally specific way; each fix made the next failure visible. The lesson is preserved alongside the survivor: every wall was a property of the codebase plus PyTorch eager-autograd interaction, not a property of Hutchinson itself. The fix at each wall was either small or out-of-scope-but-named. The recipe didn't survive contact with the codebase, but each contact taught the codebase what it needed.
+This section is preserved from the integration log so future optimizer work has the failure record. The integration was performed inside a development testbed — a heterogeneous research language-model architecture with multi-branch composition and per-parameter-group optimizer assignment — but every wall described below is a property of the PyTorch eager-autograd interaction with second-order optimization, not a property of the testbed. Each attempt failed in a structurally specific way; each fix made the next failure visible. The fix at each wall was either small or out-of-scope-but-named. The recipe didn't survive contact with the codebase, but each contact taught the codebase what it needed.
 
 ### 7.1 The Eight Walls
 
@@ -421,7 +464,47 @@ The optimizer is designed for failure modes that competing second-order methods 
 
 The engineering provenance in Section 7 is preserved because each wall was a property of the codebase plus framework interaction, not a property of Hutchinson itself. The fix at each wall was either small or out-of-scope-but-named. The recipe didn't survive contact with the codebase, but each contact taught the codebase what it needed. The diagnostic infrastructure built during that integration (stage trap, anomaly mode integration, site probe utility) is reusable for any future optimizer integration that hits the same operator-shape failure surface.
 
-RACASO ships as a drop-in for any model with branching gradient paths and coupled-gradient regimes. The underlying composition (CASPR rotation plus Sophia cautious step in the rotated basis, with the four-layer safety chain and L5 absorption) is general.
+RACASO ships as a drop-in for any model with branching gradient paths and coupled-gradient regimes. The underlying composition (Kronecker eigenbasis rotation plus Sophia-style cautious step in the rotated basis, with the four-layer safety chain and L5 absorption) is general.
+
+---
+
+## Acknowledgments
+
+Thanks to Ben Goertzel for the arXiv endorsement. The companion paper RAMuogi [Christopher 2026b] is developed in parallel; the safety-chain framing shared between the two papers benefited from cross-pollination across the design reviews of both optimizers.
+
+---
+
+## References
+
+Chen, X., Liang, C., Huang, D., Real, E., Wang, K., Liu, Y., Pham, H., Dong, X., Luong, T., Hsieh, C., Lu, Y., & Le, Q. V. (2023). Symbolic discovery of optimization algorithms. arXiv:2302.06675.
+
+Christopher, R. (2026b). RAMuogi: Spectral-orthogonalization optimization with a four-layer failure-safety chain. *Companion paper, arXiv ID TBD upon submission.*
+
+Gupta, V., Koren, T., & Singer, Y. (2018). Shampoo: Preconditioned stochastic tensor optimization. arXiv:1802.09568.
+
+Hutchinson, M. F. (1989). A stochastic estimator of the trace of the influence matrix for Laplacian smoothing splines. *Communications in Statistics — Simulation and Computation* 18(3): 1059–1076.
+
+Jordan, K., et al. (2024). Muon: An optimizer for hidden layers in neural networks. *Available at https://kellerjordan.github.io/posts/muon/.*
+
+Kingma, D. P., & Ba, J. (2014). Adam: A method for stochastic optimization. arXiv:1412.6980.
+
+Liu, H., Li, Z., Hall, D., Liang, P., & Ma, T. (2023). Sophia: A scalable stochastic second-order optimizer for language model pre-training. arXiv:2305.14342.
+
+Liu, L., Jiang, H., He, P., Chen, W., Liu, X., Gao, J., & Han, J. (2019). On the variance of the adaptive learning rate and beyond. arXiv:1908.03265 (RAdam).
+
+Loshchilov, I., & Hutter, F. (2017). Decoupled weight decay regularization. arXiv:1711.05101 (AdamW).
+
+Martens, J., & Grosse, R. (2015). Optimizing neural networks with Kronecker-factored approximate curvature. arXiv:1503.05671 (K-FAC).
+
+Pearlmutter, B. A. (1994). Fast exact multiplication by the Hessian. *Neural Computation* 6(1): 147–160.
+
+Shazeer, N., & Stern, M. (2018). Adafactor: Adaptive learning rates with sublinear memory cost. arXiv:1804.04235.
+
+Vyas, N., Morwani, D., Zhao, R., Kaplun, G., Kakade, S., & Barak, B. (2024). SOAP: Improving and stabilizing Shampoo using Adam. arXiv:2409.11321.
+
+Yao, Z., Gholami, A., Shen, S., Mustafa, M., Keutzer, K., & Mahoney, M. W. (2020). AdaHessian: An adaptive second order optimizer for machine learning. arXiv:2006.00719.
+
+Zaheer, M., Reddi, S. J., Sachan, D., Kale, S., & Kumar, S. (2018). Adaptive methods for nonconvex optimization. NeurIPS 2018 (Yogi).
 
 ---
 

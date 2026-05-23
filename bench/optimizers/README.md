@@ -11,7 +11,7 @@ except `lr` is pinned here. The pinning is mirrored verbatim in
 |-------------------|--------------------------------------------------------|-----------------------------------------------------------------------------------------------------|---------------|
 | adam              | `torch.optim`                                          | `Adam(lr=lr, betas=(0.9, 0.999), eps=1e-8)`                                                          | implemented   |
 | adamw             | `torch.optim`                                          | `AdamW(lr=lr, betas=(0.9, 0.999), eps=1e-8, weight_decay=0.01)`                                      | implemented   |
-| yogi              | vendored from `morpheus/training/optimizers/yogi.py`   | `Yogi(lr=lr, betas=(0.9, 0.999), eps=1e-3, initial_accumulator=1e-6, weight_decay=0.0)`             | implemented   |
+| yogi              | vendored at `bench/optimizers/yogi.py` (Zaheer et al. 2018) | `Yogi(lr=lr, betas=(0.9, 0.999), eps=1e-3, initial_accumulator=1e-6, weight_decay=0.0)`             | implemented   |
 | muon              | Keller Jordan reference                                | `Muon(lr=lr, momentum=0.95, nesterov=True, ns_steps=5)`                                              | not vendored  |
 | lion              | `lion-pytorch` or vendored                             | `Lion(lr=lr, betas=(0.9, 0.99), weight_decay=0.0)`                                                   | not vendored  |
 | sophia            | official `Liuhong99/Sophia`                            | `SophiaG(lr=lr, betas=(0.965, 0.99), rho=0.04, weight_decay=0.0, eps=1e-15)`                          | not vendored  |
@@ -23,7 +23,7 @@ except `lr` is pinned here. The pinning is mirrored verbatim in
 `sys.path` and accepts the `curvature` keyword. The wrapper does not
 import `racaso` at module import time; it imports lazily inside
 `build_optimizer` so that bench infrastructure tests can run without
-triggering Triton autotune via Morpheus pathways.
+triggering Triton autotune via any heavyweight upstream imports.
 
 ## Vendoring checklist for Phase 2
 

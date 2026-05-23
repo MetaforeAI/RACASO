@@ -27,7 +27,7 @@ from __future__ import annotations
 
 import torch
 
-from morpheus.training.optimizers.racaso import RACASO
+from racaso import RACASO
 
 
 # Stage names in execution order — the test asserts each one is clean.

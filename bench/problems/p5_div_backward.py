@@ -43,8 +43,8 @@ class P5DivBackward(BenchProblem):
 
     _DIM: int = 4
 
-    def __init__(self, seed: int) -> None:
-        super().__init__(seed)
+    def __init__(self, seed: int, device: str = "cpu") -> None:
+        super().__init__(seed, device=device)
         gen = self._generator
         # Fixed target chosen so the optimum is non-trivial but bounded.
         self._target = float(torch.randn(1, generator=gen).item())
@@ -54,8 +54,8 @@ class P5DivBackward(BenchProblem):
         # Initialize x at modest norm — not at zero (singular point) but
         # close enough that the second derivative is large. y is freely
         # initialized.
-        x = 0.3 * torch.randn(self._DIM, generator=gen, dtype=torch.float64)
-        y = torch.randn(self._DIM, generator=gen, dtype=torch.float64)
+        x = (0.3 * torch.randn(self._DIM, generator=gen, dtype=torch.float64)).to(self.device)
+        y = torch.randn(self._DIM, generator=gen, dtype=torch.float64).to(self.device)
         x.requires_grad_(True)
         y.requires_grad_(True)
         return [x, y]

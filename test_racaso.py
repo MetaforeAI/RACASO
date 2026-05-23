@@ -19,7 +19,7 @@ import math
 import pytest
 import torch
 
-from morpheus.training.optimizers.racaso import (
+from racaso import (
     RACASO,
     _safe_eig_with_residual,
 )

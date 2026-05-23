@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.shamash/
+scanner_cache/
+backups/
+*.egg-info/
+.venv/
+venv/
+.DS_Store
+bench/datasets/_cache/
+bench/figs/

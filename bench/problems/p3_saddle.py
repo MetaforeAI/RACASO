@@ -44,7 +44,7 @@ class P3aSaddle2D(BenchProblem):
     saddle: bool = True
 
     def init_params(self) -> List[torch.Tensor]:
-        w = torch.tensor([0.1, 0.1], dtype=torch.float64)
+        w = torch.tensor([0.1, 0.1], dtype=torch.float64, device=self.device)
         w.requires_grad_(True)
         return [w]
 
@@ -81,22 +81,22 @@ class P3bSaddleN20(BenchProblem):
 
     _N: int = 20
 
-    def __init__(self, seed: int) -> None:
-        super().__init__(seed)
+    def __init__(self, seed: int, device: str = "cpu") -> None:
+        super().__init__(seed, device=device)
         eigvals = torch.cat(
             [
                 torch.ones(10, dtype=torch.float64),
                 -torch.ones(10, dtype=torch.float64),
             ]
         )
-        self._diag = eigvals
+        self._diag = eigvals.to(self.device)
 
     def init_params(self) -> List[torch.Tensor]:
         gen = self._generator
         # Small symmetric offset so every direction has a non-zero
         # initial gradient component (helps Adam find the negative
         # direction at all, exposing the negative-curvature failure).
-        w = 0.1 * torch.randn(self._N, generator=gen, dtype=torch.float64)
+        w = (0.1 * torch.randn(self._N, generator=gen, dtype=torch.float64)).to(self.device)
         w.requires_grad_(True)
         return [w]
 

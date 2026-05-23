@@ -40,35 +40,36 @@ class P1OffAxisQuadratic(BenchProblem):
     max_steps = 5000
     converged_tol = 1e-4
 
-    def __init__(self, seed: int) -> None:
-        super().__init__(seed)
+    def __init__(self, seed: int, device: str = "cpu") -> None:
+        super().__init__(seed, device=device)
         # Build a fixed (per-seed) random orthogonal U via QR of a Gaussian.
+        # NB: the matrix solve happens on CPU in float64 for numerical
+        # stability; we move the final tensors to self.device afterward.
         gen = self._generator
         n = len(_EIGENVALUES)
         a = torch.randn(n, n, generator=gen, dtype=torch.float64)
         q, r = torch.linalg.qr(a)
-        # Sign-normalize Q so the orthogonal matrix is unique up to a
-        # deterministic mapping from R's diagonal sign.
         diag_sign = torch.sign(torch.diagonal(r))
         diag_sign[diag_sign == 0] = 1.0
         q = q * diag_sign.unsqueeze(0)
 
         lam = torch.tensor(_EIGENVALUES, dtype=torch.float64)
-        self._H = (q * lam.unsqueeze(0)) @ q.t()  # U Lambda U^T
-
-        # Fixed RHS b; non-trivial offset means optimum is not at origin.
-        self._b = torch.randn(n, generator=gen, dtype=torch.float64)
+        H_cpu = (q * lam.unsqueeze(0)) @ q.t()
+        b_cpu = torch.randn(n, generator=gen, dtype=torch.float64)
 
         # Constant shift so loss is non-negative with zero at the optimum.
-        w_star = torch.linalg.solve(self._H, self._b)
-        self._f_star = 0.5 * float(w_star @ self._H @ w_star) - float(
-            self._b @ w_star
+        # Stay in float64 on CPU for the solve, then convert/move.
+        w_star = torch.linalg.solve(H_cpu, b_cpu)
+        self._f_star = 0.5 * float(w_star @ H_cpu @ w_star) - float(
+            b_cpu @ w_star
         )
+        self._H = H_cpu.to(self.device)
+        self._b = b_cpu.to(self.device)
 
     def init_params(self) -> List[torch.Tensor]:
         gen = self._generator
         n = len(_EIGENVALUES)
-        w = torch.randn(n, generator=gen, dtype=torch.float64)
+        w = torch.randn(n, generator=gen, dtype=torch.float64).to(self.device)
         w.requires_grad_(True)
         return [w]
 

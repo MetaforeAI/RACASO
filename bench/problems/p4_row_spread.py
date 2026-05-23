@@ -40,10 +40,10 @@ class P4RowSpread(BenchProblem):
     max_steps = 3000
     converged_tol = 1e-3
 
-    def __init__(self, seed: int) -> None:
-        super().__init__(seed)
+    def __init__(self, seed: int, device: str = "cpu") -> None:
+        super().__init__(seed, device=device)
         gen = self._generator
-        self._M = torch.randn(8, 8, generator=gen, dtype=torch.float64)
+        self._M = torch.randn(8, 8, generator=gen, dtype=torch.float64).to(self.device)
         # Step counter drives the alternating burst / calm cycle and
         # the row-and-multiplier rotation. Reset on every call to
         # ``init_params`` so multiple runs from the same instance are
@@ -53,7 +53,7 @@ class P4RowSpread(BenchProblem):
 
     def init_params(self) -> List[torch.Tensor]:
         gen = self._generator
-        w = torch.randn(8, 8, generator=gen, dtype=torch.float64)
+        w = torch.randn(8, 8, generator=gen, dtype=torch.float64).to(self.device)
         w.requires_grad_(True)
         self._step = 0
         return [w]

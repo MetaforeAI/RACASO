@@ -1,14 +1,13 @@
-"""Vendored copy of Yogi optimizer.
+"""Yogi optimizer (vendored, self-contained).
 
-Source: morpheus/training/optimizers/yogi.py at commit 08980f58 (alpha.1,
-2026-05-20). Vendored here to keep ``RACASO/bench/`` self-contained
-without requiring a Morpheus checkout on sys.path.
+Yogi (Zaheer et al., 2018 — "Adaptive Methods for Nonconvex Optimization",
+NeurIPS 2018): AdamW with an additive v_t update that bounds the rate of
+v_t change so a sudden gradient burst can't blow through into the
+denominator.
 
-Yogi (Zaheer et al., 2018 — "Adaptive Methods for Nonconvex Optimization"):
-AdamW with additive v_t update that bounds the rate of v_t change so a
-sudden burst can't blow through into the denominator.
-
-Reference: jettify/pytorch-optimizer (Apache-2.0); google-research/yogi.
+Reference implementations:
+  - jettify/pytorch-optimizer (Apache-2.0)
+  - google-research/yogi
 """
 
 from __future__ import annotations
