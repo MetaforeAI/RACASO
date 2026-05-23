@@ -267,12 +267,24 @@ def _build_problem(
     return registry[problem_name](seed=seed, device=device)
 
 
-def _run_sweep(out_path: str, device: str = "cpu") -> int:
+def _run_sweep(
+    out_path: str,
+    device: str = "cpu",
+    problems_filter: Optional[tuple] = None,
+) -> int:
     registry = _registered_problems()
+    if problems_filter is not None:
+        # Restrict registry to only the requested problems. Warn about
+        # any names that don't match a registered problem so typos are
+        # visible at launch rather than silently ignored.
+        missing = [p for p in problems_filter if p not in registry]
+        for m in missing:
+            print(f"[bench] WARN: --problems requested '{m}' but not registered", file=sys.stderr)
+        registry = {p: cls for p, cls in registry.items() if p in problems_filter}
     if not registry:
         with open(out_path, "w", newline="", encoding="utf-8") as f:
             csv.DictWriter(f, fieldnames=list(CSV_COLUMNS)).writeheader()
-        print(f"[bench] no problems registered; wrote header-only CSV to {out_path}")
+        print(f"[bench] no problems registered (after filter); wrote header-only CSV to {out_path}")
         return 0
 
     # Header up-front; append per-row so a kill mid-sweep preserves results.
@@ -351,6 +363,17 @@ def _parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         default="cpu",
         help="device for tensors (default: cpu)",
     )
+    parser.add_argument(
+        "--problems",
+        type=str,
+        default=None,
+        help=(
+            "Comma-separated list of problem short names to run in --sweep "
+            "mode. Default: all registered problems. Useful for re-using "
+            "shared real-task results (R1/R2/R3) from a sibling repo's "
+            "sweep, e.g. --problems p1_off_axis_quad,p2a_rosenbrock_2d,p3a_saddle_2d,p4_row_spread,p5_div_backward,p6_classification"
+        ),
+    )
     return parser.parse_args(argv)
 
 
@@ -360,7 +383,10 @@ def main(argv: Optional[List[str]] = None) -> int:
         print("error: --device cuda requested but CUDA unavailable", file=sys.stderr)
         return 2
     if args.sweep:
-        return _run_sweep(args.out, device=args.device)
+        problems_filter = None
+        if args.problems:
+            problems_filter = tuple(p.strip() for p in args.problems.split(",") if p.strip())
+        return _run_sweep(args.out, device=args.device, problems_filter=problems_filter)
 
     if args.problem is None or args.optimizer is None or args.lr is None \
             or args.seed is None:

@@ -1,0 +1,1291 @@
+[1/1029] p2a_rosenbrock_2d × adam × lr=0.0001 × seed=0
+[2/1029] p2a_rosenbrock_2d × adam × lr=0.0001 × seed=1
+[3/1029] p2a_rosenbrock_2d × adam × lr=0.0001 × seed=2
+[4/1029] p2a_rosenbrock_2d × adam × lr=0.0003 × seed=0
+[5/1029] p2a_rosenbrock_2d × adam × lr=0.0003 × seed=1
+[6/1029] p2a_rosenbrock_2d × adam × lr=0.0003 × seed=2
+[7/1029] p2a_rosenbrock_2d × adam × lr=0.001 × seed=0
+[8/1029] p2a_rosenbrock_2d × adam × lr=0.001 × seed=1
+[9/1029] p2a_rosenbrock_2d × adam × lr=0.001 × seed=2
+[10/1029] p2a_rosenbrock_2d × adam × lr=0.003 × seed=0
+[11/1029] p2a_rosenbrock_2d × adam × lr=0.003 × seed=1
+[12/1029] p2a_rosenbrock_2d × adam × lr=0.003 × seed=2
+[13/1029] p2a_rosenbrock_2d × adamw × lr=0.0001 × seed=0
+[14/1029] p2a_rosenbrock_2d × adamw × lr=0.0001 × seed=1
+[15/1029] p2a_rosenbrock_2d × adamw × lr=0.0001 × seed=2
+[16/1029] p2a_rosenbrock_2d × adamw × lr=0.0003 × seed=0
+[17/1029] p2a_rosenbrock_2d × adamw × lr=0.0003 × seed=1
+[18/1029] p2a_rosenbrock_2d × adamw × lr=0.0003 × seed=2
+[19/1029] p2a_rosenbrock_2d × adamw × lr=0.001 × seed=0
+[20/1029] p2a_rosenbrock_2d × adamw × lr=0.001 × seed=1
+[21/1029] p2a_rosenbrock_2d × adamw × lr=0.001 × seed=2
+[22/1029] p2a_rosenbrock_2d × adamw × lr=0.003 × seed=0
+[23/1029] p2a_rosenbrock_2d × adamw × lr=0.003 × seed=1
+[24/1029] p2a_rosenbrock_2d × adamw × lr=0.003 × seed=2
+[25/1029] p2a_rosenbrock_2d × yogi × lr=0.0001 × seed=0
+[26/1029] p2a_rosenbrock_2d × yogi × lr=0.0001 × seed=1
+[27/1029] p2a_rosenbrock_2d × yogi × lr=0.0001 × seed=2
+[28/1029] p2a_rosenbrock_2d × yogi × lr=0.0003 × seed=0
+[29/1029] p2a_rosenbrock_2d × yogi × lr=0.0003 × seed=1
+[30/1029] p2a_rosenbrock_2d × yogi × lr=0.0003 × seed=2
+[31/1029] p2a_rosenbrock_2d × yogi × lr=0.001 × seed=0
+[32/1029] p2a_rosenbrock_2d × yogi × lr=0.001 × seed=1
+[33/1029] p2a_rosenbrock_2d × yogi × lr=0.001 × seed=2
+[34/1029] p2a_rosenbrock_2d × yogi × lr=0.003 × seed=0
+[35/1029] p2a_rosenbrock_2d × yogi × lr=0.003 × seed=1
+[36/1029] p2a_rosenbrock_2d × yogi × lr=0.003 × seed=2
+[37/1029] p2a_rosenbrock_2d × lion × lr=1e-05 × seed=0
+[38/1029] p2a_rosenbrock_2d × lion × lr=1e-05 × seed=1
+[39/1029] p2a_rosenbrock_2d × lion × lr=1e-05 × seed=2
+[40/1029] p2a_rosenbrock_2d × lion × lr=3e-05 × seed=0
+[41/1029] p2a_rosenbrock_2d × lion × lr=3e-05 × seed=1
+[42/1029] p2a_rosenbrock_2d × lion × lr=3e-05 × seed=2
+[43/1029] p2a_rosenbrock_2d × lion × lr=0.0001 × seed=0
+[44/1029] p2a_rosenbrock_2d × lion × lr=0.0001 × seed=1
+[45/1029] p2a_rosenbrock_2d × lion × lr=0.0001 × seed=2
+[46/1029] p2a_rosenbrock_2d × lion × lr=0.0003 × seed=0
+[47/1029] p2a_rosenbrock_2d × lion × lr=0.0003 × seed=1
+[48/1029] p2a_rosenbrock_2d × lion × lr=0.0003 × seed=2
+[49/1029] p2a_rosenbrock_2d × naive_yogi_muon × lr=0.0001 × seed=0
+[50/1029] p2a_rosenbrock_2d × naive_yogi_muon × lr=0.0001 × seed=1
+[51/1029] p2a_rosenbrock_2d × naive_yogi_muon × lr=0.0001 × seed=2
+[52/1029] p2a_rosenbrock_2d × naive_yogi_muon × lr=0.0003 × seed=0
+[53/1029] p2a_rosenbrock_2d × naive_yogi_muon × lr=0.0003 × seed=1
+[54/1029] p2a_rosenbrock_2d × naive_yogi_muon × lr=0.0003 × seed=2
+[55/1029] p2a_rosenbrock_2d × naive_yogi_muon × lr=0.001 × seed=0
+[56/1029] p2a_rosenbrock_2d × naive_yogi_muon × lr=0.001 × seed=1
+[57/1029] p2a_rosenbrock_2d × naive_yogi_muon × lr=0.001 × seed=2
+[58/1029] p2a_rosenbrock_2d × naive_yogi_muon × lr=0.003 × seed=0
+[59/1029] p2a_rosenbrock_2d × naive_yogi_muon × lr=0.003 × seed=1
+[60/1029] p2a_rosenbrock_2d × naive_yogi_muon × lr=0.003 × seed=2
+[61/1029] p2a_rosenbrock_2d × racaso_hutchinson × lr=3e-05 × seed=0
+[62/1029] p2a_rosenbrock_2d × racaso_hutchinson × lr=3e-05 × seed=1
+[63/1029] p2a_rosenbrock_2d × racaso_hutchinson × lr=3e-05 × seed=2
+[64/1029] p2a_rosenbrock_2d × racaso_hutchinson × lr=0.0001 × seed=0
+[65/1029] p2a_rosenbrock_2d × racaso_hutchinson × lr=0.0001 × seed=1
+[66/1029] p2a_rosenbrock_2d × racaso_hutchinson × lr=0.0001 × seed=2
+[67/1029] p2a_rosenbrock_2d × racaso_hutchinson × lr=0.0003 × seed=0
+[68/1029] p2a_rosenbrock_2d × racaso_hutchinson × lr=0.0003 × seed=1
+[69/1029] p2a_rosenbrock_2d × racaso_hutchinson × lr=0.0003 × seed=2
+[70/1029] p2a_rosenbrock_2d × racaso_hutchinson × lr=0.001 × seed=0
+[71/1029] p2a_rosenbrock_2d × racaso_hutchinson × lr=0.001 × seed=1
+[72/1029] p2a_rosenbrock_2d × racaso_hutchinson × lr=0.001 × seed=2
+[73/1029] p2a_rosenbrock_2d × racaso_gnb × lr=3e-05 × seed=0
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P2aRosenbrock2D does not. Use a classification problem (e.g. p6_classification) for GNB.
+[74/1029] p2a_rosenbrock_2d × racaso_gnb × lr=3e-05 × seed=1
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P2aRosenbrock2D does not. Use a classification problem (e.g. p6_classification) for GNB.
+[75/1029] p2a_rosenbrock_2d × racaso_gnb × lr=3e-05 × seed=2
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P2aRosenbrock2D does not. Use a classification problem (e.g. p6_classification) for GNB.
+[76/1029] p2a_rosenbrock_2d × racaso_gnb × lr=0.0001 × seed=0
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P2aRosenbrock2D does not. Use a classification problem (e.g. p6_classification) for GNB.
+[77/1029] p2a_rosenbrock_2d × racaso_gnb × lr=0.0001 × seed=1
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P2aRosenbrock2D does not. Use a classification problem (e.g. p6_classification) for GNB.
+[78/1029] p2a_rosenbrock_2d × racaso_gnb × lr=0.0001 × seed=2
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P2aRosenbrock2D does not. Use a classification problem (e.g. p6_classification) for GNB.
+[79/1029] p2a_rosenbrock_2d × racaso_gnb × lr=0.0003 × seed=0
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P2aRosenbrock2D does not. Use a classification problem (e.g. p6_classification) for GNB.
+[80/1029] p2a_rosenbrock_2d × racaso_gnb × lr=0.0003 × seed=1
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P2aRosenbrock2D does not. Use a classification problem (e.g. p6_classification) for GNB.
+[81/1029] p2a_rosenbrock_2d × racaso_gnb × lr=0.0003 × seed=2
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P2aRosenbrock2D does not. Use a classification problem (e.g. p6_classification) for GNB.
+[82/1029] p2a_rosenbrock_2d × racaso_gnb × lr=0.001 × seed=0
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P2aRosenbrock2D does not. Use a classification problem (e.g. p6_classification) for GNB.
+[83/1029] p2a_rosenbrock_2d × racaso_gnb × lr=0.001 × seed=1
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P2aRosenbrock2D does not. Use a classification problem (e.g. p6_classification) for GNB.
+[84/1029] p2a_rosenbrock_2d × racaso_gnb × lr=0.001 × seed=2
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P2aRosenbrock2D does not. Use a classification problem (e.g. p6_classification) for GNB.
+[85/1029] p2a_rosenbrock_2d × liger × lr=1e-05 × seed=0
+[86/1029] p2a_rosenbrock_2d × liger × lr=1e-05 × seed=1
+[87/1029] p2a_rosenbrock_2d × liger × lr=1e-05 × seed=2
+[88/1029] p2a_rosenbrock_2d × liger × lr=3e-05 × seed=0
+[89/1029] p2a_rosenbrock_2d × liger × lr=3e-05 × seed=1
+[90/1029] p2a_rosenbrock_2d × liger × lr=3e-05 × seed=2
+[91/1029] p2a_rosenbrock_2d × liger × lr=0.0001 × seed=0
+[92/1029] p2a_rosenbrock_2d × liger × lr=0.0001 × seed=1
+[93/1029] p2a_rosenbrock_2d × liger × lr=0.0001 × seed=2
+[94/1029] p2a_rosenbrock_2d × liger × lr=0.0003 × seed=0
+[95/1029] p2a_rosenbrock_2d × liger × lr=0.0003 × seed=1
+[96/1029] p2a_rosenbrock_2d × liger × lr=0.0003 × seed=2
+[97/1029] p2a_rosenbrock_2d × muogi × lr=3e-05 × seed=0
+[98/1029] p2a_rosenbrock_2d × muogi × lr=3e-05 × seed=1
+[99/1029] p2a_rosenbrock_2d × muogi × lr=3e-05 × seed=2
+[100/1029] p2a_rosenbrock_2d × muogi × lr=0.0001 × seed=0
+[101/1029] p2a_rosenbrock_2d × muogi × lr=0.0001 × seed=1
+[102/1029] p2a_rosenbrock_2d × muogi × lr=0.0001 × seed=2
+[103/1029] p2a_rosenbrock_2d × muogi × lr=0.0003 × seed=0
+[104/1029] p2a_rosenbrock_2d × muogi × lr=0.0003 × seed=1
+[105/1029] p2a_rosenbrock_2d × muogi × lr=0.0003 × seed=2
+[106/1029] p2a_rosenbrock_2d × muogi × lr=0.001 × seed=0
+[107/1029] p2a_rosenbrock_2d × muogi × lr=0.001 × seed=1
+[108/1029] p2a_rosenbrock_2d × muogi × lr=0.001 × seed=2
+[109/1029] p2a_rosenbrock_2d × ramuogi × lr=3e-05 × seed=0
+[110/1029] p2a_rosenbrock_2d × ramuogi × lr=3e-05 × seed=1
+[111/1029] p2a_rosenbrock_2d × ramuogi × lr=3e-05 × seed=2
+[112/1029] p2a_rosenbrock_2d × ramuogi × lr=0.0001 × seed=0
+[113/1029] p2a_rosenbrock_2d × ramuogi × lr=0.0001 × seed=1
+[114/1029] p2a_rosenbrock_2d × ramuogi × lr=0.0001 × seed=2
+[115/1029] p2a_rosenbrock_2d × ramuogi × lr=0.0003 × seed=0
+[116/1029] p2a_rosenbrock_2d × ramuogi × lr=0.0003 × seed=1
+[117/1029] p2a_rosenbrock_2d × ramuogi × lr=0.0003 × seed=2
+[118/1029] p2a_rosenbrock_2d × ramuogi × lr=0.001 × seed=0
+[119/1029] p2a_rosenbrock_2d × ramuogi × lr=0.001 × seed=1
+[120/1029] p2a_rosenbrock_2d × ramuogi × lr=0.001 × seed=2
+[121/1029] p2a_rosenbrock_2d × muon × lr=0.0001 × seed=0
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[122/1029] p2a_rosenbrock_2d × muon × lr=0.0001 × seed=1
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[123/1029] p2a_rosenbrock_2d × muon × lr=0.0001 × seed=2
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[124/1029] p2a_rosenbrock_2d × muon × lr=0.0003 × seed=0
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[125/1029] p2a_rosenbrock_2d × muon × lr=0.0003 × seed=1
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[126/1029] p2a_rosenbrock_2d × muon × lr=0.0003 × seed=2
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[127/1029] p2a_rosenbrock_2d × muon × lr=0.001 × seed=0
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[128/1029] p2a_rosenbrock_2d × muon × lr=0.001 × seed=1
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[129/1029] p2a_rosenbrock_2d × muon × lr=0.001 × seed=2
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[130/1029] p2a_rosenbrock_2d × sophia × lr=0.0001 × seed=0
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[131/1029] p2a_rosenbrock_2d × sophia × lr=0.0001 × seed=1
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[132/1029] p2a_rosenbrock_2d × sophia × lr=0.0001 × seed=2
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[133/1029] p2a_rosenbrock_2d × sophia × lr=0.0003 × seed=0
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[134/1029] p2a_rosenbrock_2d × sophia × lr=0.0003 × seed=1
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[135/1029] p2a_rosenbrock_2d × sophia × lr=0.0003 × seed=2
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[136/1029] p2a_rosenbrock_2d × sophia × lr=0.001 × seed=0
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[137/1029] p2a_rosenbrock_2d × sophia × lr=0.001 × seed=1
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[138/1029] p2a_rosenbrock_2d × sophia × lr=0.001 × seed=2
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[139/1029] p2a_rosenbrock_2d × soap × lr=0.0001 × seed=0
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[140/1029] p2a_rosenbrock_2d × soap × lr=0.0001 × seed=1
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[141/1029] p2a_rosenbrock_2d × soap × lr=0.0001 × seed=2
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[142/1029] p2a_rosenbrock_2d × soap × lr=0.0003 × seed=0
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[143/1029] p2a_rosenbrock_2d × soap × lr=0.0003 × seed=1
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[144/1029] p2a_rosenbrock_2d × soap × lr=0.0003 × seed=2
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[145/1029] p2a_rosenbrock_2d × soap × lr=0.001 × seed=0
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[146/1029] p2a_rosenbrock_2d × soap × lr=0.001 × seed=1
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[147/1029] p2a_rosenbrock_2d × soap × lr=0.001 × seed=2
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[148/1029] p2b_rosenbrock_n100 × adam × lr=0.0001 × seed=0
+[149/1029] p2b_rosenbrock_n100 × adam × lr=0.0001 × seed=1
+[150/1029] p2b_rosenbrock_n100 × adam × lr=0.0001 × seed=2
+[151/1029] p2b_rosenbrock_n100 × adam × lr=0.0003 × seed=0
+[152/1029] p2b_rosenbrock_n100 × adam × lr=0.0003 × seed=1
+[153/1029] p2b_rosenbrock_n100 × adam × lr=0.0003 × seed=2
+[154/1029] p2b_rosenbrock_n100 × adam × lr=0.001 × seed=0
+[155/1029] p2b_rosenbrock_n100 × adam × lr=0.001 × seed=1
+[156/1029] p2b_rosenbrock_n100 × adam × lr=0.001 × seed=2
+[157/1029] p2b_rosenbrock_n100 × adam × lr=0.003 × seed=0
+[158/1029] p2b_rosenbrock_n100 × adam × lr=0.003 × seed=1
+[159/1029] p2b_rosenbrock_n100 × adam × lr=0.003 × seed=2
+[160/1029] p2b_rosenbrock_n100 × adamw × lr=0.0001 × seed=0
+[161/1029] p2b_rosenbrock_n100 × adamw × lr=0.0001 × seed=1
+[162/1029] p2b_rosenbrock_n100 × adamw × lr=0.0001 × seed=2
+[163/1029] p2b_rosenbrock_n100 × adamw × lr=0.0003 × seed=0
+[164/1029] p2b_rosenbrock_n100 × adamw × lr=0.0003 × seed=1
+[165/1029] p2b_rosenbrock_n100 × adamw × lr=0.0003 × seed=2
+[166/1029] p2b_rosenbrock_n100 × adamw × lr=0.001 × seed=0
+[167/1029] p2b_rosenbrock_n100 × adamw × lr=0.001 × seed=1
+[168/1029] p2b_rosenbrock_n100 × adamw × lr=0.001 × seed=2
+[169/1029] p2b_rosenbrock_n100 × adamw × lr=0.003 × seed=0
+[170/1029] p2b_rosenbrock_n100 × adamw × lr=0.003 × seed=1
+[171/1029] p2b_rosenbrock_n100 × adamw × lr=0.003 × seed=2
+[172/1029] p2b_rosenbrock_n100 × yogi × lr=0.0001 × seed=0
+[173/1029] p2b_rosenbrock_n100 × yogi × lr=0.0001 × seed=1
+[174/1029] p2b_rosenbrock_n100 × yogi × lr=0.0001 × seed=2
+[175/1029] p2b_rosenbrock_n100 × yogi × lr=0.0003 × seed=0
+[176/1029] p2b_rosenbrock_n100 × yogi × lr=0.0003 × seed=1
+[177/1029] p2b_rosenbrock_n100 × yogi × lr=0.0003 × seed=2
+[178/1029] p2b_rosenbrock_n100 × yogi × lr=0.001 × seed=0
+[179/1029] p2b_rosenbrock_n100 × yogi × lr=0.001 × seed=1
+[180/1029] p2b_rosenbrock_n100 × yogi × lr=0.001 × seed=2
+[181/1029] p2b_rosenbrock_n100 × yogi × lr=0.003 × seed=0
+[182/1029] p2b_rosenbrock_n100 × yogi × lr=0.003 × seed=1
+[183/1029] p2b_rosenbrock_n100 × yogi × lr=0.003 × seed=2
+[184/1029] p2b_rosenbrock_n100 × lion × lr=1e-05 × seed=0
+[185/1029] p2b_rosenbrock_n100 × lion × lr=1e-05 × seed=1
+[186/1029] p2b_rosenbrock_n100 × lion × lr=1e-05 × seed=2
+[187/1029] p2b_rosenbrock_n100 × lion × lr=3e-05 × seed=0
+[188/1029] p2b_rosenbrock_n100 × lion × lr=3e-05 × seed=1
+[189/1029] p2b_rosenbrock_n100 × lion × lr=3e-05 × seed=2
+[190/1029] p2b_rosenbrock_n100 × lion × lr=0.0001 × seed=0
+[191/1029] p2b_rosenbrock_n100 × lion × lr=0.0001 × seed=1
+[192/1029] p2b_rosenbrock_n100 × lion × lr=0.0001 × seed=2
+[193/1029] p2b_rosenbrock_n100 × lion × lr=0.0003 × seed=0
+[194/1029] p2b_rosenbrock_n100 × lion × lr=0.0003 × seed=1
+[195/1029] p2b_rosenbrock_n100 × lion × lr=0.0003 × seed=2
+[196/1029] p2b_rosenbrock_n100 × naive_yogi_muon × lr=0.0001 × seed=0
+[197/1029] p2b_rosenbrock_n100 × naive_yogi_muon × lr=0.0001 × seed=1
+[198/1029] p2b_rosenbrock_n100 × naive_yogi_muon × lr=0.0001 × seed=2
+[199/1029] p2b_rosenbrock_n100 × naive_yogi_muon × lr=0.0003 × seed=0
+[200/1029] p2b_rosenbrock_n100 × naive_yogi_muon × lr=0.0003 × seed=1
+[201/1029] p2b_rosenbrock_n100 × naive_yogi_muon × lr=0.0003 × seed=2
+[202/1029] p2b_rosenbrock_n100 × naive_yogi_muon × lr=0.001 × seed=0
+[203/1029] p2b_rosenbrock_n100 × naive_yogi_muon × lr=0.001 × seed=1
+[204/1029] p2b_rosenbrock_n100 × naive_yogi_muon × lr=0.001 × seed=2
+[205/1029] p2b_rosenbrock_n100 × naive_yogi_muon × lr=0.003 × seed=0
+[206/1029] p2b_rosenbrock_n100 × naive_yogi_muon × lr=0.003 × seed=1
+[207/1029] p2b_rosenbrock_n100 × naive_yogi_muon × lr=0.003 × seed=2
+[208/1029] p2b_rosenbrock_n100 × racaso_hutchinson × lr=3e-05 × seed=0
+[209/1029] p2b_rosenbrock_n100 × racaso_hutchinson × lr=3e-05 × seed=1
+[210/1029] p2b_rosenbrock_n100 × racaso_hutchinson × lr=3e-05 × seed=2
+[211/1029] p2b_rosenbrock_n100 × racaso_hutchinson × lr=0.0001 × seed=0
+[212/1029] p2b_rosenbrock_n100 × racaso_hutchinson × lr=0.0001 × seed=1
+[213/1029] p2b_rosenbrock_n100 × racaso_hutchinson × lr=0.0001 × seed=2
+[214/1029] p2b_rosenbrock_n100 × racaso_hutchinson × lr=0.0003 × seed=0
+[215/1029] p2b_rosenbrock_n100 × racaso_hutchinson × lr=0.0003 × seed=1
+[216/1029] p2b_rosenbrock_n100 × racaso_hutchinson × lr=0.0003 × seed=2
+[217/1029] p2b_rosenbrock_n100 × racaso_hutchinson × lr=0.001 × seed=0
+[218/1029] p2b_rosenbrock_n100 × racaso_hutchinson × lr=0.001 × seed=1
+[219/1029] p2b_rosenbrock_n100 × racaso_hutchinson × lr=0.001 × seed=2
+[220/1029] p2b_rosenbrock_n100 × racaso_gnb × lr=3e-05 × seed=0
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P2bRosenbrockN100 does not. Use a classification problem (e.g. p6_classification) for GNB.
+[221/1029] p2b_rosenbrock_n100 × racaso_gnb × lr=3e-05 × seed=1
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P2bRosenbrockN100 does not. Use a classification problem (e.g. p6_classification) for GNB.
+[222/1029] p2b_rosenbrock_n100 × racaso_gnb × lr=3e-05 × seed=2
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P2bRosenbrockN100 does not. Use a classification problem (e.g. p6_classification) for GNB.
+[223/1029] p2b_rosenbrock_n100 × racaso_gnb × lr=0.0001 × seed=0
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P2bRosenbrockN100 does not. Use a classification problem (e.g. p6_classification) for GNB.
+[224/1029] p2b_rosenbrock_n100 × racaso_gnb × lr=0.0001 × seed=1
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P2bRosenbrockN100 does not. Use a classification problem (e.g. p6_classification) for GNB.
+[225/1029] p2b_rosenbrock_n100 × racaso_gnb × lr=0.0001 × seed=2
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P2bRosenbrockN100 does not. Use a classification problem (e.g. p6_classification) for GNB.
+[226/1029] p2b_rosenbrock_n100 × racaso_gnb × lr=0.0003 × seed=0
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P2bRosenbrockN100 does not. Use a classification problem (e.g. p6_classification) for GNB.
+[227/1029] p2b_rosenbrock_n100 × racaso_gnb × lr=0.0003 × seed=1
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P2bRosenbrockN100 does not. Use a classification problem (e.g. p6_classification) for GNB.
+[228/1029] p2b_rosenbrock_n100 × racaso_gnb × lr=0.0003 × seed=2
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P2bRosenbrockN100 does not. Use a classification problem (e.g. p6_classification) for GNB.
+[229/1029] p2b_rosenbrock_n100 × racaso_gnb × lr=0.001 × seed=0
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P2bRosenbrockN100 does not. Use a classification problem (e.g. p6_classification) for GNB.
+[230/1029] p2b_rosenbrock_n100 × racaso_gnb × lr=0.001 × seed=1
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P2bRosenbrockN100 does not. Use a classification problem (e.g. p6_classification) for GNB.
+[231/1029] p2b_rosenbrock_n100 × racaso_gnb × lr=0.001 × seed=2
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P2bRosenbrockN100 does not. Use a classification problem (e.g. p6_classification) for GNB.
+[232/1029] p2b_rosenbrock_n100 × liger × lr=1e-05 × seed=0
+[233/1029] p2b_rosenbrock_n100 × liger × lr=1e-05 × seed=1
+[234/1029] p2b_rosenbrock_n100 × liger × lr=1e-05 × seed=2
+[235/1029] p2b_rosenbrock_n100 × liger × lr=3e-05 × seed=0
+[236/1029] p2b_rosenbrock_n100 × liger × lr=3e-05 × seed=1
+[237/1029] p2b_rosenbrock_n100 × liger × lr=3e-05 × seed=2
+[238/1029] p2b_rosenbrock_n100 × liger × lr=0.0001 × seed=0
+[239/1029] p2b_rosenbrock_n100 × liger × lr=0.0001 × seed=1
+[240/1029] p2b_rosenbrock_n100 × liger × lr=0.0001 × seed=2
+[241/1029] p2b_rosenbrock_n100 × liger × lr=0.0003 × seed=0
+[242/1029] p2b_rosenbrock_n100 × liger × lr=0.0003 × seed=1
+[243/1029] p2b_rosenbrock_n100 × liger × lr=0.0003 × seed=2
+[244/1029] p2b_rosenbrock_n100 × muogi × lr=3e-05 × seed=0
+[245/1029] p2b_rosenbrock_n100 × muogi × lr=3e-05 × seed=1
+[246/1029] p2b_rosenbrock_n100 × muogi × lr=3e-05 × seed=2
+[247/1029] p2b_rosenbrock_n100 × muogi × lr=0.0001 × seed=0
+[248/1029] p2b_rosenbrock_n100 × muogi × lr=0.0001 × seed=1
+[249/1029] p2b_rosenbrock_n100 × muogi × lr=0.0001 × seed=2
+[250/1029] p2b_rosenbrock_n100 × muogi × lr=0.0003 × seed=0
+[251/1029] p2b_rosenbrock_n100 × muogi × lr=0.0003 × seed=1
+[252/1029] p2b_rosenbrock_n100 × muogi × lr=0.0003 × seed=2
+[253/1029] p2b_rosenbrock_n100 × muogi × lr=0.001 × seed=0
+[254/1029] p2b_rosenbrock_n100 × muogi × lr=0.001 × seed=1
+[255/1029] p2b_rosenbrock_n100 × muogi × lr=0.001 × seed=2
+[256/1029] p2b_rosenbrock_n100 × ramuogi × lr=3e-05 × seed=0
+[257/1029] p2b_rosenbrock_n100 × ramuogi × lr=3e-05 × seed=1
+[258/1029] p2b_rosenbrock_n100 × ramuogi × lr=3e-05 × seed=2
+[259/1029] p2b_rosenbrock_n100 × ramuogi × lr=0.0001 × seed=0
+[260/1029] p2b_rosenbrock_n100 × ramuogi × lr=0.0001 × seed=1
+[261/1029] p2b_rosenbrock_n100 × ramuogi × lr=0.0001 × seed=2
+[262/1029] p2b_rosenbrock_n100 × ramuogi × lr=0.0003 × seed=0
+[263/1029] p2b_rosenbrock_n100 × ramuogi × lr=0.0003 × seed=1
+[264/1029] p2b_rosenbrock_n100 × ramuogi × lr=0.0003 × seed=2
+[265/1029] p2b_rosenbrock_n100 × ramuogi × lr=0.001 × seed=0
+[266/1029] p2b_rosenbrock_n100 × ramuogi × lr=0.001 × seed=1
+[267/1029] p2b_rosenbrock_n100 × ramuogi × lr=0.001 × seed=2
+[268/1029] p2b_rosenbrock_n100 × muon × lr=0.0001 × seed=0
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[269/1029] p2b_rosenbrock_n100 × muon × lr=0.0001 × seed=1
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[270/1029] p2b_rosenbrock_n100 × muon × lr=0.0001 × seed=2
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[271/1029] p2b_rosenbrock_n100 × muon × lr=0.0003 × seed=0
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[272/1029] p2b_rosenbrock_n100 × muon × lr=0.0003 × seed=1
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[273/1029] p2b_rosenbrock_n100 × muon × lr=0.0003 × seed=2
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[274/1029] p2b_rosenbrock_n100 × muon × lr=0.001 × seed=0
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[275/1029] p2b_rosenbrock_n100 × muon × lr=0.001 × seed=1
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[276/1029] p2b_rosenbrock_n100 × muon × lr=0.001 × seed=2
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[277/1029] p2b_rosenbrock_n100 × sophia × lr=0.0001 × seed=0
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[278/1029] p2b_rosenbrock_n100 × sophia × lr=0.0001 × seed=1
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[279/1029] p2b_rosenbrock_n100 × sophia × lr=0.0001 × seed=2
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[280/1029] p2b_rosenbrock_n100 × sophia × lr=0.0003 × seed=0
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[281/1029] p2b_rosenbrock_n100 × sophia × lr=0.0003 × seed=1
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[282/1029] p2b_rosenbrock_n100 × sophia × lr=0.0003 × seed=2
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[283/1029] p2b_rosenbrock_n100 × sophia × lr=0.001 × seed=0
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[284/1029] p2b_rosenbrock_n100 × sophia × lr=0.001 × seed=1
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[285/1029] p2b_rosenbrock_n100 × sophia × lr=0.001 × seed=2
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[286/1029] p2b_rosenbrock_n100 × soap × lr=0.0001 × seed=0
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[287/1029] p2b_rosenbrock_n100 × soap × lr=0.0001 × seed=1
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[288/1029] p2b_rosenbrock_n100 × soap × lr=0.0001 × seed=2
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[289/1029] p2b_rosenbrock_n100 × soap × lr=0.0003 × seed=0
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[290/1029] p2b_rosenbrock_n100 × soap × lr=0.0003 × seed=1
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[291/1029] p2b_rosenbrock_n100 × soap × lr=0.0003 × seed=2
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[292/1029] p2b_rosenbrock_n100 × soap × lr=0.001 × seed=0
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[293/1029] p2b_rosenbrock_n100 × soap × lr=0.001 × seed=1
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[294/1029] p2b_rosenbrock_n100 × soap × lr=0.001 × seed=2
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[295/1029] p3a_saddle_2d × adam × lr=0.0001 × seed=0
+[296/1029] p3a_saddle_2d × adam × lr=0.0001 × seed=1
+[297/1029] p3a_saddle_2d × adam × lr=0.0001 × seed=2
+[298/1029] p3a_saddle_2d × adam × lr=0.0003 × seed=0
+[299/1029] p3a_saddle_2d × adam × lr=0.0003 × seed=1
+[300/1029] p3a_saddle_2d × adam × lr=0.0003 × seed=2
+[301/1029] p3a_saddle_2d × adam × lr=0.001 × seed=0
+[302/1029] p3a_saddle_2d × adam × lr=0.001 × seed=1
+[303/1029] p3a_saddle_2d × adam × lr=0.001 × seed=2
+[304/1029] p3a_saddle_2d × adam × lr=0.003 × seed=0
+[305/1029] p3a_saddle_2d × adam × lr=0.003 × seed=1
+[306/1029] p3a_saddle_2d × adam × lr=0.003 × seed=2
+[307/1029] p3a_saddle_2d × adamw × lr=0.0001 × seed=0
+[308/1029] p3a_saddle_2d × adamw × lr=0.0001 × seed=1
+[309/1029] p3a_saddle_2d × adamw × lr=0.0001 × seed=2
+[310/1029] p3a_saddle_2d × adamw × lr=0.0003 × seed=0
+[311/1029] p3a_saddle_2d × adamw × lr=0.0003 × seed=1
+[312/1029] p3a_saddle_2d × adamw × lr=0.0003 × seed=2
+[313/1029] p3a_saddle_2d × adamw × lr=0.001 × seed=0
+[314/1029] p3a_saddle_2d × adamw × lr=0.001 × seed=1
+[315/1029] p3a_saddle_2d × adamw × lr=0.001 × seed=2
+[316/1029] p3a_saddle_2d × adamw × lr=0.003 × seed=0
+[317/1029] p3a_saddle_2d × adamw × lr=0.003 × seed=1
+[318/1029] p3a_saddle_2d × adamw × lr=0.003 × seed=2
+[319/1029] p3a_saddle_2d × yogi × lr=0.0001 × seed=0
+[320/1029] p3a_saddle_2d × yogi × lr=0.0001 × seed=1
+[321/1029] p3a_saddle_2d × yogi × lr=0.0001 × seed=2
+[322/1029] p3a_saddle_2d × yogi × lr=0.0003 × seed=0
+[323/1029] p3a_saddle_2d × yogi × lr=0.0003 × seed=1
+[324/1029] p3a_saddle_2d × yogi × lr=0.0003 × seed=2
+[325/1029] p3a_saddle_2d × yogi × lr=0.001 × seed=0
+[326/1029] p3a_saddle_2d × yogi × lr=0.001 × seed=1
+[327/1029] p3a_saddle_2d × yogi × lr=0.001 × seed=2
+[328/1029] p3a_saddle_2d × yogi × lr=0.003 × seed=0
+[329/1029] p3a_saddle_2d × yogi × lr=0.003 × seed=1
+[330/1029] p3a_saddle_2d × yogi × lr=0.003 × seed=2
+[331/1029] p3a_saddle_2d × lion × lr=1e-05 × seed=0
+[332/1029] p3a_saddle_2d × lion × lr=1e-05 × seed=1
+[333/1029] p3a_saddle_2d × lion × lr=1e-05 × seed=2
+[334/1029] p3a_saddle_2d × lion × lr=3e-05 × seed=0
+[335/1029] p3a_saddle_2d × lion × lr=3e-05 × seed=1
+[336/1029] p3a_saddle_2d × lion × lr=3e-05 × seed=2
+[337/1029] p3a_saddle_2d × lion × lr=0.0001 × seed=0
+[338/1029] p3a_saddle_2d × lion × lr=0.0001 × seed=1
+[339/1029] p3a_saddle_2d × lion × lr=0.0001 × seed=2
+[340/1029] p3a_saddle_2d × lion × lr=0.0003 × seed=0
+[341/1029] p3a_saddle_2d × lion × lr=0.0003 × seed=1
+[342/1029] p3a_saddle_2d × lion × lr=0.0003 × seed=2
+[343/1029] p3a_saddle_2d × naive_yogi_muon × lr=0.0001 × seed=0
+[344/1029] p3a_saddle_2d × naive_yogi_muon × lr=0.0001 × seed=1
+[345/1029] p3a_saddle_2d × naive_yogi_muon × lr=0.0001 × seed=2
+[346/1029] p3a_saddle_2d × naive_yogi_muon × lr=0.0003 × seed=0
+[347/1029] p3a_saddle_2d × naive_yogi_muon × lr=0.0003 × seed=1
+[348/1029] p3a_saddle_2d × naive_yogi_muon × lr=0.0003 × seed=2
+[349/1029] p3a_saddle_2d × naive_yogi_muon × lr=0.001 × seed=0
+[350/1029] p3a_saddle_2d × naive_yogi_muon × lr=0.001 × seed=1
+[351/1029] p3a_saddle_2d × naive_yogi_muon × lr=0.001 × seed=2
+[352/1029] p3a_saddle_2d × naive_yogi_muon × lr=0.003 × seed=0
+[353/1029] p3a_saddle_2d × naive_yogi_muon × lr=0.003 × seed=1
+[354/1029] p3a_saddle_2d × naive_yogi_muon × lr=0.003 × seed=2
+[355/1029] p3a_saddle_2d × racaso_hutchinson × lr=3e-05 × seed=0
+[356/1029] p3a_saddle_2d × racaso_hutchinson × lr=3e-05 × seed=1
+[357/1029] p3a_saddle_2d × racaso_hutchinson × lr=3e-05 × seed=2
+[358/1029] p3a_saddle_2d × racaso_hutchinson × lr=0.0001 × seed=0
+[359/1029] p3a_saddle_2d × racaso_hutchinson × lr=0.0001 × seed=1
+[360/1029] p3a_saddle_2d × racaso_hutchinson × lr=0.0001 × seed=2
+[361/1029] p3a_saddle_2d × racaso_hutchinson × lr=0.0003 × seed=0
+[362/1029] p3a_saddle_2d × racaso_hutchinson × lr=0.0003 × seed=1
+[363/1029] p3a_saddle_2d × racaso_hutchinson × lr=0.0003 × seed=2
+[364/1029] p3a_saddle_2d × racaso_hutchinson × lr=0.001 × seed=0
+[365/1029] p3a_saddle_2d × racaso_hutchinson × lr=0.001 × seed=1
+[366/1029] p3a_saddle_2d × racaso_hutchinson × lr=0.001 × seed=2
+[367/1029] p3a_saddle_2d × racaso_gnb × lr=3e-05 × seed=0
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P3aSaddle2D does not. Use a classification problem (e.g. p6_classification) for GNB.
+[368/1029] p3a_saddle_2d × racaso_gnb × lr=3e-05 × seed=1
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P3aSaddle2D does not. Use a classification problem (e.g. p6_classification) for GNB.
+[369/1029] p3a_saddle_2d × racaso_gnb × lr=3e-05 × seed=2
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P3aSaddle2D does not. Use a classification problem (e.g. p6_classification) for GNB.
+[370/1029] p3a_saddle_2d × racaso_gnb × lr=0.0001 × seed=0
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P3aSaddle2D does not. Use a classification problem (e.g. p6_classification) for GNB.
+[371/1029] p3a_saddle_2d × racaso_gnb × lr=0.0001 × seed=1
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P3aSaddle2D does not. Use a classification problem (e.g. p6_classification) for GNB.
+[372/1029] p3a_saddle_2d × racaso_gnb × lr=0.0001 × seed=2
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P3aSaddle2D does not. Use a classification problem (e.g. p6_classification) for GNB.
+[373/1029] p3a_saddle_2d × racaso_gnb × lr=0.0003 × seed=0
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P3aSaddle2D does not. Use a classification problem (e.g. p6_classification) for GNB.
+[374/1029] p3a_saddle_2d × racaso_gnb × lr=0.0003 × seed=1
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P3aSaddle2D does not. Use a classification problem (e.g. p6_classification) for GNB.
+[375/1029] p3a_saddle_2d × racaso_gnb × lr=0.0003 × seed=2
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P3aSaddle2D does not. Use a classification problem (e.g. p6_classification) for GNB.
+[376/1029] p3a_saddle_2d × racaso_gnb × lr=0.001 × seed=0
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P3aSaddle2D does not. Use a classification problem (e.g. p6_classification) for GNB.
+[377/1029] p3a_saddle_2d × racaso_gnb × lr=0.001 × seed=1
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P3aSaddle2D does not. Use a classification problem (e.g. p6_classification) for GNB.
+[378/1029] p3a_saddle_2d × racaso_gnb × lr=0.001 × seed=2
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P3aSaddle2D does not. Use a classification problem (e.g. p6_classification) for GNB.
+[379/1029] p3a_saddle_2d × liger × lr=1e-05 × seed=0
+[380/1029] p3a_saddle_2d × liger × lr=1e-05 × seed=1
+[381/1029] p3a_saddle_2d × liger × lr=1e-05 × seed=2
+[382/1029] p3a_saddle_2d × liger × lr=3e-05 × seed=0
+[383/1029] p3a_saddle_2d × liger × lr=3e-05 × seed=1
+[384/1029] p3a_saddle_2d × liger × lr=3e-05 × seed=2
+[385/1029] p3a_saddle_2d × liger × lr=0.0001 × seed=0
+[386/1029] p3a_saddle_2d × liger × lr=0.0001 × seed=1
+[387/1029] p3a_saddle_2d × liger × lr=0.0001 × seed=2
+[388/1029] p3a_saddle_2d × liger × lr=0.0003 × seed=0
+[389/1029] p3a_saddle_2d × liger × lr=0.0003 × seed=1
+[390/1029] p3a_saddle_2d × liger × lr=0.0003 × seed=2
+[391/1029] p3a_saddle_2d × muogi × lr=3e-05 × seed=0
+[392/1029] p3a_saddle_2d × muogi × lr=3e-05 × seed=1
+[393/1029] p3a_saddle_2d × muogi × lr=3e-05 × seed=2
+[394/1029] p3a_saddle_2d × muogi × lr=0.0001 × seed=0
+[395/1029] p3a_saddle_2d × muogi × lr=0.0001 × seed=1
+[396/1029] p3a_saddle_2d × muogi × lr=0.0001 × seed=2
+[397/1029] p3a_saddle_2d × muogi × lr=0.0003 × seed=0
+[398/1029] p3a_saddle_2d × muogi × lr=0.0003 × seed=1
+[399/1029] p3a_saddle_2d × muogi × lr=0.0003 × seed=2
+[400/1029] p3a_saddle_2d × muogi × lr=0.001 × seed=0
+[401/1029] p3a_saddle_2d × muogi × lr=0.001 × seed=1
+[402/1029] p3a_saddle_2d × muogi × lr=0.001 × seed=2
+[403/1029] p3a_saddle_2d × ramuogi × lr=3e-05 × seed=0
+[404/1029] p3a_saddle_2d × ramuogi × lr=3e-05 × seed=1
+[405/1029] p3a_saddle_2d × ramuogi × lr=3e-05 × seed=2
+[406/1029] p3a_saddle_2d × ramuogi × lr=0.0001 × seed=0
+[407/1029] p3a_saddle_2d × ramuogi × lr=0.0001 × seed=1
+[408/1029] p3a_saddle_2d × ramuogi × lr=0.0001 × seed=2
+[409/1029] p3a_saddle_2d × ramuogi × lr=0.0003 × seed=0
+[410/1029] p3a_saddle_2d × ramuogi × lr=0.0003 × seed=1
+[411/1029] p3a_saddle_2d × ramuogi × lr=0.0003 × seed=2
+[412/1029] p3a_saddle_2d × ramuogi × lr=0.001 × seed=0
+[413/1029] p3a_saddle_2d × ramuogi × lr=0.001 × seed=1
+[414/1029] p3a_saddle_2d × ramuogi × lr=0.001 × seed=2
+[415/1029] p3a_saddle_2d × muon × lr=0.0001 × seed=0
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[416/1029] p3a_saddle_2d × muon × lr=0.0001 × seed=1
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[417/1029] p3a_saddle_2d × muon × lr=0.0001 × seed=2
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[418/1029] p3a_saddle_2d × muon × lr=0.0003 × seed=0
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[419/1029] p3a_saddle_2d × muon × lr=0.0003 × seed=1
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[420/1029] p3a_saddle_2d × muon × lr=0.0003 × seed=2
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[421/1029] p3a_saddle_2d × muon × lr=0.001 × seed=0
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[422/1029] p3a_saddle_2d × muon × lr=0.001 × seed=1
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[423/1029] p3a_saddle_2d × muon × lr=0.001 × seed=2
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[424/1029] p3a_saddle_2d × sophia × lr=0.0001 × seed=0
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[425/1029] p3a_saddle_2d × sophia × lr=0.0001 × seed=1
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[426/1029] p3a_saddle_2d × sophia × lr=0.0001 × seed=2
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[427/1029] p3a_saddle_2d × sophia × lr=0.0003 × seed=0
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[428/1029] p3a_saddle_2d × sophia × lr=0.0003 × seed=1
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[429/1029] p3a_saddle_2d × sophia × lr=0.0003 × seed=2
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[430/1029] p3a_saddle_2d × sophia × lr=0.001 × seed=0
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[431/1029] p3a_saddle_2d × sophia × lr=0.001 × seed=1
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[432/1029] p3a_saddle_2d × sophia × lr=0.001 × seed=2
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[433/1029] p3a_saddle_2d × soap × lr=0.0001 × seed=0
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[434/1029] p3a_saddle_2d × soap × lr=0.0001 × seed=1
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[435/1029] p3a_saddle_2d × soap × lr=0.0001 × seed=2
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[436/1029] p3a_saddle_2d × soap × lr=0.0003 × seed=0
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[437/1029] p3a_saddle_2d × soap × lr=0.0003 × seed=1
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[438/1029] p3a_saddle_2d × soap × lr=0.0003 × seed=2
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[439/1029] p3a_saddle_2d × soap × lr=0.001 × seed=0
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[440/1029] p3a_saddle_2d × soap × lr=0.001 × seed=1
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[441/1029] p3a_saddle_2d × soap × lr=0.001 × seed=2
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[442/1029] p3b_saddle_n20 × adam × lr=0.0001 × seed=0
+[443/1029] p3b_saddle_n20 × adam × lr=0.0001 × seed=1
+[444/1029] p3b_saddle_n20 × adam × lr=0.0001 × seed=2
+[445/1029] p3b_saddle_n20 × adam × lr=0.0003 × seed=0
+[446/1029] p3b_saddle_n20 × adam × lr=0.0003 × seed=1
+[447/1029] p3b_saddle_n20 × adam × lr=0.0003 × seed=2
+[448/1029] p3b_saddle_n20 × adam × lr=0.001 × seed=0
+[449/1029] p3b_saddle_n20 × adam × lr=0.001 × seed=1
+[450/1029] p3b_saddle_n20 × adam × lr=0.001 × seed=2
+[451/1029] p3b_saddle_n20 × adam × lr=0.003 × seed=0
+[452/1029] p3b_saddle_n20 × adam × lr=0.003 × seed=1
+[453/1029] p3b_saddle_n20 × adam × lr=0.003 × seed=2
+[454/1029] p3b_saddle_n20 × adamw × lr=0.0001 × seed=0
+[455/1029] p3b_saddle_n20 × adamw × lr=0.0001 × seed=1
+[456/1029] p3b_saddle_n20 × adamw × lr=0.0001 × seed=2
+[457/1029] p3b_saddle_n20 × adamw × lr=0.0003 × seed=0
+[458/1029] p3b_saddle_n20 × adamw × lr=0.0003 × seed=1
+[459/1029] p3b_saddle_n20 × adamw × lr=0.0003 × seed=2
+[460/1029] p3b_saddle_n20 × adamw × lr=0.001 × seed=0
+[461/1029] p3b_saddle_n20 × adamw × lr=0.001 × seed=1
+[462/1029] p3b_saddle_n20 × adamw × lr=0.001 × seed=2
+[463/1029] p3b_saddle_n20 × adamw × lr=0.003 × seed=0
+[464/1029] p3b_saddle_n20 × adamw × lr=0.003 × seed=1
+[465/1029] p3b_saddle_n20 × adamw × lr=0.003 × seed=2
+[466/1029] p3b_saddle_n20 × yogi × lr=0.0001 × seed=0
+[467/1029] p3b_saddle_n20 × yogi × lr=0.0001 × seed=1
+[468/1029] p3b_saddle_n20 × yogi × lr=0.0001 × seed=2
+[469/1029] p3b_saddle_n20 × yogi × lr=0.0003 × seed=0
+[470/1029] p3b_saddle_n20 × yogi × lr=0.0003 × seed=1
+[471/1029] p3b_saddle_n20 × yogi × lr=0.0003 × seed=2
+[472/1029] p3b_saddle_n20 × yogi × lr=0.001 × seed=0
+[473/1029] p3b_saddle_n20 × yogi × lr=0.001 × seed=1
+[474/1029] p3b_saddle_n20 × yogi × lr=0.001 × seed=2
+[475/1029] p3b_saddle_n20 × yogi × lr=0.003 × seed=0
+[476/1029] p3b_saddle_n20 × yogi × lr=0.003 × seed=1
+[477/1029] p3b_saddle_n20 × yogi × lr=0.003 × seed=2
+[478/1029] p3b_saddle_n20 × lion × lr=1e-05 × seed=0
+[479/1029] p3b_saddle_n20 × lion × lr=1e-05 × seed=1
+[480/1029] p3b_saddle_n20 × lion × lr=1e-05 × seed=2
+[481/1029] p3b_saddle_n20 × lion × lr=3e-05 × seed=0
+[482/1029] p3b_saddle_n20 × lion × lr=3e-05 × seed=1
+[483/1029] p3b_saddle_n20 × lion × lr=3e-05 × seed=2
+[484/1029] p3b_saddle_n20 × lion × lr=0.0001 × seed=0
+[485/1029] p3b_saddle_n20 × lion × lr=0.0001 × seed=1
+[486/1029] p3b_saddle_n20 × lion × lr=0.0001 × seed=2
+[487/1029] p3b_saddle_n20 × lion × lr=0.0003 × seed=0
+[488/1029] p3b_saddle_n20 × lion × lr=0.0003 × seed=1
+[489/1029] p3b_saddle_n20 × lion × lr=0.0003 × seed=2
+[490/1029] p3b_saddle_n20 × naive_yogi_muon × lr=0.0001 × seed=0
+[491/1029] p3b_saddle_n20 × naive_yogi_muon × lr=0.0001 × seed=1
+[492/1029] p3b_saddle_n20 × naive_yogi_muon × lr=0.0001 × seed=2
+[493/1029] p3b_saddle_n20 × naive_yogi_muon × lr=0.0003 × seed=0
+[494/1029] p3b_saddle_n20 × naive_yogi_muon × lr=0.0003 × seed=1
+[495/1029] p3b_saddle_n20 × naive_yogi_muon × lr=0.0003 × seed=2
+[496/1029] p3b_saddle_n20 × naive_yogi_muon × lr=0.001 × seed=0
+[497/1029] p3b_saddle_n20 × naive_yogi_muon × lr=0.001 × seed=1
+[498/1029] p3b_saddle_n20 × naive_yogi_muon × lr=0.001 × seed=2
+[499/1029] p3b_saddle_n20 × naive_yogi_muon × lr=0.003 × seed=0
+[500/1029] p3b_saddle_n20 × naive_yogi_muon × lr=0.003 × seed=1
+[501/1029] p3b_saddle_n20 × naive_yogi_muon × lr=0.003 × seed=2
+[502/1029] p3b_saddle_n20 × racaso_hutchinson × lr=3e-05 × seed=0
+[503/1029] p3b_saddle_n20 × racaso_hutchinson × lr=3e-05 × seed=1
+[504/1029] p3b_saddle_n20 × racaso_hutchinson × lr=3e-05 × seed=2
+[505/1029] p3b_saddle_n20 × racaso_hutchinson × lr=0.0001 × seed=0
+[506/1029] p3b_saddle_n20 × racaso_hutchinson × lr=0.0001 × seed=1
+[507/1029] p3b_saddle_n20 × racaso_hutchinson × lr=0.0001 × seed=2
+[508/1029] p3b_saddle_n20 × racaso_hutchinson × lr=0.0003 × seed=0
+[509/1029] p3b_saddle_n20 × racaso_hutchinson × lr=0.0003 × seed=1
+[510/1029] p3b_saddle_n20 × racaso_hutchinson × lr=0.0003 × seed=2
+[511/1029] p3b_saddle_n20 × racaso_hutchinson × lr=0.001 × seed=0
+[512/1029] p3b_saddle_n20 × racaso_hutchinson × lr=0.001 × seed=1
+[513/1029] p3b_saddle_n20 × racaso_hutchinson × lr=0.001 × seed=2
+[514/1029] p3b_saddle_n20 × racaso_gnb × lr=3e-05 × seed=0
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P3bSaddleN20 does not. Use a classification problem (e.g. p6_classification) for GNB.
+[515/1029] p3b_saddle_n20 × racaso_gnb × lr=3e-05 × seed=1
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P3bSaddleN20 does not. Use a classification problem (e.g. p6_classification) for GNB.
+[516/1029] p3b_saddle_n20 × racaso_gnb × lr=3e-05 × seed=2
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P3bSaddleN20 does not. Use a classification problem (e.g. p6_classification) for GNB.
+[517/1029] p3b_saddle_n20 × racaso_gnb × lr=0.0001 × seed=0
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P3bSaddleN20 does not. Use a classification problem (e.g. p6_classification) for GNB.
+[518/1029] p3b_saddle_n20 × racaso_gnb × lr=0.0001 × seed=1
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P3bSaddleN20 does not. Use a classification problem (e.g. p6_classification) for GNB.
+[519/1029] p3b_saddle_n20 × racaso_gnb × lr=0.0001 × seed=2
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P3bSaddleN20 does not. Use a classification problem (e.g. p6_classification) for GNB.
+[520/1029] p3b_saddle_n20 × racaso_gnb × lr=0.0003 × seed=0
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P3bSaddleN20 does not. Use a classification problem (e.g. p6_classification) for GNB.
+[521/1029] p3b_saddle_n20 × racaso_gnb × lr=0.0003 × seed=1
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P3bSaddleN20 does not. Use a classification problem (e.g. p6_classification) for GNB.
+[522/1029] p3b_saddle_n20 × racaso_gnb × lr=0.0003 × seed=2
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P3bSaddleN20 does not. Use a classification problem (e.g. p6_classification) for GNB.
+[523/1029] p3b_saddle_n20 × racaso_gnb × lr=0.001 × seed=0
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P3bSaddleN20 does not. Use a classification problem (e.g. p6_classification) for GNB.
+[524/1029] p3b_saddle_n20 × racaso_gnb × lr=0.001 × seed=1
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P3bSaddleN20 does not. Use a classification problem (e.g. p6_classification) for GNB.
+[525/1029] p3b_saddle_n20 × racaso_gnb × lr=0.001 × seed=2
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P3bSaddleN20 does not. Use a classification problem (e.g. p6_classification) for GNB.
+[526/1029] p3b_saddle_n20 × liger × lr=1e-05 × seed=0
+[527/1029] p3b_saddle_n20 × liger × lr=1e-05 × seed=1
+[528/1029] p3b_saddle_n20 × liger × lr=1e-05 × seed=2
+[529/1029] p3b_saddle_n20 × liger × lr=3e-05 × seed=0
+[530/1029] p3b_saddle_n20 × liger × lr=3e-05 × seed=1
+[531/1029] p3b_saddle_n20 × liger × lr=3e-05 × seed=2
+[532/1029] p3b_saddle_n20 × liger × lr=0.0001 × seed=0
+[533/1029] p3b_saddle_n20 × liger × lr=0.0001 × seed=1
+[534/1029] p3b_saddle_n20 × liger × lr=0.0001 × seed=2
+[535/1029] p3b_saddle_n20 × liger × lr=0.0003 × seed=0
+[536/1029] p3b_saddle_n20 × liger × lr=0.0003 × seed=1
+[537/1029] p3b_saddle_n20 × liger × lr=0.0003 × seed=2
+[538/1029] p3b_saddle_n20 × muogi × lr=3e-05 × seed=0
+[539/1029] p3b_saddle_n20 × muogi × lr=3e-05 × seed=1
+[540/1029] p3b_saddle_n20 × muogi × lr=3e-05 × seed=2
+[541/1029] p3b_saddle_n20 × muogi × lr=0.0001 × seed=0
+[542/1029] p3b_saddle_n20 × muogi × lr=0.0001 × seed=1
+[543/1029] p3b_saddle_n20 × muogi × lr=0.0001 × seed=2
+[544/1029] p3b_saddle_n20 × muogi × lr=0.0003 × seed=0
+[545/1029] p3b_saddle_n20 × muogi × lr=0.0003 × seed=1
+[546/1029] p3b_saddle_n20 × muogi × lr=0.0003 × seed=2
+[547/1029] p3b_saddle_n20 × muogi × lr=0.001 × seed=0
+[548/1029] p3b_saddle_n20 × muogi × lr=0.001 × seed=1
+[549/1029] p3b_saddle_n20 × muogi × lr=0.001 × seed=2
+[550/1029] p3b_saddle_n20 × ramuogi × lr=3e-05 × seed=0
+[551/1029] p3b_saddle_n20 × ramuogi × lr=3e-05 × seed=1
+[552/1029] p3b_saddle_n20 × ramuogi × lr=3e-05 × seed=2
+[553/1029] p3b_saddle_n20 × ramuogi × lr=0.0001 × seed=0
+[554/1029] p3b_saddle_n20 × ramuogi × lr=0.0001 × seed=1
+[555/1029] p3b_saddle_n20 × ramuogi × lr=0.0001 × seed=2
+[556/1029] p3b_saddle_n20 × ramuogi × lr=0.0003 × seed=0
+[557/1029] p3b_saddle_n20 × ramuogi × lr=0.0003 × seed=1
+[558/1029] p3b_saddle_n20 × ramuogi × lr=0.0003 × seed=2
+[559/1029] p3b_saddle_n20 × ramuogi × lr=0.001 × seed=0
+[560/1029] p3b_saddle_n20 × ramuogi × lr=0.001 × seed=1
+[561/1029] p3b_saddle_n20 × ramuogi × lr=0.001 × seed=2
+[562/1029] p3b_saddle_n20 × muon × lr=0.0001 × seed=0
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[563/1029] p3b_saddle_n20 × muon × lr=0.0001 × seed=1
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[564/1029] p3b_saddle_n20 × muon × lr=0.0001 × seed=2
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[565/1029] p3b_saddle_n20 × muon × lr=0.0003 × seed=0
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[566/1029] p3b_saddle_n20 × muon × lr=0.0003 × seed=1
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[567/1029] p3b_saddle_n20 × muon × lr=0.0003 × seed=2
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[568/1029] p3b_saddle_n20 × muon × lr=0.001 × seed=0
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[569/1029] p3b_saddle_n20 × muon × lr=0.001 × seed=1
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[570/1029] p3b_saddle_n20 × muon × lr=0.001 × seed=2
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[571/1029] p3b_saddle_n20 × sophia × lr=0.0001 × seed=0
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[572/1029] p3b_saddle_n20 × sophia × lr=0.0001 × seed=1
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[573/1029] p3b_saddle_n20 × sophia × lr=0.0001 × seed=2
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[574/1029] p3b_saddle_n20 × sophia × lr=0.0003 × seed=0
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[575/1029] p3b_saddle_n20 × sophia × lr=0.0003 × seed=1
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[576/1029] p3b_saddle_n20 × sophia × lr=0.0003 × seed=2
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[577/1029] p3b_saddle_n20 × sophia × lr=0.001 × seed=0
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[578/1029] p3b_saddle_n20 × sophia × lr=0.001 × seed=1
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[579/1029] p3b_saddle_n20 × sophia × lr=0.001 × seed=2
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[580/1029] p3b_saddle_n20 × soap × lr=0.0001 × seed=0
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[581/1029] p3b_saddle_n20 × soap × lr=0.0001 × seed=1
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[582/1029] p3b_saddle_n20 × soap × lr=0.0001 × seed=2
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[583/1029] p3b_saddle_n20 × soap × lr=0.0003 × seed=0
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[584/1029] p3b_saddle_n20 × soap × lr=0.0003 × seed=1
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[585/1029] p3b_saddle_n20 × soap × lr=0.0003 × seed=2
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[586/1029] p3b_saddle_n20 × soap × lr=0.001 × seed=0
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[587/1029] p3b_saddle_n20 × soap × lr=0.001 × seed=1
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[588/1029] p3b_saddle_n20 × soap × lr=0.001 × seed=2
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[589/1029] p4_row_spread × adam × lr=0.0001 × seed=0
+[590/1029] p4_row_spread × adam × lr=0.0001 × seed=1
+[591/1029] p4_row_spread × adam × lr=0.0001 × seed=2
+[592/1029] p4_row_spread × adam × lr=0.0003 × seed=0
+[593/1029] p4_row_spread × adam × lr=0.0003 × seed=1
+[594/1029] p4_row_spread × adam × lr=0.0003 × seed=2
+[595/1029] p4_row_spread × adam × lr=0.001 × seed=0
+[596/1029] p4_row_spread × adam × lr=0.001 × seed=1
+[597/1029] p4_row_spread × adam × lr=0.001 × seed=2
+[598/1029] p4_row_spread × adam × lr=0.003 × seed=0
+[599/1029] p4_row_spread × adam × lr=0.003 × seed=1
+[600/1029] p4_row_spread × adam × lr=0.003 × seed=2
+[601/1029] p4_row_spread × adamw × lr=0.0001 × seed=0
+[602/1029] p4_row_spread × adamw × lr=0.0001 × seed=1
+[603/1029] p4_row_spread × adamw × lr=0.0001 × seed=2
+[604/1029] p4_row_spread × adamw × lr=0.0003 × seed=0
+[605/1029] p4_row_spread × adamw × lr=0.0003 × seed=1
+[606/1029] p4_row_spread × adamw × lr=0.0003 × seed=2
+[607/1029] p4_row_spread × adamw × lr=0.001 × seed=0
+[608/1029] p4_row_spread × adamw × lr=0.001 × seed=1
+[609/1029] p4_row_spread × adamw × lr=0.001 × seed=2
+[610/1029] p4_row_spread × adamw × lr=0.003 × seed=0
+[611/1029] p4_row_spread × adamw × lr=0.003 × seed=1
+[612/1029] p4_row_spread × adamw × lr=0.003 × seed=2
+[613/1029] p4_row_spread × yogi × lr=0.0001 × seed=0
+[614/1029] p4_row_spread × yogi × lr=0.0001 × seed=1
+[615/1029] p4_row_spread × yogi × lr=0.0001 × seed=2
+[616/1029] p4_row_spread × yogi × lr=0.0003 × seed=0
+[617/1029] p4_row_spread × yogi × lr=0.0003 × seed=1
+[618/1029] p4_row_spread × yogi × lr=0.0003 × seed=2
+[619/1029] p4_row_spread × yogi × lr=0.001 × seed=0
+[620/1029] p4_row_spread × yogi × lr=0.001 × seed=1
+[621/1029] p4_row_spread × yogi × lr=0.001 × seed=2
+[622/1029] p4_row_spread × yogi × lr=0.003 × seed=0
+[623/1029] p4_row_spread × yogi × lr=0.003 × seed=1
+[624/1029] p4_row_spread × yogi × lr=0.003 × seed=2
+[625/1029] p4_row_spread × lion × lr=1e-05 × seed=0
+[626/1029] p4_row_spread × lion × lr=1e-05 × seed=1
+[627/1029] p4_row_spread × lion × lr=1e-05 × seed=2
+[628/1029] p4_row_spread × lion × lr=3e-05 × seed=0
+[629/1029] p4_row_spread × lion × lr=3e-05 × seed=1
+[630/1029] p4_row_spread × lion × lr=3e-05 × seed=2
+[631/1029] p4_row_spread × lion × lr=0.0001 × seed=0
+[632/1029] p4_row_spread × lion × lr=0.0001 × seed=1
+[633/1029] p4_row_spread × lion × lr=0.0001 × seed=2
+[634/1029] p4_row_spread × lion × lr=0.0003 × seed=0
+[635/1029] p4_row_spread × lion × lr=0.0003 × seed=1
+[636/1029] p4_row_spread × lion × lr=0.0003 × seed=2
+[637/1029] p4_row_spread × naive_yogi_muon × lr=0.0001 × seed=0
+[638/1029] p4_row_spread × naive_yogi_muon × lr=0.0001 × seed=1
+[639/1029] p4_row_spread × naive_yogi_muon × lr=0.0001 × seed=2
+[640/1029] p4_row_spread × naive_yogi_muon × lr=0.0003 × seed=0
+[641/1029] p4_row_spread × naive_yogi_muon × lr=0.0003 × seed=1
+[642/1029] p4_row_spread × naive_yogi_muon × lr=0.0003 × seed=2
+[643/1029] p4_row_spread × naive_yogi_muon × lr=0.001 × seed=0
+[644/1029] p4_row_spread × naive_yogi_muon × lr=0.001 × seed=1
+[645/1029] p4_row_spread × naive_yogi_muon × lr=0.001 × seed=2
+[646/1029] p4_row_spread × naive_yogi_muon × lr=0.003 × seed=0
+[647/1029] p4_row_spread × naive_yogi_muon × lr=0.003 × seed=1
+[648/1029] p4_row_spread × naive_yogi_muon × lr=0.003 × seed=2
+[649/1029] p4_row_spread × racaso_hutchinson × lr=3e-05 × seed=0
+[650/1029] p4_row_spread × racaso_hutchinson × lr=3e-05 × seed=1
+[651/1029] p4_row_spread × racaso_hutchinson × lr=3e-05 × seed=2
+[652/1029] p4_row_spread × racaso_hutchinson × lr=0.0001 × seed=0
+[653/1029] p4_row_spread × racaso_hutchinson × lr=0.0001 × seed=1
+[654/1029] p4_row_spread × racaso_hutchinson × lr=0.0001 × seed=2
+[655/1029] p4_row_spread × racaso_hutchinson × lr=0.0003 × seed=0
+[656/1029] p4_row_spread × racaso_hutchinson × lr=0.0003 × seed=1
+[657/1029] p4_row_spread × racaso_hutchinson × lr=0.0003 × seed=2
+[658/1029] p4_row_spread × racaso_hutchinson × lr=0.001 × seed=0
+[659/1029] p4_row_spread × racaso_hutchinson × lr=0.001 × seed=1
+[660/1029] p4_row_spread × racaso_hutchinson × lr=0.001 × seed=2
+[661/1029] p4_row_spread × racaso_gnb × lr=3e-05 × seed=0
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P4RowSpread does not. Use a classification problem (e.g. p6_classification) for GNB.
+[662/1029] p4_row_spread × racaso_gnb × lr=3e-05 × seed=1
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P4RowSpread does not. Use a classification problem (e.g. p6_classification) for GNB.
+[663/1029] p4_row_spread × racaso_gnb × lr=3e-05 × seed=2
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P4RowSpread does not. Use a classification problem (e.g. p6_classification) for GNB.
+[664/1029] p4_row_spread × racaso_gnb × lr=0.0001 × seed=0
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P4RowSpread does not. Use a classification problem (e.g. p6_classification) for GNB.
+[665/1029] p4_row_spread × racaso_gnb × lr=0.0001 × seed=1
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P4RowSpread does not. Use a classification problem (e.g. p6_classification) for GNB.
+[666/1029] p4_row_spread × racaso_gnb × lr=0.0001 × seed=2
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P4RowSpread does not. Use a classification problem (e.g. p6_classification) for GNB.
+[667/1029] p4_row_spread × racaso_gnb × lr=0.0003 × seed=0
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P4RowSpread does not. Use a classification problem (e.g. p6_classification) for GNB.
+[668/1029] p4_row_spread × racaso_gnb × lr=0.0003 × seed=1
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P4RowSpread does not. Use a classification problem (e.g. p6_classification) for GNB.
+[669/1029] p4_row_spread × racaso_gnb × lr=0.0003 × seed=2
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P4RowSpread does not. Use a classification problem (e.g. p6_classification) for GNB.
+[670/1029] p4_row_spread × racaso_gnb × lr=0.001 × seed=0
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P4RowSpread does not. Use a classification problem (e.g. p6_classification) for GNB.
+[671/1029] p4_row_spread × racaso_gnb × lr=0.001 × seed=1
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P4RowSpread does not. Use a classification problem (e.g. p6_classification) for GNB.
+[672/1029] p4_row_spread × racaso_gnb × lr=0.001 × seed=2
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P4RowSpread does not. Use a classification problem (e.g. p6_classification) for GNB.
+[673/1029] p4_row_spread × liger × lr=1e-05 × seed=0
+[674/1029] p4_row_spread × liger × lr=1e-05 × seed=1
+[675/1029] p4_row_spread × liger × lr=1e-05 × seed=2
+[676/1029] p4_row_spread × liger × lr=3e-05 × seed=0
+[677/1029] p4_row_spread × liger × lr=3e-05 × seed=1
+[678/1029] p4_row_spread × liger × lr=3e-05 × seed=2
+[679/1029] p4_row_spread × liger × lr=0.0001 × seed=0
+[680/1029] p4_row_spread × liger × lr=0.0001 × seed=1
+[681/1029] p4_row_spread × liger × lr=0.0001 × seed=2
+[682/1029] p4_row_spread × liger × lr=0.0003 × seed=0
+[683/1029] p4_row_spread × liger × lr=0.0003 × seed=1
+[684/1029] p4_row_spread × liger × lr=0.0003 × seed=2
+[685/1029] p4_row_spread × muogi × lr=3e-05 × seed=0
+[686/1029] p4_row_spread × muogi × lr=3e-05 × seed=1
+[687/1029] p4_row_spread × muogi × lr=3e-05 × seed=2
+[688/1029] p4_row_spread × muogi × lr=0.0001 × seed=0
+[689/1029] p4_row_spread × muogi × lr=0.0001 × seed=1
+[690/1029] p4_row_spread × muogi × lr=0.0001 × seed=2
+[691/1029] p4_row_spread × muogi × lr=0.0003 × seed=0
+[692/1029] p4_row_spread × muogi × lr=0.0003 × seed=1
+[693/1029] p4_row_spread × muogi × lr=0.0003 × seed=2
+[694/1029] p4_row_spread × muogi × lr=0.001 × seed=0
+[695/1029] p4_row_spread × muogi × lr=0.001 × seed=1
+[696/1029] p4_row_spread × muogi × lr=0.001 × seed=2
+[697/1029] p4_row_spread × ramuogi × lr=3e-05 × seed=0
+[698/1029] p4_row_spread × ramuogi × lr=3e-05 × seed=1
+[699/1029] p4_row_spread × ramuogi × lr=3e-05 × seed=2
+[700/1029] p4_row_spread × ramuogi × lr=0.0001 × seed=0
+[701/1029] p4_row_spread × ramuogi × lr=0.0001 × seed=1
+[702/1029] p4_row_spread × ramuogi × lr=0.0001 × seed=2
+[703/1029] p4_row_spread × ramuogi × lr=0.0003 × seed=0
+[704/1029] p4_row_spread × ramuogi × lr=0.0003 × seed=1
+[705/1029] p4_row_spread × ramuogi × lr=0.0003 × seed=2
+[706/1029] p4_row_spread × ramuogi × lr=0.001 × seed=0
+[707/1029] p4_row_spread × ramuogi × lr=0.001 × seed=1
+[708/1029] p4_row_spread × ramuogi × lr=0.001 × seed=2
+[709/1029] p4_row_spread × muon × lr=0.0001 × seed=0
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[710/1029] p4_row_spread × muon × lr=0.0001 × seed=1
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[711/1029] p4_row_spread × muon × lr=0.0001 × seed=2
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[712/1029] p4_row_spread × muon × lr=0.0003 × seed=0
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[713/1029] p4_row_spread × muon × lr=0.0003 × seed=1
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[714/1029] p4_row_spread × muon × lr=0.0003 × seed=2
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[715/1029] p4_row_spread × muon × lr=0.001 × seed=0
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[716/1029] p4_row_spread × muon × lr=0.001 × seed=1
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[717/1029] p4_row_spread × muon × lr=0.001 × seed=2
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[718/1029] p4_row_spread × sophia × lr=0.0001 × seed=0
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[719/1029] p4_row_spread × sophia × lr=0.0001 × seed=1
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[720/1029] p4_row_spread × sophia × lr=0.0001 × seed=2
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[721/1029] p4_row_spread × sophia × lr=0.0003 × seed=0
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[722/1029] p4_row_spread × sophia × lr=0.0003 × seed=1
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[723/1029] p4_row_spread × sophia × lr=0.0003 × seed=2
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[724/1029] p4_row_spread × sophia × lr=0.001 × seed=0
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[725/1029] p4_row_spread × sophia × lr=0.001 × seed=1
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[726/1029] p4_row_spread × sophia × lr=0.001 × seed=2
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[727/1029] p4_row_spread × soap × lr=0.0001 × seed=0
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[728/1029] p4_row_spread × soap × lr=0.0001 × seed=1
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[729/1029] p4_row_spread × soap × lr=0.0001 × seed=2
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[730/1029] p4_row_spread × soap × lr=0.0003 × seed=0
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[731/1029] p4_row_spread × soap × lr=0.0003 × seed=1
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[732/1029] p4_row_spread × soap × lr=0.0003 × seed=2
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[733/1029] p4_row_spread × soap × lr=0.001 × seed=0
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[734/1029] p4_row_spread × soap × lr=0.001 × seed=1
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[735/1029] p4_row_spread × soap × lr=0.001 × seed=2
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[736/1029] p5_div_backward × adam × lr=0.0001 × seed=0
+[737/1029] p5_div_backward × adam × lr=0.0001 × seed=1
+[738/1029] p5_div_backward × adam × lr=0.0001 × seed=2
+[739/1029] p5_div_backward × adam × lr=0.0003 × seed=0
+[740/1029] p5_div_backward × adam × lr=0.0003 × seed=1
+[741/1029] p5_div_backward × adam × lr=0.0003 × seed=2
+[742/1029] p5_div_backward × adam × lr=0.001 × seed=0
+[743/1029] p5_div_backward × adam × lr=0.001 × seed=1
+[744/1029] p5_div_backward × adam × lr=0.001 × seed=2
+[745/1029] p5_div_backward × adam × lr=0.003 × seed=0
+[746/1029] p5_div_backward × adam × lr=0.003 × seed=1
+[747/1029] p5_div_backward × adam × lr=0.003 × seed=2
+[748/1029] p5_div_backward × adamw × lr=0.0001 × seed=0
+[749/1029] p5_div_backward × adamw × lr=0.0001 × seed=1
+[750/1029] p5_div_backward × adamw × lr=0.0001 × seed=2
+[751/1029] p5_div_backward × adamw × lr=0.0003 × seed=0
+[752/1029] p5_div_backward × adamw × lr=0.0003 × seed=1
+[753/1029] p5_div_backward × adamw × lr=0.0003 × seed=2
+[754/1029] p5_div_backward × adamw × lr=0.001 × seed=0
+[755/1029] p5_div_backward × adamw × lr=0.001 × seed=1
+[756/1029] p5_div_backward × adamw × lr=0.001 × seed=2
+[757/1029] p5_div_backward × adamw × lr=0.003 × seed=0
+[758/1029] p5_div_backward × adamw × lr=0.003 × seed=1
+[759/1029] p5_div_backward × adamw × lr=0.003 × seed=2
+[760/1029] p5_div_backward × yogi × lr=0.0001 × seed=0
+[761/1029] p5_div_backward × yogi × lr=0.0001 × seed=1
+[762/1029] p5_div_backward × yogi × lr=0.0001 × seed=2
+[763/1029] p5_div_backward × yogi × lr=0.0003 × seed=0
+[764/1029] p5_div_backward × yogi × lr=0.0003 × seed=1
+[765/1029] p5_div_backward × yogi × lr=0.0003 × seed=2
+[766/1029] p5_div_backward × yogi × lr=0.001 × seed=0
+[767/1029] p5_div_backward × yogi × lr=0.001 × seed=1
+[768/1029] p5_div_backward × yogi × lr=0.001 × seed=2
+[769/1029] p5_div_backward × yogi × lr=0.003 × seed=0
+[770/1029] p5_div_backward × yogi × lr=0.003 × seed=1
+[771/1029] p5_div_backward × yogi × lr=0.003 × seed=2
+[772/1029] p5_div_backward × lion × lr=1e-05 × seed=0
+[773/1029] p5_div_backward × lion × lr=1e-05 × seed=1
+[774/1029] p5_div_backward × lion × lr=1e-05 × seed=2
+[775/1029] p5_div_backward × lion × lr=3e-05 × seed=0
+[776/1029] p5_div_backward × lion × lr=3e-05 × seed=1
+[777/1029] p5_div_backward × lion × lr=3e-05 × seed=2
+[778/1029] p5_div_backward × lion × lr=0.0001 × seed=0
+[779/1029] p5_div_backward × lion × lr=0.0001 × seed=1
+[780/1029] p5_div_backward × lion × lr=0.0001 × seed=2
+[781/1029] p5_div_backward × lion × lr=0.0003 × seed=0
+[782/1029] p5_div_backward × lion × lr=0.0003 × seed=1
+[783/1029] p5_div_backward × lion × lr=0.0003 × seed=2
+[784/1029] p5_div_backward × naive_yogi_muon × lr=0.0001 × seed=0
+[785/1029] p5_div_backward × naive_yogi_muon × lr=0.0001 × seed=1
+[786/1029] p5_div_backward × naive_yogi_muon × lr=0.0001 × seed=2
+[787/1029] p5_div_backward × naive_yogi_muon × lr=0.0003 × seed=0
+[788/1029] p5_div_backward × naive_yogi_muon × lr=0.0003 × seed=1
+[789/1029] p5_div_backward × naive_yogi_muon × lr=0.0003 × seed=2
+[790/1029] p5_div_backward × naive_yogi_muon × lr=0.001 × seed=0
+[791/1029] p5_div_backward × naive_yogi_muon × lr=0.001 × seed=1
+[792/1029] p5_div_backward × naive_yogi_muon × lr=0.001 × seed=2
+[793/1029] p5_div_backward × naive_yogi_muon × lr=0.003 × seed=0
+[794/1029] p5_div_backward × naive_yogi_muon × lr=0.003 × seed=1
+[795/1029] p5_div_backward × naive_yogi_muon × lr=0.003 × seed=2
+[796/1029] p5_div_backward × racaso_hutchinson × lr=3e-05 × seed=0
+[797/1029] p5_div_backward × racaso_hutchinson × lr=3e-05 × seed=1
+[798/1029] p5_div_backward × racaso_hutchinson × lr=3e-05 × seed=2
+[799/1029] p5_div_backward × racaso_hutchinson × lr=0.0001 × seed=0
+[800/1029] p5_div_backward × racaso_hutchinson × lr=0.0001 × seed=1
+[801/1029] p5_div_backward × racaso_hutchinson × lr=0.0001 × seed=2
+[802/1029] p5_div_backward × racaso_hutchinson × lr=0.0003 × seed=0
+[803/1029] p5_div_backward × racaso_hutchinson × lr=0.0003 × seed=1
+[804/1029] p5_div_backward × racaso_hutchinson × lr=0.0003 × seed=2
+[805/1029] p5_div_backward × racaso_hutchinson × lr=0.001 × seed=0
+[806/1029] p5_div_backward × racaso_hutchinson × lr=0.001 × seed=1
+[807/1029] p5_div_backward × racaso_hutchinson × lr=0.001 × seed=2
+[808/1029] p5_div_backward × racaso_gnb × lr=3e-05 × seed=0
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P5DivBackward does not. Use a classification problem (e.g. p6_classification) for GNB.
+[809/1029] p5_div_backward × racaso_gnb × lr=3e-05 × seed=1
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P5DivBackward does not. Use a classification problem (e.g. p6_classification) for GNB.
+[810/1029] p5_div_backward × racaso_gnb × lr=3e-05 × seed=2
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P5DivBackward does not. Use a classification problem (e.g. p6_classification) for GNB.
+[811/1029] p5_div_backward × racaso_gnb × lr=0.0001 × seed=0
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P5DivBackward does not. Use a classification problem (e.g. p6_classification) for GNB.
+[812/1029] p5_div_backward × racaso_gnb × lr=0.0001 × seed=1
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P5DivBackward does not. Use a classification problem (e.g. p6_classification) for GNB.
+[813/1029] p5_div_backward × racaso_gnb × lr=0.0001 × seed=2
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P5DivBackward does not. Use a classification problem (e.g. p6_classification) for GNB.
+[814/1029] p5_div_backward × racaso_gnb × lr=0.0003 × seed=0
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P5DivBackward does not. Use a classification problem (e.g. p6_classification) for GNB.
+[815/1029] p5_div_backward × racaso_gnb × lr=0.0003 × seed=1
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P5DivBackward does not. Use a classification problem (e.g. p6_classification) for GNB.
+[816/1029] p5_div_backward × racaso_gnb × lr=0.0003 × seed=2
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P5DivBackward does not. Use a classification problem (e.g. p6_classification) for GNB.
+[817/1029] p5_div_backward × racaso_gnb × lr=0.001 × seed=0
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P5DivBackward does not. Use a classification problem (e.g. p6_classification) for GNB.
+[818/1029] p5_div_backward × racaso_gnb × lr=0.001 × seed=1
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P5DivBackward does not. Use a classification problem (e.g. p6_classification) for GNB.
+[819/1029] p5_div_backward × racaso_gnb × lr=0.001 × seed=2
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P5DivBackward does not. Use a classification problem (e.g. p6_classification) for GNB.
+[820/1029] p5_div_backward × liger × lr=1e-05 × seed=0
+[821/1029] p5_div_backward × liger × lr=1e-05 × seed=1
+[822/1029] p5_div_backward × liger × lr=1e-05 × seed=2
+[823/1029] p5_div_backward × liger × lr=3e-05 × seed=0
+[824/1029] p5_div_backward × liger × lr=3e-05 × seed=1
+[825/1029] p5_div_backward × liger × lr=3e-05 × seed=2
+[826/1029] p5_div_backward × liger × lr=0.0001 × seed=0
+[827/1029] p5_div_backward × liger × lr=0.0001 × seed=1
+[828/1029] p5_div_backward × liger × lr=0.0001 × seed=2
+[829/1029] p5_div_backward × liger × lr=0.0003 × seed=0
+[830/1029] p5_div_backward × liger × lr=0.0003 × seed=1
+[831/1029] p5_div_backward × liger × lr=0.0003 × seed=2
+[832/1029] p5_div_backward × muogi × lr=3e-05 × seed=0
+[833/1029] p5_div_backward × muogi × lr=3e-05 × seed=1
+[834/1029] p5_div_backward × muogi × lr=3e-05 × seed=2
+[835/1029] p5_div_backward × muogi × lr=0.0001 × seed=0
+[836/1029] p5_div_backward × muogi × lr=0.0001 × seed=1
+[837/1029] p5_div_backward × muogi × lr=0.0001 × seed=2
+[838/1029] p5_div_backward × muogi × lr=0.0003 × seed=0
+[839/1029] p5_div_backward × muogi × lr=0.0003 × seed=1
+[840/1029] p5_div_backward × muogi × lr=0.0003 × seed=2
+[841/1029] p5_div_backward × muogi × lr=0.001 × seed=0
+[842/1029] p5_div_backward × muogi × lr=0.001 × seed=1
+[843/1029] p5_div_backward × muogi × lr=0.001 × seed=2
+[844/1029] p5_div_backward × ramuogi × lr=3e-05 × seed=0
+[845/1029] p5_div_backward × ramuogi × lr=3e-05 × seed=1
+[846/1029] p5_div_backward × ramuogi × lr=3e-05 × seed=2
+[847/1029] p5_div_backward × ramuogi × lr=0.0001 × seed=0
+[848/1029] p5_div_backward × ramuogi × lr=0.0001 × seed=1
+[849/1029] p5_div_backward × ramuogi × lr=0.0001 × seed=2
+[850/1029] p5_div_backward × ramuogi × lr=0.0003 × seed=0
+[851/1029] p5_div_backward × ramuogi × lr=0.0003 × seed=1
+[852/1029] p5_div_backward × ramuogi × lr=0.0003 × seed=2
+[853/1029] p5_div_backward × ramuogi × lr=0.001 × seed=0
+[854/1029] p5_div_backward × ramuogi × lr=0.001 × seed=1
+[855/1029] p5_div_backward × ramuogi × lr=0.001 × seed=2
+[856/1029] p5_div_backward × muon × lr=0.0001 × seed=0
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[857/1029] p5_div_backward × muon × lr=0.0001 × seed=1
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[858/1029] p5_div_backward × muon × lr=0.0001 × seed=2
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[859/1029] p5_div_backward × muon × lr=0.0003 × seed=0
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[860/1029] p5_div_backward × muon × lr=0.0003 × seed=1
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[861/1029] p5_div_backward × muon × lr=0.0003 × seed=2
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[862/1029] p5_div_backward × muon × lr=0.001 × seed=0
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[863/1029] p5_div_backward × muon × lr=0.001 × seed=1
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[864/1029] p5_div_backward × muon × lr=0.001 × seed=2
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[865/1029] p5_div_backward × sophia × lr=0.0001 × seed=0
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[866/1029] p5_div_backward × sophia × lr=0.0001 × seed=1
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[867/1029] p5_div_backward × sophia × lr=0.0001 × seed=2
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[868/1029] p5_div_backward × sophia × lr=0.0003 × seed=0
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[869/1029] p5_div_backward × sophia × lr=0.0003 × seed=1
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[870/1029] p5_div_backward × sophia × lr=0.0003 × seed=2
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[871/1029] p5_div_backward × sophia × lr=0.001 × seed=0
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[872/1029] p5_div_backward × sophia × lr=0.001 × seed=1
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[873/1029] p5_div_backward × sophia × lr=0.001 × seed=2
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[874/1029] p5_div_backward × soap × lr=0.0001 × seed=0
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[875/1029] p5_div_backward × soap × lr=0.0001 × seed=1
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[876/1029] p5_div_backward × soap × lr=0.0001 × seed=2
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[877/1029] p5_div_backward × soap × lr=0.0003 × seed=0
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[878/1029] p5_div_backward × soap × lr=0.0003 × seed=1
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[879/1029] p5_div_backward × soap × lr=0.0003 × seed=2
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[880/1029] p5_div_backward × soap × lr=0.001 × seed=0
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[881/1029] p5_div_backward × soap × lr=0.001 × seed=1
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[882/1029] p5_div_backward × soap × lr=0.001 × seed=2
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[883/1029] p6_classification × adam × lr=0.0001 × seed=0
+[884/1029] p6_classification × adam × lr=0.0001 × seed=1
+[885/1029] p6_classification × adam × lr=0.0001 × seed=2
+[886/1029] p6_classification × adam × lr=0.0003 × seed=0
+[887/1029] p6_classification × adam × lr=0.0003 × seed=1
+[888/1029] p6_classification × adam × lr=0.0003 × seed=2
+[889/1029] p6_classification × adam × lr=0.001 × seed=0
+[890/1029] p6_classification × adam × lr=0.001 × seed=1
+[891/1029] p6_classification × adam × lr=0.001 × seed=2
+[892/1029] p6_classification × adam × lr=0.003 × seed=0
+[893/1029] p6_classification × adam × lr=0.003 × seed=1
+[894/1029] p6_classification × adam × lr=0.003 × seed=2
+[895/1029] p6_classification × adamw × lr=0.0001 × seed=0
+[896/1029] p6_classification × adamw × lr=0.0001 × seed=1
+[897/1029] p6_classification × adamw × lr=0.0001 × seed=2
+[898/1029] p6_classification × adamw × lr=0.0003 × seed=0
+[899/1029] p6_classification × adamw × lr=0.0003 × seed=1
+[900/1029] p6_classification × adamw × lr=0.0003 × seed=2
+[901/1029] p6_classification × adamw × lr=0.001 × seed=0
+[902/1029] p6_classification × adamw × lr=0.001 × seed=1
+[903/1029] p6_classification × adamw × lr=0.001 × seed=2
+[904/1029] p6_classification × adamw × lr=0.003 × seed=0
+[905/1029] p6_classification × adamw × lr=0.003 × seed=1
+[906/1029] p6_classification × adamw × lr=0.003 × seed=2
+[907/1029] p6_classification × yogi × lr=0.0001 × seed=0
+[908/1029] p6_classification × yogi × lr=0.0001 × seed=1
+[909/1029] p6_classification × yogi × lr=0.0001 × seed=2
+[910/1029] p6_classification × yogi × lr=0.0003 × seed=0
+[911/1029] p6_classification × yogi × lr=0.0003 × seed=1
+[912/1029] p6_classification × yogi × lr=0.0003 × seed=2
+[913/1029] p6_classification × yogi × lr=0.001 × seed=0
+[914/1029] p6_classification × yogi × lr=0.001 × seed=1
+[915/1029] p6_classification × yogi × lr=0.001 × seed=2
+[916/1029] p6_classification × yogi × lr=0.003 × seed=0
+[917/1029] p6_classification × yogi × lr=0.003 × seed=1
+[918/1029] p6_classification × yogi × lr=0.003 × seed=2
+[919/1029] p6_classification × lion × lr=1e-05 × seed=0
+[920/1029] p6_classification × lion × lr=1e-05 × seed=1
+[921/1029] p6_classification × lion × lr=1e-05 × seed=2
+[922/1029] p6_classification × lion × lr=3e-05 × seed=0
+[923/1029] p6_classification × lion × lr=3e-05 × seed=1
+[924/1029] p6_classification × lion × lr=3e-05 × seed=2
+[925/1029] p6_classification × lion × lr=0.0001 × seed=0
+[926/1029] p6_classification × lion × lr=0.0001 × seed=1
+[927/1029] p6_classification × lion × lr=0.0001 × seed=2
+[928/1029] p6_classification × lion × lr=0.0003 × seed=0
+[929/1029] p6_classification × lion × lr=0.0003 × seed=1
+[930/1029] p6_classification × lion × lr=0.0003 × seed=2
+[931/1029] p6_classification × naive_yogi_muon × lr=0.0001 × seed=0
+[932/1029] p6_classification × naive_yogi_muon × lr=0.0001 × seed=1
+[933/1029] p6_classification × naive_yogi_muon × lr=0.0001 × seed=2
+[934/1029] p6_classification × naive_yogi_muon × lr=0.0003 × seed=0
+[935/1029] p6_classification × naive_yogi_muon × lr=0.0003 × seed=1
+[936/1029] p6_classification × naive_yogi_muon × lr=0.0003 × seed=2
+[937/1029] p6_classification × naive_yogi_muon × lr=0.001 × seed=0
+[938/1029] p6_classification × naive_yogi_muon × lr=0.001 × seed=1
+[939/1029] p6_classification × naive_yogi_muon × lr=0.001 × seed=2
+[940/1029] p6_classification × naive_yogi_muon × lr=0.003 × seed=0
+[941/1029] p6_classification × naive_yogi_muon × lr=0.003 × seed=1
+[942/1029] p6_classification × naive_yogi_muon × lr=0.003 × seed=2
+[943/1029] p6_classification × racaso_hutchinson × lr=3e-05 × seed=0
+[944/1029] p6_classification × racaso_hutchinson × lr=3e-05 × seed=1
+[945/1029] p6_classification × racaso_hutchinson × lr=3e-05 × seed=2
+[946/1029] p6_classification × racaso_hutchinson × lr=0.0001 × seed=0
+[947/1029] p6_classification × racaso_hutchinson × lr=0.0001 × seed=1
+[948/1029] p6_classification × racaso_hutchinson × lr=0.0001 × seed=2
+[949/1029] p6_classification × racaso_hutchinson × lr=0.0003 × seed=0
+[950/1029] p6_classification × racaso_hutchinson × lr=0.0003 × seed=1
+[951/1029] p6_classification × racaso_hutchinson × lr=0.0003 × seed=2
+[952/1029] p6_classification × racaso_hutchinson × lr=0.001 × seed=0
+[953/1029] p6_classification × racaso_hutchinson × lr=0.001 × seed=1
+[954/1029] p6_classification × racaso_hutchinson × lr=0.001 × seed=2
+[955/1029] p6_classification × racaso_gnb × lr=3e-05 × seed=0
+[956/1029] p6_classification × racaso_gnb × lr=3e-05 × seed=1
+[957/1029] p6_classification × racaso_gnb × lr=3e-05 × seed=2
+[958/1029] p6_classification × racaso_gnb × lr=0.0001 × seed=0
+[959/1029] p6_classification × racaso_gnb × lr=0.0001 × seed=1
+[960/1029] p6_classification × racaso_gnb × lr=0.0001 × seed=2
+[961/1029] p6_classification × racaso_gnb × lr=0.0003 × seed=0
+[962/1029] p6_classification × racaso_gnb × lr=0.0003 × seed=1
+[963/1029] p6_classification × racaso_gnb × lr=0.0003 × seed=2
+[964/1029] p6_classification × racaso_gnb × lr=0.001 × seed=0
+[965/1029] p6_classification × racaso_gnb × lr=0.001 × seed=1
+[966/1029] p6_classification × racaso_gnb × lr=0.001 × seed=2
+[967/1029] p6_classification × liger × lr=1e-05 × seed=0
+[968/1029] p6_classification × liger × lr=1e-05 × seed=1
+[969/1029] p6_classification × liger × lr=1e-05 × seed=2
+[970/1029] p6_classification × liger × lr=3e-05 × seed=0
+[971/1029] p6_classification × liger × lr=3e-05 × seed=1
+[972/1029] p6_classification × liger × lr=3e-05 × seed=2
+[973/1029] p6_classification × liger × lr=0.0001 × seed=0
+[974/1029] p6_classification × liger × lr=0.0001 × seed=1
+[975/1029] p6_classification × liger × lr=0.0001 × seed=2
+[976/1029] p6_classification × liger × lr=0.0003 × seed=0
+[977/1029] p6_classification × liger × lr=0.0003 × seed=1
+[978/1029] p6_classification × liger × lr=0.0003 × seed=2
+[979/1029] p6_classification × muogi × lr=3e-05 × seed=0
+[980/1029] p6_classification × muogi × lr=3e-05 × seed=1
+[981/1029] p6_classification × muogi × lr=3e-05 × seed=2
+[982/1029] p6_classification × muogi × lr=0.0001 × seed=0
+[983/1029] p6_classification × muogi × lr=0.0001 × seed=1
+[984/1029] p6_classification × muogi × lr=0.0001 × seed=2
+[985/1029] p6_classification × muogi × lr=0.0003 × seed=0
+[986/1029] p6_classification × muogi × lr=0.0003 × seed=1
+[987/1029] p6_classification × muogi × lr=0.0003 × seed=2
+[988/1029] p6_classification × muogi × lr=0.001 × seed=0
+[989/1029] p6_classification × muogi × lr=0.001 × seed=1
+[990/1029] p6_classification × muogi × lr=0.001 × seed=2
+[991/1029] p6_classification × ramuogi × lr=3e-05 × seed=0
+[992/1029] p6_classification × ramuogi × lr=3e-05 × seed=1
+[993/1029] p6_classification × ramuogi × lr=3e-05 × seed=2
+[994/1029] p6_classification × ramuogi × lr=0.0001 × seed=0
+[995/1029] p6_classification × ramuogi × lr=0.0001 × seed=1
+[996/1029] p6_classification × ramuogi × lr=0.0001 × seed=2
+[997/1029] p6_classification × ramuogi × lr=0.0003 × seed=0
+[998/1029] p6_classification × ramuogi × lr=0.0003 × seed=1
+[999/1029] p6_classification × ramuogi × lr=0.0003 × seed=2
+[1000/1029] p6_classification × ramuogi × lr=0.001 × seed=0
+[1001/1029] p6_classification × ramuogi × lr=0.001 × seed=1
+[1002/1029] p6_classification × ramuogi × lr=0.001 × seed=2
+[1003/1029] p6_classification × muon × lr=0.0001 × seed=0
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[1004/1029] p6_classification × muon × lr=0.0001 × seed=1
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[1005/1029] p6_classification × muon × lr=0.0001 × seed=2
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[1006/1029] p6_classification × muon × lr=0.0003 × seed=0
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[1007/1029] p6_classification × muon × lr=0.0003 × seed=1
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[1008/1029] p6_classification × muon × lr=0.0003 × seed=2
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[1009/1029] p6_classification × muon × lr=0.001 × seed=0
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[1010/1029] p6_classification × muon × lr=0.001 × seed=1
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[1011/1029] p6_classification × muon × lr=0.001 × seed=2
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[1012/1029] p6_classification × sophia × lr=0.0001 × seed=0
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[1013/1029] p6_classification × sophia × lr=0.0001 × seed=1
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[1014/1029] p6_classification × sophia × lr=0.0001 × seed=2
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[1015/1029] p6_classification × sophia × lr=0.0003 × seed=0
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[1016/1029] p6_classification × sophia × lr=0.0003 × seed=1
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[1017/1029] p6_classification × sophia × lr=0.0003 × seed=2
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[1018/1029] p6_classification × sophia × lr=0.001 × seed=0
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[1019/1029] p6_classification × sophia × lr=0.001 × seed=1
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[1020/1029] p6_classification × sophia × lr=0.001 × seed=2
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[1021/1029] p6_classification × soap × lr=0.0001 × seed=0
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[1022/1029] p6_classification × soap × lr=0.0001 × seed=1
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[1023/1029] p6_classification × soap × lr=0.0001 × seed=2
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[1024/1029] p6_classification × soap × lr=0.0003 × seed=0
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[1025/1029] p6_classification × soap × lr=0.0003 × seed=1
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[1026/1029] p6_classification × soap × lr=0.0003 × seed=2
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[1027/1029] p6_classification × soap × lr=0.001 × seed=0
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[1028/1029] p6_classification × soap × lr=0.001 × seed=1
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[1029/1029] p6_classification × soap × lr=0.001 × seed=2
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[bench] wrote 768 rows to bench/results_p2onwards.csv

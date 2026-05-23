@@ -1,0 +1,216 @@
+[1/1176] p1_off_axis_quad × adam × lr=0.0001 × seed=0
+[2/1176] p1_off_axis_quad × adam × lr=0.0001 × seed=1
+[3/1176] p1_off_axis_quad × adam × lr=0.0001 × seed=2
+[4/1176] p1_off_axis_quad × adam × lr=0.0003 × seed=0
+[5/1176] p1_off_axis_quad × adam × lr=0.0003 × seed=1
+[6/1176] p1_off_axis_quad × adam × lr=0.0003 × seed=2
+[7/1176] p1_off_axis_quad × adam × lr=0.001 × seed=0
+[8/1176] p1_off_axis_quad × adam × lr=0.001 × seed=1
+[9/1176] p1_off_axis_quad × adam × lr=0.001 × seed=2
+[10/1176] p1_off_axis_quad × adam × lr=0.003 × seed=0
+[11/1176] p1_off_axis_quad × adam × lr=0.003 × seed=1
+[12/1176] p1_off_axis_quad × adam × lr=0.003 × seed=2
+[13/1176] p1_off_axis_quad × adamw × lr=0.0001 × seed=0
+[14/1176] p1_off_axis_quad × adamw × lr=0.0001 × seed=1
+[15/1176] p1_off_axis_quad × adamw × lr=0.0001 × seed=2
+[16/1176] p1_off_axis_quad × adamw × lr=0.0003 × seed=0
+[17/1176] p1_off_axis_quad × adamw × lr=0.0003 × seed=1
+[18/1176] p1_off_axis_quad × adamw × lr=0.0003 × seed=2
+[19/1176] p1_off_axis_quad × adamw × lr=0.001 × seed=0
+[20/1176] p1_off_axis_quad × adamw × lr=0.001 × seed=1
+[21/1176] p1_off_axis_quad × adamw × lr=0.001 × seed=2
+[22/1176] p1_off_axis_quad × adamw × lr=0.003 × seed=0
+[23/1176] p1_off_axis_quad × adamw × lr=0.003 × seed=1
+[24/1176] p1_off_axis_quad × adamw × lr=0.003 × seed=2
+[25/1176] p1_off_axis_quad × yogi × lr=0.0001 × seed=0
+[26/1176] p1_off_axis_quad × yogi × lr=0.0001 × seed=1
+[27/1176] p1_off_axis_quad × yogi × lr=0.0001 × seed=2
+[28/1176] p1_off_axis_quad × yogi × lr=0.0003 × seed=0
+[29/1176] p1_off_axis_quad × yogi × lr=0.0003 × seed=1
+[30/1176] p1_off_axis_quad × yogi × lr=0.0003 × seed=2
+[31/1176] p1_off_axis_quad × yogi × lr=0.001 × seed=0
+[32/1176] p1_off_axis_quad × yogi × lr=0.001 × seed=1
+[33/1176] p1_off_axis_quad × yogi × lr=0.001 × seed=2
+[34/1176] p1_off_axis_quad × yogi × lr=0.003 × seed=0
+[35/1176] p1_off_axis_quad × yogi × lr=0.003 × seed=1
+[36/1176] p1_off_axis_quad × yogi × lr=0.003 × seed=2
+[37/1176] p1_off_axis_quad × lion × lr=1e-05 × seed=0
+[38/1176] p1_off_axis_quad × lion × lr=1e-05 × seed=1
+[39/1176] p1_off_axis_quad × lion × lr=1e-05 × seed=2
+[40/1176] p1_off_axis_quad × lion × lr=3e-05 × seed=0
+[41/1176] p1_off_axis_quad × lion × lr=3e-05 × seed=1
+[42/1176] p1_off_axis_quad × lion × lr=3e-05 × seed=2
+[43/1176] p1_off_axis_quad × lion × lr=0.0001 × seed=0
+[44/1176] p1_off_axis_quad × lion × lr=0.0001 × seed=1
+[45/1176] p1_off_axis_quad × lion × lr=0.0001 × seed=2
+[46/1176] p1_off_axis_quad × lion × lr=0.0003 × seed=0
+[47/1176] p1_off_axis_quad × lion × lr=0.0003 × seed=1
+[48/1176] p1_off_axis_quad × lion × lr=0.0003 × seed=2
+[49/1176] p1_off_axis_quad × naive_yogi_muon × lr=0.0001 × seed=0
+[50/1176] p1_off_axis_quad × naive_yogi_muon × lr=0.0001 × seed=1
+[51/1176] p1_off_axis_quad × naive_yogi_muon × lr=0.0001 × seed=2
+[52/1176] p1_off_axis_quad × naive_yogi_muon × lr=0.0003 × seed=0
+[53/1176] p1_off_axis_quad × naive_yogi_muon × lr=0.0003 × seed=1
+[54/1176] p1_off_axis_quad × naive_yogi_muon × lr=0.0003 × seed=2
+[55/1176] p1_off_axis_quad × naive_yogi_muon × lr=0.001 × seed=0
+[56/1176] p1_off_axis_quad × naive_yogi_muon × lr=0.001 × seed=1
+[57/1176] p1_off_axis_quad × naive_yogi_muon × lr=0.001 × seed=2
+[58/1176] p1_off_axis_quad × naive_yogi_muon × lr=0.003 × seed=0
+[59/1176] p1_off_axis_quad × naive_yogi_muon × lr=0.003 × seed=1
+[60/1176] p1_off_axis_quad × naive_yogi_muon × lr=0.003 × seed=2
+[61/1176] p1_off_axis_quad × racaso_hutchinson × lr=3e-05 × seed=0
+[62/1176] p1_off_axis_quad × racaso_hutchinson × lr=3e-05 × seed=1
+[63/1176] p1_off_axis_quad × racaso_hutchinson × lr=3e-05 × seed=2
+[64/1176] p1_off_axis_quad × racaso_hutchinson × lr=0.0001 × seed=0
+[65/1176] p1_off_axis_quad × racaso_hutchinson × lr=0.0001 × seed=1
+[66/1176] p1_off_axis_quad × racaso_hutchinson × lr=0.0001 × seed=2
+[67/1176] p1_off_axis_quad × racaso_hutchinson × lr=0.0003 × seed=0
+[68/1176] p1_off_axis_quad × racaso_hutchinson × lr=0.0003 × seed=1
+[69/1176] p1_off_axis_quad × racaso_hutchinson × lr=0.0003 × seed=2
+[70/1176] p1_off_axis_quad × racaso_hutchinson × lr=0.001 × seed=0
+[71/1176] p1_off_axis_quad × racaso_hutchinson × lr=0.001 × seed=1
+[72/1176] p1_off_axis_quad × racaso_hutchinson × lr=0.001 × seed=2
+[73/1176] p1_off_axis_quad × racaso_gnb × lr=3e-05 × seed=0
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P1OffAxisQuadratic does not. Use a classification problem (e.g. p6_classification) for GNB.
+[74/1176] p1_off_axis_quad × racaso_gnb × lr=3e-05 × seed=1
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P1OffAxisQuadratic does not. Use a classification problem (e.g. p6_classification) for GNB.
+[75/1176] p1_off_axis_quad × racaso_gnb × lr=3e-05 × seed=2
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P1OffAxisQuadratic does not. Use a classification problem (e.g. p6_classification) for GNB.
+[76/1176] p1_off_axis_quad × racaso_gnb × lr=0.0001 × seed=0
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P1OffAxisQuadratic does not. Use a classification problem (e.g. p6_classification) for GNB.
+[77/1176] p1_off_axis_quad × racaso_gnb × lr=0.0001 × seed=1
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P1OffAxisQuadratic does not. Use a classification problem (e.g. p6_classification) for GNB.
+[78/1176] p1_off_axis_quad × racaso_gnb × lr=0.0001 × seed=2
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P1OffAxisQuadratic does not. Use a classification problem (e.g. p6_classification) for GNB.
+[79/1176] p1_off_axis_quad × racaso_gnb × lr=0.0003 × seed=0
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P1OffAxisQuadratic does not. Use a classification problem (e.g. p6_classification) for GNB.
+[80/1176] p1_off_axis_quad × racaso_gnb × lr=0.0003 × seed=1
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P1OffAxisQuadratic does not. Use a classification problem (e.g. p6_classification) for GNB.
+[81/1176] p1_off_axis_quad × racaso_gnb × lr=0.0003 × seed=2
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P1OffAxisQuadratic does not. Use a classification problem (e.g. p6_classification) for GNB.
+[82/1176] p1_off_axis_quad × racaso_gnb × lr=0.001 × seed=0
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P1OffAxisQuadratic does not. Use a classification problem (e.g. p6_classification) for GNB.
+[83/1176] p1_off_axis_quad × racaso_gnb × lr=0.001 × seed=1
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P1OffAxisQuadratic does not. Use a classification problem (e.g. p6_classification) for GNB.
+[84/1176] p1_off_axis_quad × racaso_gnb × lr=0.001 × seed=2
+  SKIP: racaso_gnb requires the problem to expose a logits_fn(params) -> [B, C] method; P1OffAxisQuadratic does not. Use a classification problem (e.g. p6_classification) for GNB.
+[85/1176] p1_off_axis_quad × liger × lr=1e-05 × seed=0
+[86/1176] p1_off_axis_quad × liger × lr=1e-05 × seed=1
+[87/1176] p1_off_axis_quad × liger × lr=1e-05 × seed=2
+[88/1176] p1_off_axis_quad × liger × lr=3e-05 × seed=0
+[89/1176] p1_off_axis_quad × liger × lr=3e-05 × seed=1
+[90/1176] p1_off_axis_quad × liger × lr=3e-05 × seed=2
+[91/1176] p1_off_axis_quad × liger × lr=0.0001 × seed=0
+[92/1176] p1_off_axis_quad × liger × lr=0.0001 × seed=1
+[93/1176] p1_off_axis_quad × liger × lr=0.0001 × seed=2
+[94/1176] p1_off_axis_quad × liger × lr=0.0003 × seed=0
+[95/1176] p1_off_axis_quad × liger × lr=0.0003 × seed=1
+[96/1176] p1_off_axis_quad × liger × lr=0.0003 × seed=2
+[97/1176] p1_off_axis_quad × muogi × lr=3e-05 × seed=0
+[98/1176] p1_off_axis_quad × muogi × lr=3e-05 × seed=1
+[99/1176] p1_off_axis_quad × muogi × lr=3e-05 × seed=2
+[100/1176] p1_off_axis_quad × muogi × lr=0.0001 × seed=0
+[101/1176] p1_off_axis_quad × muogi × lr=0.0001 × seed=1
+[102/1176] p1_off_axis_quad × muogi × lr=0.0001 × seed=2
+[103/1176] p1_off_axis_quad × muogi × lr=0.0003 × seed=0
+[104/1176] p1_off_axis_quad × muogi × lr=0.0003 × seed=1
+[105/1176] p1_off_axis_quad × muogi × lr=0.0003 × seed=2
+[106/1176] p1_off_axis_quad × muogi × lr=0.001 × seed=0
+[107/1176] p1_off_axis_quad × muogi × lr=0.001 × seed=1
+[108/1176] p1_off_axis_quad × muogi × lr=0.001 × seed=2
+[109/1176] p1_off_axis_quad × ramuogi × lr=3e-05 × seed=0
+[110/1176] p1_off_axis_quad × ramuogi × lr=3e-05 × seed=1
+[111/1176] p1_off_axis_quad × ramuogi × lr=3e-05 × seed=2
+[112/1176] p1_off_axis_quad × ramuogi × lr=0.0001 × seed=0
+[113/1176] p1_off_axis_quad × ramuogi × lr=0.0001 × seed=1
+[114/1176] p1_off_axis_quad × ramuogi × lr=0.0001 × seed=2
+[115/1176] p1_off_axis_quad × ramuogi × lr=0.0003 × seed=0
+[116/1176] p1_off_axis_quad × ramuogi × lr=0.0003 × seed=1
+[117/1176] p1_off_axis_quad × ramuogi × lr=0.0003 × seed=2
+[118/1176] p1_off_axis_quad × ramuogi × lr=0.001 × seed=0
+[119/1176] p1_off_axis_quad × ramuogi × lr=0.001 × seed=1
+[120/1176] p1_off_axis_quad × ramuogi × lr=0.001 × seed=2
+[121/1176] p1_off_axis_quad × muon × lr=0.0001 × seed=0
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[122/1176] p1_off_axis_quad × muon × lr=0.0001 × seed=1
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[123/1176] p1_off_axis_quad × muon × lr=0.0001 × seed=2
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[124/1176] p1_off_axis_quad × muon × lr=0.0003 × seed=0
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[125/1176] p1_off_axis_quad × muon × lr=0.0003 × seed=1
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[126/1176] p1_off_axis_quad × muon × lr=0.0003 × seed=2
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[127/1176] p1_off_axis_quad × muon × lr=0.001 × seed=0
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[128/1176] p1_off_axis_quad × muon × lr=0.001 × seed=1
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[129/1176] p1_off_axis_quad × muon × lr=0.001 × seed=2
+  SKIP: muon is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[130/1176] p1_off_axis_quad × sophia × lr=0.0001 × seed=0
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[131/1176] p1_off_axis_quad × sophia × lr=0.0001 × seed=1
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[132/1176] p1_off_axis_quad × sophia × lr=0.0001 × seed=2
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[133/1176] p1_off_axis_quad × sophia × lr=0.0003 × seed=0
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[134/1176] p1_off_axis_quad × sophia × lr=0.0003 × seed=1
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[135/1176] p1_off_axis_quad × sophia × lr=0.0003 × seed=2
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[136/1176] p1_off_axis_quad × sophia × lr=0.001 × seed=0
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[137/1176] p1_off_axis_quad × sophia × lr=0.001 × seed=1
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[138/1176] p1_off_axis_quad × sophia × lr=0.001 × seed=2
+  SKIP: sophia is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[139/1176] p1_off_axis_quad × soap × lr=0.0001 × seed=0
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[140/1176] p1_off_axis_quad × soap × lr=0.0001 × seed=1
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[141/1176] p1_off_axis_quad × soap × lr=0.0001 × seed=2
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[142/1176] p1_off_axis_quad × soap × lr=0.0003 × seed=0
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[143/1176] p1_off_axis_quad × soap × lr=0.0003 × seed=1
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[144/1176] p1_off_axis_quad × soap × lr=0.0003 × seed=2
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[145/1176] p1_off_axis_quad × soap × lr=0.001 × seed=0
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[146/1176] p1_off_axis_quad × soap × lr=0.001 × seed=1
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[147/1176] p1_off_axis_quad × soap × lr=0.001 × seed=2
+  SKIP: soap is not vendored yet; see bench/optimizers/README.md for the canonical source and pinned version to drop into this wrapper before benchmarks run.
+[148/1176] p2a_rosenbrock_2d × adam × lr=0.0001 × seed=0
+[149/1176] p2a_rosenbrock_2d × adam × lr=0.0001 × seed=1
+[150/1176] p2a_rosenbrock_2d × adam × lr=0.0001 × seed=2
+[151/1176] p2a_rosenbrock_2d × adam × lr=0.0003 × seed=0
+[152/1176] p2a_rosenbrock_2d × adam × lr=0.0003 × seed=1
+[153/1176] p2a_rosenbrock_2d × adam × lr=0.0003 × seed=2
+[154/1176] p2a_rosenbrock_2d × adam × lr=0.001 × seed=0
+[155/1176] p2a_rosenbrock_2d × adam × lr=0.001 × seed=1
+[156/1176] p2a_rosenbrock_2d × adam × lr=0.001 × seed=2
+[157/1176] p2a_rosenbrock_2d × adam × lr=0.003 × seed=0
+[158/1176] p2a_rosenbrock_2d × adam × lr=0.003 × seed=1
+[159/1176] p2a_rosenbrock_2d × adam × lr=0.003 × seed=2
+[160/1176] p2a_rosenbrock_2d × adamw × lr=0.0001 × seed=0
+[161/1176] p2a_rosenbrock_2d × adamw × lr=0.0001 × seed=1
+[162/1176] p2a_rosenbrock_2d × adamw × lr=0.0001 × seed=2
+[163/1176] p2a_rosenbrock_2d × adamw × lr=0.0003 × seed=0
+[164/1176] p2a_rosenbrock_2d × adamw × lr=0.0003 × seed=1
+[165/1176] p2a_rosenbrock_2d × adamw × lr=0.0003 × seed=2
+[166/1176] p2a_rosenbrock_2d × adamw × lr=0.001 × seed=0
+[167/1176] p2a_rosenbrock_2d × adamw × lr=0.001 × seed=1
+[168/1176] p2a_rosenbrock_2d × adamw × lr=0.001 × seed=2
+[169/1176] p2a_rosenbrock_2d × adamw × lr=0.003 × seed=0
+[170/1176] p2a_rosenbrock_2d × adamw × lr=0.003 × seed=1
+[171/1176] p2a_rosenbrock_2d × adamw × lr=0.003 × seed=2
+[172/1176] p2a_rosenbrock_2d × yogi × lr=0.0001 × seed=0
+[173/1176] p2a_rosenbrock_2d × yogi × lr=0.0001 × seed=1
+[174/1176] p2a_rosenbrock_2d × yogi × lr=0.0001 × seed=2
+[175/1176] p2a_rosenbrock_2d × yogi × lr=0.0003 × seed=0
+[176/1176] p2a_rosenbrock_2d × yogi × lr=0.0003 × seed=1
+[177/1176] p2a_rosenbrock_2d × yogi × lr=0.0003 × seed=2

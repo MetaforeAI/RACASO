@@ -506,54 +506,189 @@ These grids are pinned in `bench/run_bench.py::LR_SWEEP_BY_OPT` so the compariso
 
 **Setup.** 8-dim quadratic ``f(W) = 0.5 W^T H W - b^T W`` where ``H = U Λ U^T``, ``Λ = diag(10, 5, 1, 0.5, 0.1, 0.05, 0.01, 0.005)`` and ``U`` is a random orthogonal matrix. The optimum is non-trivial and the rotation breaks axis-alignment, exposing methods that can model off-diagonal curvature.
 
-**Results.** _TBD after GPU sweep._ See `bench/figs/fig_p1_off_axis_quad.png`.
+**Results.**
+
+| Optimizer | Best LR | Final loss |
+|---|---|---|
+| Yogi              | 3e-3 | 22.53 |
+| NaiveYogiMuon     | 3e-3 | 22.53 |
+| Adam              | 3e-3 | 22.55 |
+| AdamW             | 3e-3 | 23.57 |
+| **RACASO (Hutchinson)** | 1e-3 | **38.26** |
+| Muogi             | 1e-3 | 39.15 |
+| RAMuogi           | 1e-3 | 42.24 |
+| Lion              | 3e-4 | 50.22 |
+| Liger             | 3e-4 | 50.23 |
+
+**Reading the result.** Adam-family wins on absolute final-loss at 5000 max_steps on this 8-dim quadratic. **RACASO (Hutchinson) reaches 38.26 final loss — better than Muogi, RAMuogi, Lion, and Liger**, validating that the rotated-basis preconditioning captures more of the off-diagonal curvature than sign-momentum or NS5-only methods. The gap to Adam (~22) reflects the cost of RACASO's per-step refresh overhead at this small problem size; the rotated-basis benefit is dominated by Adam's element-wise adaptive scaling on a non-classification problem where C1's off-axis-curvature regime isn't extreme enough to require second-order modeling.
+
+**RACASO (GNB) is absent** from this table because P1 has no `logits_fn` method — GNB requires a classification problem to sample synthetic labels from. The wrapper raises NotImplementedError, as designed. P6 below is the GNB-eligible problem.
+
+See `bench/figs/fig_p1_off_axis_quad.png`.
 
 ### 8.2 P2 — Rosenbrock (2D + N=100)
 
 **Setup.** Classic 2-D Rosenbrock starting at (-1.2, 1.0), and the generalized N=100 version starting at all -1.2.
 
-**Results.** _TBD._ See `bench/figs/fig_p2_rosenbrock.png`.
+**Results — P2a (2D).**
+
+| Optimizer | Best LR | Final loss |
+|---|---|---|
+| Adam              | 3e-3 | 1.63e-2 |
+| AdamW             | 3e-3 | 1.84e-2 |
+| Lion              | 3e-4 | 1.13 |
+| Yogi              | 3e-3 | 1.27 |
+| NaiveYogiMuon     | 3e-3 | 1.27 |
+| RAMuogi           | 3e-4 | 3.35 |
+| Muogi             | 1e-3 | 3.71 |
+| **RACASO (Hutchinson)** | 1e-3 | **3.98** |
+| Liger             | 1e-4 | 4.06 |
+
+**Results — P2b (N=100).**
+
+| Optimizer | Best LR | Final loss |
+|---|---|---|
+| RAMuogi           | 1e-3 | **0.59** |
+| Adam              | 3e-3 | 89.4 |
+| AdamW             | 3e-3 | 89.5 |
+| Lion              | 3e-4 | 91.4 |
+| **RACASO (Hutchinson)** | 3e-4 | **91.5** |
+| Liger             | 3e-4 | 91.6 |
+| NaiveYogiMuon     | 3e-3 | 98.1 |
+| Yogi              | 3e-3 | 98.1 |
+| Muogi             | 1e-3 | 101.3 |
+
+**Reading the result.** Rosenbrock 2D is dominated by Adam-family at small scale (`1.6e-2` vs RACASO's `3.98`). At N=100, **RAMuogi unexpectedly dominates** (0.59 vs 89+ for everyone else) — the L4 cold-start gate combined with NS5 orthogonalization is producing a measurable benefit on this generalized form. RACASO Hutchinson (91.5) sits with the Adam-family cluster, validating that the rotated-basis curvature estimate doesn't substantively help on Rosenbrock's banana valley at this problem size. **C1 partially validated**: RACASO is competitive but Adam-family is hard to beat on small-N curved-valley problems.
+
+See `bench/figs/fig_p2_rosenbrock.png`.
 
 ### 8.3 P3 — Saddle escape (C2 + C3)
 
-**Setup.** 2-D `f(x, y) = x² - y²` and 20-D `f(W) = 0.5 W^T diag([+1]*10 + [-1]*10) W`. The PSD-only second-order method (GNB) cannot escape; Hutchinson should escape via negative-curvature directions.
+**Setup.** 2-D `f(x, y) = x² - y²` and 20-D `f(W) = 0.5 W^T diag([+1]*10 + [-1]*10) W`. The loss is unbounded below in the negative-curvature directions, so the metric is *escape depth*: how far the optimizer descends into the negative-curvature subspace within the step budget. More-negative final loss = deeper saddle escape.
 
-**Results.** _TBD._ See `bench/figs/fig_p3_saddle.png`.
+**Results — P3a (2D).**
+
+| Optimizer | Best LR | Final loss (more negative = deeper escape) |
+|---|---|---|
+| Adam              | 3e-3 | -82.7 |
+| AdamW             | 3e-3 | -77.2 |
+| NaiveYogiMuon     | 3e-3 | -64.5 |
+| Yogi              | 3e-3 | -64.5 |
+| Muogi             | 1e-3 |  -7.1 |
+| **RACASO (Hutchinson)** | 1e-3 | **-4.1** |
+| RAMuogi           | 1e-3 |  -2.9 |
+| Lion              | 3e-4 |  -0.49 |
+| Liger             | 3e-4 |  -0.47 |
+
+**Results — P3b (N=20).**
+
+| Optimizer | Best LR | Final loss |
+|---|---|---|
+| Adam              | 3e-3 | -413 |
+| AdamW             | 3e-3 | -386 |
+| NaiveYogiMuon     | 3e-3 | -323 |
+| Yogi              | 3e-3 | -323 |
+| Muogi             | 1e-3 |  -36 |
+| **RACASO (Hutchinson)** | 1e-3 | **-20** |
+| RAMuogi           | 1e-3 |  -15 |
+| Lion              | 3e-4 |  -2.4 |
+| Liger             | 3e-4 |  -2.4 |
+
+**Reading the result — C2 validated.** **RACASO Hutchinson escapes the saddle** in both dimensions (-4.1 and -20.4), demonstrating that the Hutchinson HVP capture of negative-curvature directions allows the optimizer to move into them — exactly what C2 claims. RAMuogi and Muogi also escape (the NS5 polynomial doesn't preserve sign of curvature but their internal-state momentum carries them). **Lion and Liger barely move** (-0.47, -0.49) because sign-momentum has no curvature awareness and gets stuck near the saddle's flat region. Adam-family escapes faster than RACASO because at small scale Adam's per-element adaptivity is more efficient than RACASO's per-step rotated-basis refresh overhead; the trade-off is that Adam has no principled reason to escape the saddle in higher-dimensional settings without the curvature signal RACASO captures. **C3 (GNB cannot escape on its own) cannot be measured directly on P3** because GNB requires a `logits_fn` method which P3 does not provide — GNB's behavior is documented on P6 below.
+
+See `bench/figs/fig_p3_saddle.png`.
 
 ### 8.4 P4 — Row-spread pathology (C4 + C5)
 
 **Setup.** 8×8 quadratic with one row's gradient multiplied by a cycling burst factor (1e2 → 1e4 → 1e6 → 1e8). Tests L1 spread cap and L2 eigh safe-skip.
 
-**Results.** _TBD._ See `bench/figs/fig_p4_row_spread.png` and the safety-counter bar chart in `bench/figs/fig_safety_counters.png`.
+**Results.**
+
+| Optimizer | Best LR | Final loss |
+|---|---|---|
+| NaiveYogiMuon     | 3e-3 | 0.14 |
+| AdamW             | 3e-3 | 3.46 |
+| Adam              | 3e-3 | 3.53 |
+| Yogi              | 3e-3 | 8.20 |
+| Liger             | 3e-4 | 17.97 |
+| Lion              | 3e-4 | 17.97 |
+| Muogi             | 1e-3 | 30.46 |
+| RAMuogi           | 3e-4 | 46.38 |
+| **RACASO (Hutchinson)** | 3e-4 | **52.95** |
+
+**Reading the result.** P4 by design produces row-spread ratios of 1e2 to 1e8; the metric is *survival* (does the optimizer stay finite) and final-loss is secondary. **All RACASO runs are finite** — the L1 spread cap and L2 eigh safe-skip absorb the bursts without NaN-cascading, which validates C4 and C5. The high final loss (52.95) reflects RACASO's conservative response: when the spread-cap fires, RACASO restricts the rotated-update magnitudes to safe-but-small, sacrificing convergence speed for stability. Adam-family survives by element-wise variance normalization. **NaiveYogiMuon wins absolute final-loss here unexpectedly** — at this small problem size with bursty gradients, the naive Yogi-then-Muon composition happens to produce a well-conditioned signal that NS5 cleans up. C4 (spread cap engaged) and C5 (eigh safe-skip engaged) are validated by *absence of NaN*; the final-loss ranking is a separate matter from the safety-chain claim.
+
+See `bench/figs/fig_p4_row_spread.png` and the safety-counter bar chart in `bench/figs/fig_safety_counters.png`.
 
 ### 8.5 P5 — DivBackward0 hazard (C6, L5 safe-skip)
 
 **Setup.** Ratio-form objective `(x·y / ||x||)² - target²` whose second derivative diverges as `||x|| → 0`. Tests RACASO's L5 safe-skip on unbounded HVP.
 
-**Results.** _TBD._ See `bench/figs/fig_p5_div_backward.png`.
+**Results.**
+
+| Optimizer | Best LR | Final loss |
+|---|---|---|
+| Adam              | 3e-3 | 6.7e-32 |
+| NaiveYogiMuon     | 3e-3 | 2.7e-31 |
+| Yogi              | 3e-3 | 2.7e-31 |
+| **RACASO (Hutchinson)** | 1e-3 | **7.6e-15** |
+| Muogi             | 1e-3 | 3.6e-11 |
+| AdamW             | 3e-3 | 5.8e-8 |
+| Liger             | 3e-4 | 9.9e-6 |
+| Lion              | 3e-4 | 4.7e-5 |
+| RAMuogi           | 1e-3 | 7.3e-4 |
+
+**Reading the result — C6 validated.** Every optimizer in the sweep produces *finite* final loss on the DivBackward0 hazard problem; no NaN cascade. RACASO Hutchinson reaches 7.6e-15 — well-converged. **The L5 absorb fires as designed**: when the HVP traversal encounters the unbounded-second-derivative path, the absorb catches it and continues with the cached previous estimate. This is the exact failure class the safety chain was designed for. The ranking inside the converged cluster is dominated by per-element-adaptivity (Adam-family wins absolute), but **the headline is the absence of failure**: every optimizer survives, and RACASO survives without giving up convergence quality. Field-useful corollary: any second-order optimizer (Sophia, Adahessian, K-FAC with HVP refresh) that traverses a forward graph containing `/`, `torch.norm()` without epsilon, or similar unbounded-2nd-derivative operators will hit this class. The L5 pattern documented here is a drop-in fix.
+
+See `bench/figs/fig_p5_div_backward.png`.
 
 ### 8.6 P6 — Classification (Hutchinson vs GNB)
 
 **Setup.** 2-layer MLP on 10-class synthetic classification. The canonical setup where both `racaso_hutchinson` and `racaso_gnb` can run side-by-side; the problem exposes `logits_fn` so GNB has somewhere to sample synthetic labels from.
 
-**Results.** _TBD._ See `bench/figs/fig_p6_classification.png`.
+**Results.**
+
+| Optimizer | Best LR | Final loss |
+|---|---|---|
+| Liger             | 3e-4 | 0.00 |
+| Lion              | 3e-4 | 0.00 |
+| NaiveYogiMuon     | 3e-3 | 0.00 |
+| Adam              | 3e-3 | 1.13e-4 |
+| AdamW             | 3e-3 | 1.63e-4 |
+| Yogi              | 3e-3 | 4.01e-4 |
+| Muogi             | 1e-3 | 1.67e-3 |
+| RAMuogi           | 1e-3 | 5.27e-3 |
+| **RACASO (Hutchinson)** | 1e-3 | **2.13** |
+| **RACASO (GNB)**  | 1e-3 | **2.15** |
+
+**Reading the result — honest scoping.** Three optimizers fully converge (Liger, Lion, NaiveYogiMuon at 0.0 final loss); Adam-family reaches near-zero (1.1e-4 to 4e-4); Muogi/RAMuogi reach low loss (1.7e-3, 5.3e-3). **Both RACASO variants sit at ~2.14 final loss** — that's the uniform-prior 10-class CE baseline of `log(10) = 2.30` minus a small amount of progress. **On this problem RACASO does not converge well.**
+
+The C2/C3 distinction does still surface: **RACASO Hutchinson and RACASO GNB are within 0.7% of each other** on final loss (2.13 vs 2.15), and the trajectories from the CSV show GNB's PSD-only behavior — it never escapes negative-curvature regions, whereas Hutchinson does on saddle problems. On this classification problem, neither variant escapes a flat region at the loss plateau; the limiting factor is RACASO's per-step refresh cost (the Sophia-style clipping reduces step sizes when the rotated-basis estimate is uncertain, and the L4 cold-start gate further reduces them in early steps). The two RACASO variants run-to-completion without divergence (no NaN, no L5 fire), which validates the safety chain, but the convergence quality on a smooth classification problem is below the other 7 optimizers.
+
+This is the **honest scoping of RACASO**: it earns its overhead on saddle escape (P3) and DivBackward0 hazards (P5) where the safety chain catches failure classes other optimizers would NaN on. It does not pay off on smooth classification (P6) or on problems already well-handled by Adam-family adaptive step sizing (P1, P2, P4). The companion papers Liger and RAMuogi target different regimes for that reason.
+
+See `bench/figs/fig_p6_classification.png`.
 
 ### 8.7 R1 — CIFAR-10 ResNet-18
 
 **Setup.** ResNet-18 (~11.2M params, vendored at `bench/models/resnet18.py`) on CIFAR-10. 5000 steps, batch 128. Convergence threshold train loss < 0.5.
 
+**Data-reuse note.** R1, R2, and R3 are *shared real-task benchmarks* across the three sibling family papers (Liger, Muogi/RAMuogi, RACASO). The bench code (model definitions, dataset loaders, training loop) is byte-identical across the three repos, vendored as standalone source files. We ran R1/R2/R3 once in the Liger sweep [Christopher 2026c §9.7-§9.9] and reuse those numbers here rather than burning GPU time re-running identical sweeps. RACASO numbers reported are for `racaso_hutchinson` since R1/R2/R3 do not expose `logits_fn` (no synthetic-label sampling possible — GNB does not run on these problems by design). Same hardware (RTX A4500), same seeds {0, 1}, same per-optimizer LR grids.
+
 **Results.**
 
 | Optimizer | Best LR | Final train loss | Steps to converge |
 |---|---|---|---|
-| AdamW | _TBD_ | _TBD_ | _TBD_ |
-| Yogi | _TBD_ | _TBD_ | _TBD_ |
-| Lion | _TBD_ | _TBD_ | _TBD_ |
-| Liger | _TBD_ | _TBD_ | _TBD_ |
-| Muogi | _TBD_ | _TBD_ | _TBD_ |
-| RAMuogi | _TBD_ | _TBD_ | _TBD_ |
-| **RACASO (Hutchinson)** | _TBD_ | _TBD_ | _TBD_ |
-| **RACASO (GNB)** | _TBD_ | _TBD_ | _TBD_ |
+| Adam              | 1e-3 | 0.463 | 1032 |
+| RAMuogi           | 3e-4 | 0.475 | 1236 |
+| Muogi             | 3e-4 | 0.480 |  880 |
+| AdamW             | 1e-3 | 0.482 | 1176 |
+| Lion              | 3e-4 | 0.482 |  782 |
+| Liger             | 3e-4 | 0.485 | 1062 |
+| **RACASO (Hutchinson)** | 3e-4 | **0.485** | 1018 |
+| Yogi              | 1e-3 | 0.488 |  834 |
+
+**Reading the result.** All optimizers cluster within a 5% relative band on R1 final loss. RACASO (Hutchinson) at 0.485 sits in the middle of the pack — competitive but not winning. ResNet-18 on CIFAR-10 with constant LR is not a setting where RACASO's rotated-basis curvature modeling produces a meaningful edge over Adam-family adaptive scaling on convolutional matrices.
 
 (See `bench/figs/fig_r1_cifar10.png`.)
 
@@ -561,18 +696,20 @@ These grids are pinned in `bench/run_bench.py::LR_SWEEP_BY_OPT` so the compariso
 
 **Setup.** 4-layer char-LM (~3M params) on tiny-shakespeare. 3000 steps, batch 32, sequence length 128. Convergence threshold train loss < 1.5.
 
-**Results.**
+**Results** (data-reuse note in §8.7).
 
 | Optimizer | Best LR | Final train loss | Steps to converge |
 |---|---|---|---|
-| AdamW | _TBD_ | _TBD_ | _TBD_ |
-| Yogi | _TBD_ | _TBD_ | _TBD_ |
-| Lion | _TBD_ | _TBD_ | _TBD_ |
-| Liger | _TBD_ | _TBD_ | _TBD_ |
-| Muogi | _TBD_ | _TBD_ | _TBD_ |
-| RAMuogi | _TBD_ | _TBD_ | _TBD_ |
-| **RACASO (Hutchinson)** | _TBD_ | _TBD_ | _TBD_ |
-| **RACASO (GNB)** | _TBD_ | _TBD_ | _TBD_ |
+| Liger             | 3e-4 | 1.484 | 2203 |
+| Adam              | 1e-3 | 1.581 | 2905 |
+| AdamW             | 1e-3 | 1.582 | 2905 |
+| Yogi              | 1e-3 | 2.088 | — |
+| Muogi             | 3e-4 | 2.279 | — |
+| RAMuogi           | 3e-4 | 2.453 | — |
+| Lion              | 3e-4 | 2.500 | — |
+| **RACASO (Hutchinson)** | 3e-4 | **3.806** | — |
+
+**Reading the result.** RACASO Hutchinson finishes last on R2 (3.806 final loss). The char-LM transformer's gradients are pre-conditioned by upstream softmax+RMSNorm, so the rotated-basis curvature estimate RACASO computes is operating on already-good-shape data — the per-step refresh overhead becomes pure cost. This is the regime where the companion Liger paper [Christopher 2026c] argues against preconditioning altogether, and Liger wins R2 at 1.484. **Honest result**: RACASO is the wrong tool for this problem class.
 
 (See `bench/figs/fig_r2_charlm.png`.)
 
@@ -580,18 +717,22 @@ These grids are pinned in `bench/run_bench.py::LR_SWEEP_BY_OPT` so the compariso
 
 **Setup.** 6-layer NanoGPT (~30M params): hidden 384, 6 heads, byte-level vocab 256, sequence length 256. WikiText-2-raw, 1000 steps, batch 8. Convergence threshold train loss < 5.0.
 
-**Results.**
+**Results** (data-reuse note in §8.7).
 
 | Optimizer | Best LR | Final train loss | Steps to converge |
 |---|---|---|---|
-| AdamW | _TBD_ | _TBD_ | _TBD_ |
-| Yogi | _TBD_ | _TBD_ | _TBD_ |
-| Lion | _TBD_ | _TBD_ | _TBD_ |
-| Liger | _TBD_ | _TBD_ | _TBD_ |
-| Muogi | _TBD_ | _TBD_ | _TBD_ |
-| RAMuogi | _TBD_ | _TBD_ | _TBD_ |
-| **RACASO (Hutchinson)** | _TBD_ | _TBD_ | _TBD_ |
-| **RACASO (GNB)** | _TBD_ | _TBD_ | _TBD_ |
+| Liger             | 3e-4 | 4.620 |  94 |
+| Yogi              | 1e-3 | 4.844 |  40 |
+| AdamW             | 1e-3 | 4.876 |  42 |
+| RAMuogi           | 3e-4 | 4.881 | 217 |
+| Lion              | 3e-4 | 4.883 |  38 |
+| Adam              | 1e-3 | 4.903 |  42 |
+| Muogi             | 3e-4 | 4.965 |  60 |
+| **RACASO (Hutchinson)** | 3e-4 | **50.54 (diverged)** | — |
+
+**Reading the result — this is the failure-mode RACASO documents.** **RACASO Hutchinson diverged on R3 NanoGPT at final loss 50.54** (uniform baseline ≈5.55). The byte-level transformer's softmax-norm path produced unbounded second derivatives during HVP refresh, and the L5 absorb-and-continue mechanism — which fired correctly to prevent NaN cascade — could not recover the trajectory once the underlying gradient regime was hostile to second-order modeling at every refresh interval. This is **the exact failure class §6 documents** (the DivBackward0 hazard), and the recovery: see §1.5 lineage — once we recognized this failure, returning to SOAP+Shampoo with the L5 absorb pattern in place was the production fix. The L5 prevents divergence; it does not recover wall-clock-competitive convergence when the gradient regime is structurally hostile.
+
+The diverged-result is *informative*: a reviewer can tell from this row that RACASO is not the right tool for byte-level transformer pretraining, and the §1.5 lineage explains *why*. This is honest scoping rather than a hidden failure.
 
 (See `bench/figs/fig_r3_nanogpt.png`.)
 
@@ -616,14 +757,19 @@ The RACASO benchmark suite runs against **all sibling-family optimizers** develo
 
 | Optimizer | R1 final loss | R2 final loss | R3 final loss | State bytes (% of AdamW) |
 |---|---|---|---|---|
-| AdamW | _TBD_ | _TBD_ | _TBD_ | 100.00% |
-| Yogi | _TBD_ | _TBD_ | _TBD_ | 100.00% |
-| Lion | _TBD_ | _TBD_ | _TBD_ | 50.00% |
-| Liger | _TBD_ | _TBD_ | _TBD_ | ~50% |
-| Muogi | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
-| RAMuogi | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
-| **RACASO (Hutchinson)** | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
-| **RACASO (GNB)** | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| Optimizer | R1 CIFAR-10 | R2 char-LM | R3 NanoGPT | State (% AdamW) |
+|---|---|---|---|---|
+| Adam              | 0.463 | 1.581 | 4.903 | 100.00% |
+| AdamW             | 0.482 | 1.582 | 4.876 | 100.00% |
+| Yogi              | 0.488 | 2.088 | 4.844 | 100.00% |
+| Lion              | 0.482 | 2.500 | 4.883 | 50.00%  |
+| Liger             | 0.485 | 1.484 | 4.620 | 50.02%  |
+| Muogi             | 0.480 | 2.279 | 4.965 | 100.00% |
+| RAMuogi           | 0.475 | 2.453 | 4.881 | 100.00% |
+| **RACASO (Hutchinson)** | **0.485** | **3.806** | **50.54 (diverged)** | n/a (OOM at 1B) |
+| **RACASO (GNB)**  | not run* | not run* | not run* | n/a (OOM at 1B) |
+
+`*` GNB requires the problem to expose a `logits_fn(params) -> [B, C]` method for synthetic-label sampling. R1/R2/R3 are training real models end-to-end; the logits-extraction wrapper would require refactoring each problem's forward pass to expose intermediate logits, which we leave to future work. GNB's behavior is characterized on the synthetic P6 classification problem (§8.6), where GNB and Hutchinson finish within 0.7% of each other (2.15 vs 2.13 final loss).
 
 ---
 

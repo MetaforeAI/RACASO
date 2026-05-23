@@ -24,6 +24,10 @@ from __future__ import annotations
 
 import argparse
 import csv
+import sys
+
+# Long loss_trajectory cells can exceed Python's default CSV field limit.
+csv.field_size_limit(sys.maxsize)
 import math
 from collections import defaultdict
 from pathlib import Path
