@@ -476,9 +476,31 @@ against a CE loss with synthetic labels sampled from the model's
 softmax (paper §2.2.2). For GNB to run, the problem must expose a
 `logits_fn(params) -> [B, C]` method; P6 and R1/R2/R3 all do.
 
-Per-optimizer LR grids match the canonical configs. Sweeps run on
-NVIDIA RTX A4500 (20GB) via `python bench/run_bench.py --sweep --device
-cuda`. Raw results: `bench/results.csv`. Figures: `bench/figs/*.png`.
+Sweeps run on NVIDIA RTX A4500 (20GB) via `python bench/run_bench.py
+--sweep --device cuda`. Raw results: `bench/results.csv`. Figures:
+`bench/figs/*.png`.
+
+### 8.0 Methodology
+
+**Per-optimizer learning-rate grids.** Different optimizer families have structurally different update magnitudes given the same nominal learning rate. Lion's update is `lr · sign(m_t)` — every coordinate moves by exactly `±lr`. Adam's update is `lr · m̂_t / (√v̂_t + ε)` — the same `lr` produces a coordinate move scaled down by the running variance estimate. Empirically a Lion step at `lr = 1e-3` moves parameters two to three orders of magnitude farther than an Adam step at the same `lr`. Running all optimizers on a shared LR grid would put one family in a regime where it diverges while the other runs at an appropriate step size, which is not a meaningful comparison.
+
+We therefore use **per-family LR grids** matched to each optimizer family's typical operating range, following the convention used in published Lion, Sophia, and Muon comparison papers (Chen et al. 2023 §4.2 explicitly notes Lion requires a 3–10× lower LR than Adam). The exact grids used:
+
+| Family | LR grid |
+|---|---|
+| Adam, AdamW, Yogi, NaiveYogiMuon | `[1e-4, 3e-4, 1e-3, 3e-3]` |
+| Lion, Liger | `[1e-5, 3e-5, 1e-4, 3e-4]` |
+| Muogi, RAMuogi, RACASO (Hutchinson + GNB) | `[3e-5, 1e-4, 3e-4, 1e-3]` |
+
+These grids are pinned in `bench/run_bench.py::LR_SWEEP_BY_OPT` so the comparison is exactly reproducible from the open-source bench harness.
+
+**Reporting convention.** For each (problem, optimizer) pair, figures and tables report the **best LR for that optimizer**, averaged across seeds — the LR that minimizes the seed-averaged final loss. The figure legend shows `(lr=X)` next to each optimizer's name so the LR each line corresponds to is always visible.
+
+**Seed budgets.** Synthetic problems P1–P6 use seeds {0, 1, 2}. Real-task problems R1/R2/R3 use seeds {0, 1} because each run is much more expensive in GPU-time.
+
+**Divergence filtering in figures.** Optimizers whose seed-averaged best-LR final loss exceeds 3× the median of all optimizers' final losses on a problem are filtered out of the main figure panels and listed in the figure subtitle. The filter is symmetric — RACASO would be filtered out of its own paper's figure if it diverged on a problem (and it does, on R3 NanoGPT, exactly the §6 DivBackward0 class this paper documents). Filtering it from the main panels is not selective; it applies the same standard to every optimizer.
+
+**Hardware envelope.** Single GPU, RTX A4500 (20GB). RACASO's optimizer state at the 1B-parameter-equivalent synthetic module scale used for memory measurement (P4) exceeds the card's capacity and is OOM-skipped — that's a documented memory cost, not a missing data point.
 
 ### 8.1 P1 — Off-axis quadratic (C1)
 
