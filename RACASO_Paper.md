@@ -433,7 +433,163 @@ This section is preserved from the integration log so future optimizer work has 
 
 ---
 
-## 8. Configuration
+## 8. Empirical Results
+
+The benchmark suite (in `bench/`) comprises two layers:
+
+- **Six synthetic problems (P1–P6)** that isolate the analytical claims:
+  P1 off-axis quadratic (claim C1: rotation matters under off-diagonal
+  curvature), P2 Rosenbrock 2D + N=100 (C1 at scale), P3 saddle 2D +
+  N=20 (C2: Hutchinson captures negative curvature; C3: GNB cannot
+  escape on its own), P4 row-spread pathology (C4 spread cap + C5 eigh
+  safe-skip), P5 DivBackward0 hazard (C6: L5 safe-skip on unbounded
+  second derivative), P6 classification (the canonical setup for
+  Hutchinson vs GNB comparison).
+- **Three real-task problems (R1–R3)** that demonstrate industry-credible
+  training: R1 CIFAR-10 ResNet-18, R2 char-LM on tiny-shakespeare, R3
+  byte-level NanoGPT (~30M params) on WikiText-2.
+
+The harness runs against all 10 optimizers vendored in `bench/optimizers/`
+(`adam`, `adamw`, `yogi`, `lion`, `liger`, `muogi`, `ramuogi`,
+`racaso_hutchinson`, `racaso_gnb`, `naive_yogi_muon`). Each RACASO
+variant is constructed via the HVP wrapper at
+`bench/optimizers/racaso_hvp_wrappers.py` which computes the curvature
+stash on each refresh step — Hutchinson via `torch.func.hvp` against the
+problem's `forward(params)`, GNB via one extra first-order backward
+against a CE loss with synthetic labels sampled from the model's
+softmax (paper §2.2.2). For GNB to run, the problem must expose a
+`logits_fn(params) -> [B, C]` method; P6 and R1/R2/R3 all do.
+
+Per-optimizer LR grids match the canonical configs. Sweeps run on
+NVIDIA RTX A4500 (20GB) via `python bench/run_bench.py --sweep --device
+cuda`. Raw results: `bench/results.csv`. Figures: `bench/figs/*.png`.
+
+### 8.1 P1 — Off-axis quadratic (C1)
+
+**Setup.** 8-dim quadratic ``f(W) = 0.5 W^T H W - b^T W`` where ``H = U Λ U^T``, ``Λ = diag(10, 5, 1, 0.5, 0.1, 0.05, 0.01, 0.005)`` and ``U`` is a random orthogonal matrix. The optimum is non-trivial and the rotation breaks axis-alignment, exposing methods that can model off-diagonal curvature.
+
+**Results.** _TBD after GPU sweep._ See `bench/figs/fig_p1_off_axis_quad.png`.
+
+### 8.2 P2 — Rosenbrock (2D + N=100)
+
+**Setup.** Classic 2-D Rosenbrock starting at (-1.2, 1.0), and the generalized N=100 version starting at all -1.2.
+
+**Results.** _TBD._ See `bench/figs/fig_p2_rosenbrock.png`.
+
+### 8.3 P3 — Saddle escape (C2 + C3)
+
+**Setup.** 2-D `f(x, y) = x² - y²` and 20-D `f(W) = 0.5 W^T diag([+1]*10 + [-1]*10) W`. The PSD-only second-order method (GNB) cannot escape; Hutchinson should escape via negative-curvature directions.
+
+**Results.** _TBD._ See `bench/figs/fig_p3_saddle.png`.
+
+### 8.4 P4 — Row-spread pathology (C4 + C5)
+
+**Setup.** 8×8 quadratic with one row's gradient multiplied by a cycling burst factor (1e2 → 1e4 → 1e6 → 1e8). Tests L1 spread cap and L2 eigh safe-skip.
+
+**Results.** _TBD._ See `bench/figs/fig_p4_row_spread.png` and the safety-counter bar chart in `bench/figs/fig_safety_counters.png`.
+
+### 8.5 P5 — DivBackward0 hazard (C6, L5 safe-skip)
+
+**Setup.** Ratio-form objective `(x·y / ||x||)² - target²` whose second derivative diverges as `||x|| → 0`. Tests RACASO's L5 safe-skip on unbounded HVP.
+
+**Results.** _TBD._ See `bench/figs/fig_p5_div_backward.png`.
+
+### 8.6 P6 — Classification (Hutchinson vs GNB)
+
+**Setup.** 2-layer MLP on 10-class synthetic classification. The canonical setup where both `racaso_hutchinson` and `racaso_gnb` can run side-by-side; the problem exposes `logits_fn` so GNB has somewhere to sample synthetic labels from.
+
+**Results.** _TBD._ See `bench/figs/fig_p6_classification.png`.
+
+### 8.7 R1 — CIFAR-10 ResNet-18
+
+**Setup.** ResNet-18 (~11.2M params, vendored at `bench/models/resnet18.py`) on CIFAR-10. 5000 steps, batch 128. Convergence threshold train loss < 0.5.
+
+**Results.**
+
+| Optimizer | Best LR | Final train loss | Steps to converge |
+|---|---|---|---|
+| AdamW | _TBD_ | _TBD_ | _TBD_ |
+| Yogi | _TBD_ | _TBD_ | _TBD_ |
+| Lion | _TBD_ | _TBD_ | _TBD_ |
+| Liger | _TBD_ | _TBD_ | _TBD_ |
+| Muogi | _TBD_ | _TBD_ | _TBD_ |
+| RAMuogi | _TBD_ | _TBD_ | _TBD_ |
+| **RACASO (Hutchinson)** | _TBD_ | _TBD_ | _TBD_ |
+| **RACASO (GNB)** | _TBD_ | _TBD_ | _TBD_ |
+
+(See `bench/figs/fig_r1_cifar10.png`.)
+
+### 8.8 R2 — Char-LM on tiny-shakespeare
+
+**Setup.** 4-layer char-LM (~3M params) on tiny-shakespeare. 3000 steps, batch 32, sequence length 128. Convergence threshold train loss < 1.5.
+
+**Results.**
+
+| Optimizer | Best LR | Final train loss | Steps to converge |
+|---|---|---|---|
+| AdamW | _TBD_ | _TBD_ | _TBD_ |
+| Yogi | _TBD_ | _TBD_ | _TBD_ |
+| Lion | _TBD_ | _TBD_ | _TBD_ |
+| Liger | _TBD_ | _TBD_ | _TBD_ |
+| Muogi | _TBD_ | _TBD_ | _TBD_ |
+| RAMuogi | _TBD_ | _TBD_ | _TBD_ |
+| **RACASO (Hutchinson)** | _TBD_ | _TBD_ | _TBD_ |
+| **RACASO (GNB)** | _TBD_ | _TBD_ | _TBD_ |
+
+(See `bench/figs/fig_r2_charlm.png`.)
+
+### 8.9 R3 — NanoGPT (byte-level) on WikiText-2
+
+**Setup.** 6-layer NanoGPT (~30M params): hidden 384, 6 heads, byte-level vocab 256, sequence length 256. WikiText-2-raw, 1000 steps, batch 8. Convergence threshold train loss < 5.0.
+
+**Results.**
+
+| Optimizer | Best LR | Final train loss | Steps to converge |
+|---|---|---|---|
+| AdamW | _TBD_ | _TBD_ | _TBD_ |
+| Yogi | _TBD_ | _TBD_ | _TBD_ |
+| Lion | _TBD_ | _TBD_ | _TBD_ |
+| Liger | _TBD_ | _TBD_ | _TBD_ |
+| Muogi | _TBD_ | _TBD_ | _TBD_ |
+| RAMuogi | _TBD_ | _TBD_ | _TBD_ |
+| **RACASO (Hutchinson)** | _TBD_ | _TBD_ | _TBD_ |
+| **RACASO (GNB)** | _TBD_ | _TBD_ | _TBD_ |
+
+(See `bench/figs/fig_r3_nanogpt.png`.)
+
+### 8.10 Comparison with sibling family optimizers (Liger, Muogi, RAMuogi)
+
+The RACASO benchmark suite runs against **all sibling-family optimizers** developed in this lineage — Liger (Christopher 2026a) and Muogi/RAMuogi (Christopher 2026b) — because each is published as a separate ArXiv submission with overlapping baselines, and cross-citation strengthens all three papers.
+
+**Where each sibling wins.**
+
+- **Liger** is expected to outperform RACASO on memory-constrained problems (R1/R2/R3 at scale) because Liger's optimizer state is ~50% of AdamW's, while RACASO's rotated-basis matrices push it *above* AdamW.
+- **Muogi/RAMuogi** are expected to outperform RACASO on dense matrix-orthogonalization problems (R1 CIFAR ResNet) because NS5's polar decomposition is cheaper than RACASO's Hutchinson HVP refresh per step.
+
+**Where RACASO wins.**
+
+- **P3 saddle escape** — by construction. Hutchinson HVP captures negative curvature; GNB (and Adam-family `v_t` adaptive methods) cannot escape on their own.
+- **P5 DivBackward0** — RACASO's L5 safe-skip handles unbounded second derivative gracefully; methods that naively call into `torch.autograd.grad` on a second-derivative graph hit eager-autograd pathologies (§7 documents 8 such attempts).
+- **P6 classification with Hutchinson vs GNB** — head-to-head, GNB is strictly more conservative (PSD-only) while Hutchinson can both escape saddles and be hostile to forward-graph fragility. The data tells us which trade-off is worth it.
+
+**Cross-comparison figure.** See `bench/figs/cross_comparison.png` — a single multi-panel figure overlaying all optimizers on R1/R2/R3. The same figure appears in Liger_Paper.md §9 and RAMuogi_Paper.md §9.
+
+**Unified head-to-head table** (same content across all 3 papers; this paper highlights RACASO):
+
+| Optimizer | R1 final loss | R2 final loss | R3 final loss | State bytes (% of AdamW) |
+|---|---|---|---|---|
+| AdamW | _TBD_ | _TBD_ | _TBD_ | 100.00% |
+| Yogi | _TBD_ | _TBD_ | _TBD_ | 100.00% |
+| Lion | _TBD_ | _TBD_ | _TBD_ | 50.00% |
+| Liger | _TBD_ | _TBD_ | _TBD_ | ~50% |
+| Muogi | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| RAMuogi | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| **RACASO (Hutchinson)** | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| **RACASO (GNB)** | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+
+---
+
+## 9. Configuration
 
 | Field | Default | Meaning |
 |---|---|---|
@@ -456,7 +612,7 @@ This section is preserved from the integration log so future optimizer work has 
 
 ---
 
-## 9. Conclusion
+## 10. Conclusion
 
 RACASO decouples the calculation of curvature topology from the tracking of gradient coordinate history. By combining Kronecker-factored structural rotations with rigorous monolithic Hutchinson HVP sampling, RACASO ensures that second-order curvature alignment is mathematically rigorous, computationally viable, and resilient to the structural challenges of modern branching network topologies.
 
