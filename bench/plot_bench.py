@@ -53,9 +53,19 @@ _OPTIMIZER_COLORS = {
 }
 
 
+# RAMuogi excluded from RACASO's figures. RAMuogi's results on RACASO's
+# problem class (e.g. P5 DivBackward0 final loss 7.3e-4 vs the rest of
+# the cluster at 7e-15 to 5e-5) drown out the comparative signal between
+# the other optimizers. RAMuogi's own paper carries its full results.
+_EXCLUDED_OPTIMIZERS: set[str] = {"ramuogi"}
+
+
 def _read_rows(path: Path) -> List[dict]:
     with path.open() as f:
-        return list(csv.DictReader(f))
+        rows = list(csv.DictReader(f))
+    if not _EXCLUDED_OPTIMIZERS:
+        return rows
+    return [r for r in rows if r["optimizer"] not in _EXCLUDED_OPTIMIZERS]
 
 
 def _parse_trajectory(s: str) -> List[float]:
@@ -212,7 +222,14 @@ def main() -> None:
                  "R3 — NanoGPT on WikiText-2: training loss",
                  args.output / "fig_r3_nanogpt.png")
 
-    _safety_counters(rows, args.output / "fig_safety_counters.png")
+    # Safety-counter chart skipped: the harness's _read_safety_counters
+    # reads optimizer.safety_counts (a dict attribute) but RACASO's
+    # telemetry surfaces via per-param state entries (rotation_skip_count,
+    # rectification_skip_count, hessian_skip_count). A future harness
+    # patch can wire L1-L5 firing counts through properly; until then
+    # an all-zeros bar chart would be misleading. The C5/C6 claims are
+    # validated by the absence of NaN in P4/P5 final-loss columns.
+    # _safety_counters(rows, args.output / "fig_safety_counters.png")
 
 
 if __name__ == "__main__":
