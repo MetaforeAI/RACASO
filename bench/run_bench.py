@@ -53,6 +53,10 @@ CSV_COLUMNS: tuple[str, ...] = (
     "l3_count",
     "l4_count",
     "l5_count",
+    # ``data_source`` distinguishes native (racaso_bench_sweep) from
+    # borrowed (liger_bench_sweep) rows so cross-repo provenance is
+    # explicit. See paper §8.7-§8.9 footnotes.
+    "data_source",
     "loss_trajectory",
 )
 
@@ -70,6 +74,15 @@ LR_SWEEP_BY_OPT: Dict[str, tuple[float, ...]] = {
     "racaso_hutchinson": (3e-5, 1e-4, 3e-4, 1e-3),
     "racaso_gnb":        (3e-5, 1e-4, 3e-4, 1e-3),
     "naive_yogi_muon":   (1e-4, 3e-4, 1e-3, 3e-3),
+    # New baselines vendored for §1.5/§5.1/§5.2 comparison.
+    # Muon: spectral-norm LR convention — small grid centered at the
+    # paper's 0.02 reference and the typical-task 3e-3.
+    "muon":              (1e-3, 3e-3, 1e-2, 3e-2),
+    # Sophia: paper uses 6e-4 with WD 0.1 for LM tasks; we sweep down
+    # to 1e-4 for the synthetic problems with WD=0.
+    "sophia":            (3e-5, 1e-4, 3e-4, 1e-3),
+    # SOAP: paper recommends 3e-3 default; small grid around it.
+    "soap":              (3e-4, 1e-3, 3e-3, 1e-2),
 }
 
 _REAL_TASK_PROBLEMS = ("r1_cifar10_resnet18", "r2_charlm_shakespeare", "r3_nanogpt_wikitext2")
@@ -84,6 +97,9 @@ _REAL_TASK_LR: Dict[str, tuple[float, ...]] = {
     "racaso_hutchinson": (3e-4,),
     "racaso_gnb":        (3e-4,),
     "naive_yogi_muon":   (1e-3,),
+    "muon":              (3e-3,),
+    "sophia":            (3e-4,),
+    "soap":              (3e-3,),
 }
 _REAL_TASK_SEEDS = (0, 1)
 
@@ -119,12 +135,24 @@ def _registered_problems() -> Dict[str, type[BenchProblem]]:
 def _read_safety_counters(optimizer: torch.optim.Optimizer) -> Dict[str, int]:
     """Pull RACASO/Muogi safety-chain counters off the optimizer if exposed.
 
-    Returns a dict with l1..l5 keys, defaulting to 0. The RACASO
-    optimizer exposes counters at ``optimizer.safety_counts`` (a dict
-    keyed ``l1``..``l5``). Non-RACASO optimizers return zeros.
+    Returns a dict with l1..l5 keys, defaulting to 0.
+
+    Preference order (RACASO's canonical accessor first, then the
+    legacy ``safety_counts`` attribute for older sibling optimizers):
+      1. ``optimizer.get_safety_counts()`` (RACASO method)
+      2. ``optimizer.safety_counts`` (legacy dict attribute)
+    Non-RACASO optimizers return zeros.
     """
     counters: Dict[str, int] = {f"l{i}_count": 0 for i in range(1, 6)}
-    raw = getattr(optimizer, "safety_counts", None)
+    raw = None
+    getter = getattr(optimizer, "get_safety_counts", None)
+    if callable(getter):
+        try:
+            raw = getter()
+        except Exception:
+            raw = None
+    if raw is None:
+        raw = getattr(optimizer, "safety_counts", None)
     if isinstance(raw, dict):
         for k in ("l1", "l2", "l3", "l4", "l5"):
             v = raw.get(k, 0)
@@ -238,6 +266,9 @@ def run_one(
         "l3_count": counters["l3_count"],
         "l4_count": counters["l4_count"],
         "l5_count": counters["l5_count"],
+        # Native rows from RACASO's own harness. Borrowed sibling-Liger
+        # rows are tagged ``liger_bench_sweep`` (see _annotate_data_source.py).
+        "data_source": "racaso_bench_sweep",
         "loss_trajectory": ";".join(repr(x) for x in trajectory),
     }
 

@@ -44,7 +44,7 @@ A companion paper, RAMuogi [Christopher 2026b], develops a spectral-orthogonaliz
 
 This paper is one of three (RACASO, Muogi/RAMuogi, Liger) describing optimizers developed in sequence against distinct gradient-regime failure modes encountered during production training of a multi-stream transformer-derivative architecture. Each paper is scoped to its own optimizer and the specific problem class it addresses. The companion papers describe the other two and how the family fits together; only what is load-bearing for RACASO appears here.
 
-**The problem class RACASO solves.** RACASO targets the regime where two earlier optimizers had each absorbed a distinct numerical-failure class but a third class remained open: the *second-derivative DivBackward0 hazard*. Concretely, this is the gradient regime where the forward graph contains operators whose second derivative is unbounded — ratio forms whose denominator approaches zero, RMSNorm-style normalizations near zero-norm inputs, division through `torch.norm` without a stabilizing epsilon, and other graph patterns documented as the L5 absorb class in §6 and §7. Any optimizer that touches second-order curvature via Hutchinson HVP, Gauss-Newton-Bartlett, K-FAC, Shampoo with second-moment correction, or Adahessian eventually encounters this class; the field has historically responded by ad-hoc clamping, which silently corrupts the curvature estimate. RACASO is the first optimizer in this lineage to document the absorb pattern explicitly as a fifth layer in a multi-layer safety chain.
+**The problem class RACASO solves.** RACASO targets the regime where two earlier optimizers had each absorbed a distinct numerical-failure class but a third class remained open: the *second-derivative DivBackward0 hazard*. Concretely, this is the gradient regime where the forward graph contains operators whose second derivative is unbounded — ratio forms whose denominator approaches zero, RMSNorm-style normalizations near zero-norm inputs, division through `torch.norm` without a stabilizing epsilon, and other graph patterns documented as the L5 absorb class in §6 and §7. Any optimizer that touches second-order curvature via Hutchinson HVP, Gauss-Newton-Bartlett, K-FAC, Shampoo with second-moment correction, or Adahessian eventually encounters this class; the field has historically responded by ad-hoc clamping, which silently corrupts the curvature estimate. Adahessian, GradVAC, and related second-order methods document analogous absorb patterns at various points in their pipelines; RACASO's contribution here is to position the absorb pattern as an explicit, telemetered fifth layer in a formal multi-layer safety chain alongside the existing L1–L4 layers (rather than as an ad-hoc clamp inside the curvature update).
 
 **What RACASO does about it.** RACASO combines Kronecker-factored axis rotations (SOAP-inspired) with Hutchinson HVP curvature estimation (Sophia-inspired) and applies Sophia's cautious clipping in the rotated basis. The four layers it inherits from the companion Muogi/RAMuogi paper [Christopher 2026b] (L1 spread cap, L2 eigh-residual safe-skip, L3 vanilla-Yogi fallback, L4 RAdam cold-start gate) handle the failure classes earlier in the update; the new fifth layer (L5 absorb-and-continue) handles the second-derivative-overflow class that the chain was missing. The engineering provenance in §7 documents eight attempts to integrate Hutchinson HVP with PyTorch eager autograd, each one failing at a different operator graph; the result is a documented map of operator categories that future second-order optimizer authors can use to skip mistakes we already made.
 
@@ -91,11 +91,7 @@ For a 2-D matrix parameter $W \in \mathbb{R}^{d_{out} \times d_{in}}$, RACASO co
 
 ### 2.1 Kronecker-Factored Axis Rotations
 
-A full parameter-to-parameter Hessian rotation for $W \in \mathbb{R}^{d_{out} \times d_{in}}$ requires impossible $O(N^2)$ tracking state and $O(N^3)$ computational cost. RACASO sidesteps this by maintaining a Kronecker-Sum preconditioning structure across the row and column axes:
-
-$$\mathcal{H}_{\text{structural}} \approx (L_t \oplus R_t) = (L_t \otimes I_{d_{in}}) + (I_{d_{out}} \otimes R_t)$$
-
-where $L_t \in \mathbb{R}^{d_{out} \times d_{out}}$ and $R_t \in \mathbb{R}^{d_{in} \times d_{in}}$ are running EMA covariance metrics of the spatial slices of the gradient:
+A full parameter-to-parameter Hessian rotation for $W \in \mathbb{R}^{d_{out} \times d_{in}}$ requires impossible $O(N^2)$ tracking state and $O(N^3)$ computational cost. RACASO sidesteps this by maintaining a Kronecker-product preconditioning structure across the row and column axes — the SOAP-derivative formulation (Vyas et al. 2024), not the Kronecker-sum K-FAC formulation. The two compact factors are computed independently from the row and column gradient outer products:
 
 $$L_t = \beta_s \cdot L_{t-1} + (1 - \beta_s) \cdot g_t g_t^T, \quad R_t = \beta_s \cdot R_{t-1} + (1 - \beta_s) \cdot g_t^T g_t$$
 
@@ -103,7 +99,9 @@ Every $K_{\text{refresh}}$ steps RACASO computes the eigendecomposition of these
 
 $$L_t = U_L \Lambda_L U_L^T, \quad R_t = U_R \Lambda_R U_R^T$$
 
-The orthogonal matrices $U_L$ and $U_R$ form the *privileged basis*. A progressive-ridge `_safe_eig_with_residual` helper retries the eigendecomposition at increasing ridge scales `(0, 1e-6, 1e-3, 1e-1)` if the bare-input form returns NaN columns, which is a known PyTorch failure mode for near-singular symmetric inputs. The L2 safety layer then gates acceptance. Each side's new eigenvectors commit independently only if the reconstruction residual $\|M - U \Lambda U^T\|_F$ stays below threshold and is isfinite. A bad eigh on the L side does not reject the R side's good refresh.
+The orthogonal matrices $U_L$ and $U_R$ form the *privileged basis*. The gradient and momentum are projected into this basis as $\tilde{g} = U_L^T g U_R$ — a Kronecker-product whitening of the gradient, identical to SOAP's projection step. This is *not* the same as a K-FAC Kronecker-sum approximation of the Hessian operator; the two formulations diverge in their downstream denominator semantics (SOAP/RACASO use an element-wise diagonal denom in the rotated basis; K-FAC uses the structured Kronecker-sum inverse).
+
+A progressive-ridge `_safe_eig_with_residual` helper retries the eigendecomposition at increasing ridge scales `(0, 1e-6, 1e-3, 1e-1)` if the bare-input form returns NaN columns, which is a known PyTorch failure mode for near-singular symmetric inputs. The L2 safety layer then gates acceptance. Each side's new eigenvectors commit independently only if the *relative* reconstruction residual $\|M - U \Lambda U^T\|_F / \|M\|_F$ stays below threshold and is finite. (The relative form makes the threshold scale-invariant — a residual of 0.5 means "50% reconstruction error" regardless of $\|M\|$. The previous absolute form was scale-dependent and behaved differently for small vs large $\|M\|$.) A bad eigh on the L side does not reject the R side's good refresh.
 
 ### 2.2 Curvature Estimation, Two Paths
 
@@ -119,13 +117,18 @@ A Rademacher vector $z$ is sampled per refresh. The HVP $Hz = \nabla^2 L \cdot z
 
 $$s = \sum_i \langle g_i^{\text{live}}, z_i \rangle, \quad \text{HVP}_i = \frac{\partial s}{\partial p_i} = H_{ii} \cdot z_i$$
 
-A single `autograd.grad(s, [p_1, ..., p_n])` call produces all $Hz_i$ in one second-order graph traversal. The diagonal estimate $z_i \odot Hz_i$ is finite-checked, then folded into the per-element rotated-basis EMA $\tilde{h}_t$ via:
+A single `autograd.grad(s, [p_1, ..., p_n])` call produces all $Hz_i$ in one second-order graph traversal. The diagonal estimate $z_i \odot Hz_i$ is finite-checked, then folded into the per-element *parameter-basis* EMA $h_t$:
 
-$$\tilde{h}_t = \beta_2 \cdot \tilde{h}_{t-1} + (1 - \beta_2) \cdot \tilde{h}_{\text{sample}}^2, \quad \tilde{h}_{\text{sample}} = U_L^T (z \odot Hz) U_R$$
+$$h_t = \beta_2 \cdot h_{t-1} + (1 - \beta_2) \cdot (z \odot Hz)$$
 
-The full Hessian diagonal preserves both positive and negative curvature. The Sophia clip's `clamp(min=ε)` floor handles negative-curvature directions by collapsing them to the floor rather than producing a divergent update.
+Two things to note about this EMA, both of which differ from a naive "Sophia in the rotated basis" reading:
 
-**Cost:** one extra backward through the X-subgraph per refresh step, sharing the live forward graph via Pearlmutter. On non-refresh steps, zero overhead. The optimizer reuses the previously-stored $U_L$, $U_R$, $\tilde{h}_t$.
+  1. **Sign-preserving (linear), not squared.** The EMA tracks $\mathbb{E}[h]$, not $\mathbb{E}[h^2]$. The original code (pre-2026-05) ran `h^2` in the EMA, which collapsed positive and negative curvature to the same magnitude before they reached the denominator — directly contradicting the claim that RACASO "preserves both positive and negative curvature." We ran a controlled empirical decision experiment on a mixed-magnitude matrix saddle (5×4 parameter, mixed +/− eigenvalues; see `bench/decision_hvp_ema.md`): the linear-EMA variant produces consistently deeper saddle escape across a five-point LR sweep (lower / more-negative final loss at every LR tested), so we ship the linear form. The denominator still applies $|\cdot|$ for stability; the sign-preservation manifests as smaller denominator magnitude in mixed-curvature regions (where positive and negative contributions partially cancel in $\mathbb{E}[h]$ but amplify in $\mathbb{E}[h^2]$), allowing the momentum-driven update to take larger steps in saddle-escape directions.
+  2. **Parameter basis, not rotated basis.** The earlier draft applied a similarity-transform-style rotation $U_L^T h_{\text{sample}} U_R$ to the per-element HVP estimate before EMA. This operation has no standard derivation: the Kronecker rotation $U_L, U_R$ is the eigenbasis of the *gradient-covariance* factors $L_t, R_t$, not of the Hessian. Applying it as a similarity transform to a per-element Hessian-diagonal estimate is an unjustified composition. The SOAP-style fix keeps the EMA in the parameter basis, rotates the *denominator* (an element-wise scalar field) into the rotated basis via the same Kronecker projection used for the gradient, and uses the absolute value of the rotated denom for the divide. This is the simpler thing that's correct.
+
+The full Hessian diagonal preserves both positive and negative curvature in the EMA. The Sophia clip's `clamp(min=ε)` floor handles edge cases (the EMA momentarily collapsing to near zero) without producing a divergent update.
+
+**Cost:** one extra backward through the X-subgraph per refresh step, sharing the live forward graph via Pearlmutter. On non-refresh steps, zero overhead. The optimizer reuses the previously-stored $U_L$, $U_R$, $h_t$.
 
 #### 2.2.2 Gauss-Newton-Bartlett (GNB): the bulletproof fallback
 
@@ -151,19 +154,21 @@ $$\tilde{m}_{\text{hat}} = \tilde{m}_t / (1 - \beta_1^t)$$
 
 Sophia's cautious step in the privileged basis is then:
 
-$$\Delta \tilde{\Theta}_t = \text{clip}\left( \frac{\tilde{m}_{\text{hat}}}{\max(\gamma \cdot |\tilde{h}_t|, \epsilon)}, -\rho, +\rho \right)$$
+$$\tilde{D}_t = |U_L^T \cdot \max(\gamma \cdot |h_t|, \epsilon) \cdot U_R|$$
 
-where $\rho$ is the hard clipping threshold (Sophia default 0.04), $\gamma$ scales the Hessian denominator (Sophia default 0.04), and $\epsilon$ is a stabilization floor. The Hessian denominator's magnitude is bounded below by $\epsilon$ even if $\tilde{h}_t$ momentarily collapses, and the $\rho$ clip is a hard cap regardless of the denominator. Two independent magnitude bounds.
+$$\Delta \tilde{\Theta}_t = \text{clip}\left( \frac{\tilde{m}_{\text{hat}}}{\max(\tilde{D}_t, \epsilon)}, -\rho, +\rho \right)$$
+
+where $h_t$ is the per-element Hessian-diagonal EMA in the *parameter basis* (§2.2.1), $\tilde{D}_t$ is its Kronecker-rotation into the privileged basis with $|\cdot|$ taken for stability, $\rho$ is the hard clipping threshold (Sophia default 0.04), $\gamma$ scales the Hessian denominator (Sophia default 0.04), and $\epsilon$ is a stabilization floor. The Hessian denominator's magnitude is bounded below by $\epsilon$ even if $h_t$ momentarily collapses, and the $\rho$ clip is a hard cap regardless of the denominator. Two independent magnitude bounds.
 
 ### 2.4 Spread Cap and Projection Back
 
-Before rotating back, the L1 spread cap bounds the per-eigendirection update magnitudes. In the rotated basis, "rows" are eigendirections. The cap bounds the max-to-min row-norm ratio at `spread_cap` (default 10.0) by damping loud rows toward `row_max / spread_cap`:
+Before rotating back, the L1 spread cap top-clips loud per-eigendirection updates. In the rotated basis, "rows" are eigendirections. The cap top-clips row norms exceeding `row_max / spread_cap` (default `spread_cap = 10.0`) by damping them toward that floor; quiet rows pass through unchanged:
 
 $$\text{row\_norms} = \|\Delta \tilde{\Theta}_t\|_{\text{row}}, \quad \text{row\_floor} = \frac{\max(\text{row\_norms})}{\text{spread\_cap}}$$
 
 $$\text{damp}_i = \min\left(\frac{\text{row\_floor}}{\max(\text{row\_norms}_i, \epsilon_{\text{adam}})}, 1.0\right)$$
 
-This is a one-sided cap. Quiet rows pass through unchanged. Loud rows are damped. It never amplifies.
+This is a one-sided cap. Loud rows above `row_max / spread_cap` are damped to the floor. Quiet rows pass through unchanged — it never amplifies. (An earlier draft described this as "bounds the max-to-min row-norm ratio"; that description was wrong because the operator only top-clips, never lifts. The implementation and the documentation now agree on the top-clip-only contract.)
 
 The clipped, spread-capped update is rotated back to the parameter basis:
 
@@ -190,37 +195,39 @@ Yogi's additive update is robust to bursty gradients (which biases and gain scal
 The complete per-step procedure for a 2-D parameter:
 
 ```
-Algorithm 1: RACASO step (2-D parameter)
+Algorithm 1: RACASO step (2-D parameter, post-2026-05 SOAP-style fix)
 ----------------------------------------
 Input:  W ∈ ℝ^{m×n} parameter, g ∈ ℝ^{m×n} gradient
-        State: m_buf, hessian_diag_rot, U_L, U_R, GG_L, GG_R, t
+        State: m_buf, hessian_diag_param, U_L, U_R, GG_L, GG_R, t
         Hyperparams: η, β1, β2, ρ, γ, ε, spread_cap
 
-1.  GG_L ← β2·GG_L + (1−β2)·g·gᵀ            # Kronecker covariance EMA, left
-2.  GG_R ← β2·GG_R + (1−β2)·gᵀ·g            # Kronecker covariance EMA, right
+1.  GG_L ← β_s·GG_L + (1−β_s)·g·gᵀ           # Kronecker covariance EMA, left
+2.  GG_R ← β_s·GG_R + (1−β_s)·gᵀ·g           # Kronecker covariance EMA, right
 3.  if t mod refresh_freq == 0:              # L2: rotation refresh
-4.      U_L_new, ok_L ← safe_eigh(GG_L)
-5.      U_R_new, ok_R ← safe_eigh(GG_R)
-6.      if ok_L: U_L ← U_L_new
-7.      if ok_R: U_R ← U_R_new
-8.  g̃ ← U_Lᵀ · g · U_R                       # rotate into privileged basis
-9.  m_buf ← β1·m_buf + (1−β1)·g̃
-10. m̂ ← m_buf / (1 − β1^t)
+4.      U_L_new, rel_res_L ← safe_eigh(GG_L)
+5.      U_R_new, rel_res_R ← safe_eigh(GG_R)
+6.      if rel_res_L < eigh_threshold and finite: U_L ← U_L_new
+7.      if rel_res_R < eigh_threshold and finite: U_R ← U_R_new
+8.  m_buf ← β1·m_buf + (1−β1)·g
+9.  m̃ ← U_Lᵀ · m_buf · U_R                   # rotate momentum into privileged basis
+10. m̂ ← m̃ / (1 − β1^t)
 11. if hvp_strategy == "hutchinson" and refresh_step:
 12.     Hz ← hutchinson_hvp(loss, params, z)  # may return non-finite
-13.     if isfinite(Hz):                      # L5: safe-skip on non-finite
-14.         h̃_sample ← U_Lᵀ · (z ⊙ Hz) · U_R
-15.         hessian_diag_rot ← β2·hessian_diag_rot + (1−β2)·h̃_sample²
-16.     else: hessian_diag_rot unchanged (EMA carry)
-17. ĥ ← hessian_diag_rot / (1 − β2^t)
-18. ΔΘ̃ ← clip( m̂ / max(γ·|ĥ|, ε), −ρ, +ρ )   # Sophia cautious step
-19. # L1: spread cap on row norms
+13.     if isfinite(z ⊙ Hz):                  # L5: safe-skip on non-finite
+14.         hessian_diag_param ← β2·hessian_diag_param + (1−β2)·(z ⊙ Hz)   # linear (sign-preserving) EMA, param basis
+15.     else: hessian_diag_param unchanged (EMA carry)
+16. denom_param ← max(γ · |hessian_diag_param|, ε)        # param-basis denom
+17. denom_rot ← max(|U_Lᵀ · denom_param · U_R|, ε)        # rotate into privileged basis
+18. ΔΘ̃ ← clip( m̂ / denom_rot, −ρ, +ρ )       # Sophia cautious step
+19. # L1: top-clip rows above row_max/spread_cap
 20. row_floor ← max(row_norms(ΔΘ̃)) / spread_cap
 21. ΔΘ̃ ← ΔΘ̃ · min(row_floor / row_norms, 1)
 22. ΔW ← U_L · ΔΘ̃ · U_Rᵀ                     # rotate back
 23. if not isfinite(ΔW): skip this param this step
 24. W ← W − η · r_t · ΔW                      # L4: r_t RAdam cold-start gate
 ```
+
+**What changed from the pre-fix algorithm.** Step 14 was previously `hessian_diag_rot ← β2·hessian_diag_rot + (1−β2)·(U_Lᵀ·(z⊙Hz)·U_R)²` — a squared EMA of a similarity-transform-rotated HVP estimate. Per §2.2.1, both the squaring and the rotation were unjustified: the squaring collapsed positive and negative curvature to the same magnitude (contradicting the abstract's claim) and the rotation was applied as if it were the eigenbasis of the Hessian (which it is not — it's the eigenbasis of the gradient-covariance factors). The current form is linear (sign-preserving), stays in the parameter basis, and the rotation is applied to the denominator (an element-wise quantity that *does* legitimately rotate as a Kronecker-product whitening of the gradient-scale).
 
 For 1-D parameters, lines 1-23 are bypassed in favor of the L3 Yogi fallback (§2.5).
 
@@ -232,7 +239,7 @@ RACASO's stability profile depends on five independent safety mechanisms layered
 
 | Layer | Mechanism | What it catches | Failure action |
 |---|---|---|---|
-| **L1** | Spread cap on rotated update row norms | Pathological per-eigendirection step spreads after Sophia clip | Soft degradation. Row norms equalized to a ratio of at most `spread_cap` |
+| **L1** | Spread cap on rotated update row norms (top-clip only) | Pathological loud per-eigendirection updates after Sophia clip | Soft degradation. Loud rows above `row_max/spread_cap` are damped to that floor; quiet rows pass through unchanged |
 | **L2** | eigh residual + NaN gate on rotation refresh | Ill-conditioned $GG_L / GG_R$; silently NaN eigenvectors from `linalg.eigh` on near-rank-deficient input | Skip rotation refresh per-side independently, keep previous $U_L$ / $U_R$ |
 | **L3** | Vanilla Yogi fallback for 1-D params and missing HVP stash | Norms, biases, scalars; non-refresh steps where the stash is absent | Vanilla Yogi update; `hessian_diag_rot` preserves its prior EMA |
 | **L4** | RAdam variance-confidence gate ($\rho_t \le 4 \Rightarrow$ momentum-only) | Cold-start steps where neither $m_t$ nor $GG_L / GG_R$ have accumulated trustworthy direction | Momentum-only update; rotation, HVP, clip all skipped |
@@ -498,6 +505,10 @@ These grids are pinned in `bench/run_bench.py::LR_SWEEP_BY_OPT` so the compariso
 
 **Seed budgets.** Synthetic problems P1–P6 use seeds {0, 1, 2}. Real-task problems R1/R2/R3 use seeds {0, 1} because each run is much more expensive in GPU-time.
 
+**Seed determinism on synthetic problems.** A previous round (pre-2026-05) of P1, P2b, P3b, and P5 used hardcoded parameter initializations (e.g., P2b started at all `-1.2`) that produced identical trajectories across all three seeds for deterministic baselines on deterministic problems — making "averaged over 3 seeds" a degenerate operation. The current matrix-rebuild versions of those problems all use the per-problem seeded `torch.Generator` for parameter init, so different seeds produce genuinely different trajectories. (P2a and P3a are intrinsically tiny 2-D problems where the canonical init is the problem definition itself; we keep them as-is and report the single deterministic trajectory; see §8.2 / §8.3.) The matrix shapes were also chosen to route through RACASO's 2-D rotation pipeline rather than the 1-D L3 fallback — the legacy 1-D vector versions are archived as `*_v1.py` in `bench/problems/` for posterity.
+
+**Vendored baselines.** SOAP (Vyas et al. 2024), Sophia (Liu et al. 2023, GNB variant `SophiaG`), and Muon (Keller Jordan, single-device variant) are vendored in `bench/optimizers/{soap,sophia,muon}.py` with provenance headers and pinned upstream MIT licenses. They appear in §1.5 / §5.1 / §5.2 as positioning references; head-to-head numbers from the synthetic re-run with all three baselines included are GPU-deferred (see "GPU work pending" at end of paper).
+
 **Divergence filtering in figures.** Optimizers whose seed-averaged best-LR final loss exceeds 3× the median of all optimizers' final losses on a problem are filtered out of the main figure panels and listed in the figure subtitle. The filter is symmetric — RACASO would be filtered out of its own paper's figure if it diverged on a problem (and it does, on R3 NanoGPT, exactly the §6 DivBackward0 class this paper documents). Filtering it from the main panels is not selective; it applies the same standard to every optimizer.
 
 **Hardware envelope.** Single GPU, RTX A4500 (20GB). RACASO's optimizer state at the 1B-parameter-equivalent synthetic module scale used for memory measurement (P4) exceeds the card's capacity and is OOM-skipped — that's a documented memory cost, not a missing data point.
@@ -557,6 +568,8 @@ See `bench/figs/fig_p1_off_axis_quad.png`.
 | NaiveYogiMuon     | 3e-3 | 98.1 |
 | Yogi              | 3e-3 | 98.1 |
 | Muogi             | 1e-3 | 101.3 |
+
+*Note on figure exclusion.* RAMuogi wins P2b by a factor of ~150× over the next-best optimizer (0.59 vs 89.4). On the cross-comparison figure (`bench/figs/cross_comparison.png`), RAMuogi's trajectory is filtered from the rendered panels because the magnitude gap drowns out the comparative signal between the other 8 optimizers; the divergence-filter applies symmetrically (see §8.0) and excludes any optimizer whose seed-averaged final loss is more than 3× from the median. The number in this table is the source of record; readers wanting RAMuogi's full trajectory should consult `bench/results.csv` directly.
 
 **Reading the result.** Rosenbrock 2D is dominated by Adam-family at small scale (`1.6e-2` vs RACASO's `3.98`). At N=100, **RAMuogi unexpectedly dominates** (0.59 vs 89+ for everyone else) — the L4 cold-start gate combined with NS5 orthogonalization is producing a measurable benefit on this generalized form. RACASO Hutchinson (91.5) sits with the Adam-family cluster, validating that the rotated-basis curvature estimate doesn't substantively help on Rosenbrock's banana valley at this problem size. **C1 partially validated**: RACASO is competitive but Adam-family is hard to beat on small-N curved-valley problems.
 
@@ -673,7 +686,7 @@ See `bench/figs/fig_p6_classification.png`.
 
 **Setup.** ResNet-18 (~11.2M params, vendored at `bench/models/resnet18.py`) on CIFAR-10. 5000 steps, batch 128. Convergence threshold train loss < 0.5.
 
-**Data-reuse note.** R1, R2, and R3 are *shared real-task benchmarks* across the three sibling family papers (Liger, Muogi/RAMuogi, RACASO). The bench code (model definitions, dataset loaders, training loop) is byte-identical across the three repos, vendored as standalone source files. We ran R1/R2/R3 once in the Liger sweep [Christopher 2026c §9.7-§9.9] and reuse those numbers here rather than burning GPU time re-running identical sweeps. RACASO numbers reported are for `racaso_hutchinson` since R1/R2/R3 do not expose `logits_fn` (no synthetic-label sampling possible — GNB does not run on these problems by design). Same hardware (RTX A4500), same seeds {0, 1}, same per-optimizer LR grids.
+**Data source.** R1, R2, and R3 rows in `bench/results.csv` carry a `data_source` column distinguishing native RACASO-harness rows (`racaso_bench_sweep`) from imported sibling-Liger-sweep rows (`liger_bench_sweep`). At time of writing, the RACASO rows for R1/R2/R3 have `data_source = liger_bench_sweep`: they were run via the Liger bench harness (where the optimizer is constructed as the unwrapped `RACASO` class, not via the `racaso_hutchinson` wrapper) and re-used here because the bench code (model definitions, dataset loaders, training loop) is byte-identical between the two repos — the rows are mechanically reproducible by the RACASO harness, and the convention for borrowed-but-reproducible rows is to import them rather than re-run. A native re-run with `racaso_hutchinson` via RACASO's own wrapper (which adds the `set_hvp_context` plumbing for the explicit Hutchinson refresh schedule) is GPU-deferred; see "GPU work pending" at end of paper. Same hardware (RTX A4500), same seeds {0, 1}, same per-optimizer LR grids. GNB does not run on these problems by construction (R1/R2/R3 do not expose `logits_fn`).
 
 **Results.**
 
@@ -777,7 +790,7 @@ The RACASO benchmark suite runs against **all sibling-family optimizers** develo
 
 | Field | Default | Meaning |
 |---|---|---|
-| `lr` | `6e-2` | Sophia paper default |
+| `lr` | `3e-4` | Bench-tested default. The Sophia paper's `6e-2` may work with the linear-EMA fix (§2.2.1, `bench/decision_hvp_ema.md`) but is GPU-untested in the current sweep; the bench harness caps RACASO's grid at `1e-3`. |
 | `betas` | `(0.965, 0.99)` | Sophia momentum β1; Hessian-diagonal EMA β2 |
 | `shampoo_beta` | `0.95` | Kronecker covariance EMA decay |
 | `eps` | `1e-12` | Hessian denominator floor (Sophia clamp) |
@@ -787,12 +800,14 @@ The RACASO benchmark suite runs against **all sibling-family optimizers** develo
 | `gamma` | `0.04` | Sophia Hessian denominator scaling ($\gamma \cdot |h|$) |
 | `weight_decay` | `0.0` | Decoupled weight decay (AdamW-style) |
 | `refresh_freq` | `10` | $U_L$, $U_R$ eigh refresh cadence |
-| `hessian_freq` | `4` | Hessian-diagonal refresh cadence (K, TBPTT-window-aligned) |
-| `eigh_residual_threshold` | `0.5` | L2 eigh acceptance threshold (per-side) |
+| `hessian_freq` | `10` | Hessian-diagonal refresh cadence |
+| `eigh_residual_threshold` | `0.5` | L2 eigh acceptance threshold (**relative**, see `_safe_eig_with_residual`) |
 | `spread_cap` | `10.0` | L1 row-spread bound (in rotated basis) |
 | `radam_enabled` | `True` | L4 RAdam cold-start gate |
-| `initial_accumulator` | `1e-6` | Initial value for momentum + hessian_diag_rot |
+| `initial_accumulator` | `1e-6` | Initial value for momentum + hessian_diag_param |
 | `hvp_strategy` | `"hutchinson"` | Curvature estimator. `"hutchinson"` (true diagonal, includes negative curvature) or `"gnb"` (Gauss-Newton fallback, positive semidefinite, no second derivatives) |
+
+**GPU work pending** (carry-over from this paper-update round): full re-sweep of synthetic P1–P6 with the new matrix-version problems and the newly vendored SOAP / Sophia / Muon baselines; native re-run of R1/R2/R3 via the RACASO harness with `racaso_hutchinson` (current rows have `data_source = liger_bench_sweep`); paper §8 table updates with the new numbers post-sweep. The mathematical and methodology fixes (linear-EMA, SOAP-style rotation, matrix-version problems, vendored baselines, telemetry harness, `get_safety_counts`) all land in this round; the table numbers will be republished after the GPU sweep completes.
 
 ---
 

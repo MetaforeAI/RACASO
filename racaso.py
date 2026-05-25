@@ -62,7 +62,7 @@ gradient-squared proxy.
 from __future__ import annotations
 
 import math
-from typing import Optional, Tuple
+from typing import Dict, Optional, Tuple
 
 import torch
 from torch.optim.optimizer import Optimizer
@@ -73,13 +73,15 @@ def _safe_eig_with_residual(
     fallback_Q: Optional[torch.Tensor] = None,
 ) -> Tuple[torch.Tensor, float]:
     """Eigendecomposition of symmetric PSD M with progressive ridge
-    fallback. Returns ``(Q, residual)`` where residual is the Frobenius
-    error of the eigendecomposition ``‖M_sym − Q·diag(λ)·Qᵀ‖_F``.
+    fallback. Returns ``(Q, relative_residual)`` where the residual is
+    Frobenius-normalized: ``‖M_sym − Q·diag(λ)·Qᵀ‖_F / max(‖M_sym‖_F, eps)``.
 
-    Caller's L2 uses the residual to decide whether to accept the new
-    Q. Progressive ridges tried: ``0, 1e-6, 1e-3, 1e-1``. If all fail
-    OR produce NaN/Inf in Q or eigvals, returns ``(fallback_Q, inf)``
-    to signal "do not trust this refresh."
+    Caller's L2 uses the *relative* residual so the threshold has
+    consistent meaning across scale regimes (a residual of 0.1 means
+    "10% reconstruction error" regardless of ‖M‖). Progressive ridges
+    tried: ``0, 1e-6, 1e-3, 1e-1``. If all fail OR produce NaN/Inf in
+    Q or eigvals, returns ``(fallback_Q, inf)`` to signal "do not trust
+    this refresh."
 
     NaN trap: PyTorch's ``linalg.eigh`` does NOT always raise on
     rank-deficient or near-singular inputs — it can silently return
@@ -88,6 +90,8 @@ def _safe_eig_with_residual(
     """
     n = M.shape[-1]
     M_sym = 0.5 * (M + M.T)
+    M_sym_norm = float(M_sym.norm().item())
+    M_sym_norm = max(M_sym_norm, 1e-30)
     eye = torch.eye(n, device=M.device, dtype=M.dtype)
     for ridge_scale in (0.0, 1e-6, 1e-3, 1e-1):
         try:
@@ -98,10 +102,11 @@ def _safe_eig_with_residual(
         if not (torch.isfinite(eigvals).all() and torch.isfinite(Q).all()):
             continue
         recon = Q @ torch.diag(eigvals) @ Q.T
-        residual = float((M_sym - recon).norm().item())
-        if not math.isfinite(residual):
+        abs_residual = float((M_sym - recon).norm().item())
+        if not math.isfinite(abs_residual):
             continue
-        return Q, residual
+        rel_residual = abs_residual / M_sym_norm
+        return Q, rel_residual
     if fallback_Q is not None:
         return fallback_Q, float("inf")
     return eye, float("inf")
@@ -115,8 +120,10 @@ class RACASO(Optimizer):
     Hessian + clip). For 1-D parameters (norms, biases, learned
     scalars), falls back to vanilla Yogi via L3.
 
-    Constructor defaults match Sophia's reference paper (lr=6e-2,
-    betas=(0.965, 0.99), rho=0.04, gamma=0.04) plus SOAP-style
+    Constructor default lr=3e-4 reflects the bench-tested value; the
+    Sophia paper's lr=6e-2 may work with the linear-EMA variant but is
+    GPU-untested in our sweep (see paper §10 and bench/decision_hvp_ema.md).
+    betas=(0.965, 0.99), rho=0.04, gamma=0.04 plus SOAP-style
     shampoo_beta=0.95 for the Kronecker covariance EMA.
 
     Class-level contract flag ``_optimizer_handles_own_clip = True``:
@@ -139,7 +146,7 @@ class RACASO(Optimizer):
     def __init__(
         self,
         params,
-        lr: float = 6e-2,
+        lr: float = 3e-4,
         betas: Tuple[float, float] = (0.965, 0.99),
         shampoo_beta: float = 0.95,
         eps: float = 1e-12,
@@ -150,7 +157,7 @@ class RACASO(Optimizer):
         weight_decay: float = 0.0,
         refresh_freq: int = 10,
         hessian_freq: int = 10,
-        eigh_residual_threshold: float = 0.5,
+        eigh_residual_threshold: float = 0.5,  # relative, see _safe_eig_with_residual
         spread_cap: float = 10.0,
         radam_enabled: bool = True,
         initial_accumulator: float = 1e-6,
@@ -201,6 +208,13 @@ class RACASO(Optimizer):
             initial_accumulator=initial_accumulator,
         )
         super().__init__(params, defaults)
+        # Instance-level diag counters (#16: moved off the class so
+        # multiple optimizer instances don't share counters).
+        self._diag_skip_reasons: dict = {
+            "no_grad": 0, "no_grad_fn": 0,
+            "runtime_err": 0, "hz_none": 0, "success": 0,
+            "non_finite": 0,
+        }
 
     @staticmethod
     def _radam_rectification(t: int, beta2: float) -> Tuple[bool, float]:
@@ -243,20 +257,27 @@ class RACASO(Optimizer):
         view+inplace ops). torch.func.hvp builds its own functional
         graph and sidesteps all three.
         """
-        if not hasattr(RACASO, "_diag_skip_reasons"):
-            RACASO._diag_skip_reasons = {
-                "no_grad": 0, "no_grad_fn": 0,
-                "runtime_err": 0, "hz_none": 0, "success": 0,
-            }
+        # Instance-level diag counters; legacy class-level fallback
+        # for callers that arm `RACASO._diag_skip_reasons = {...}`
+        # directly (kept for backward compat with the stage-trap tests).
+        diag = self._diag_skip_reasons
         hvp_estimate = getattr(p, "_racaso_hvp_estimate", None)
         if hvp_estimate is None:
-            RACASO._diag_skip_reasons["no_grad"] += 1
+            diag["no_grad"] = diag.get("no_grad", 0) + 1
             return None
         try:
             delattr(p, "_racaso_hvp_estimate")
         except AttributeError:
             pass
-        RACASO._diag_skip_reasons["success"] += 1
+        # L5: absorb non-finite HVP estimates (e.g. P5 DivBackward0
+        # 1/||x||^3 second derivative blow-up).
+        if not torch.isfinite(hvp_estimate).all():
+            diag["non_finite"] = diag.get("non_finite", 0) + 1
+            state = self.state.get(p, None)
+            if state is not None:
+                state["l5_absorb_fire_count"] = state.get("l5_absorb_fire_count", 0) + 1
+            return None
+        diag["success"] = diag.get("success", 0) + 1
         return hvp_estimate
 
     @torch.no_grad()
@@ -301,7 +322,16 @@ class RACASO(Optimizer):
                     )
                     if use_rotation:
                         m, n = p.shape
-                        state["hessian_diag_rot"] = torch.full_like(
+                        # Hessian-diagonal EMA in the PARAMETER basis
+                        # (SOAP-style fix — see paper §2.2.1 and
+                        # bench/decision_hvp_ema.md). The Q_L^T h Q_R
+                        # similarity transform applied to a per-element
+                        # Hessian-diag estimate has no standard
+                        # derivation; we drop it and use the HVP
+                        # element-wise in the param basis, rotating
+                        # only the gradient/momentum (Kronecker
+                        # preconditioner, not Kronecker-sum K-FAC).
+                        state["hessian_diag_param"] = torch.full_like(
                             p, init_acc, memory_format=torch.preserve_format
                         )
                         state["GG_L"] = torch.zeros(
@@ -320,9 +350,12 @@ class RACASO(Optimizer):
                         state["rotation_skip_count"] = 0
                         state["hessian_success_count"] = 0
                         state["hessian_skip_count"] = 0
+                        state["spread_cap_fire_count"] = 0  # L1 counter
+                        state["l5_absorb_fire_count"] = 0   # L5 counter
                         state["last_eigh_residual"] = 0.0
                         state["last_clip_fraction"] = 0.0
                         state["last_h_estimate_norm"] = 0.0
+                        state["last_h_ema_norm"] = 0.0
                     else:
                         state["exp_avg_sq"] = torch.full_like(
                             p, init_acc, memory_format=torch.preserve_format
@@ -452,28 +485,50 @@ class RACASO(Optimizer):
                 _check("m_rot", m_rot)
 
                 # ── Hessian-vector product diagonal estimate ─────────
-                # Caller must have run backward with create_graph=True
-                # on this step for the HVP to succeed. L3 catches None.
-                hessian_diag_rot = state["hessian_diag_rot"]
+                # SOAP-style: the HVP is element-wise in the parameter
+                # basis. No similarity transform Q^T h Q applied to a
+                # per-element Hessian-diag — that operation lacks a
+                # standard derivation (see paper §2.2.1, post-fix).
+                # EMA is sign-preserving (linear), not squared — see
+                # bench/decision_hvp_ema.md for the empirical decision.
+                # Caller (or the wrapper class) stashes the HVP on p
+                # before this method runs.
+                hessian_diag_param = state["hessian_diag_param"]
                 if t % hessian_freq == 0 or t == 1:
                     h_diag_param = self._try_hutchinson_hvp(p)
                     if h_diag_param is not None:
-                        h_rot = Q_L.T @ h_diag_param @ Q_R
-                        hessian_diag_rot.mul_(beta2).addcmul_(
-                            h_rot, h_rot, value=1.0 - beta2,
+                        # Linear (signed) EMA — preserves the sign of
+                        # the Hessian-diagonal estimate. The .abs() is
+                        # applied at the denominator only, for
+                        # stability; the sign-preservation manifests
+                        # as smaller denom magnitude in mixed-curvature
+                        # regions (positive/negative h partially cancel
+                        # in E[h] but amplify in E[h^2]).
+                        hessian_diag_param.mul_(beta2).add_(
+                            h_diag_param, alpha=1.0 - beta2,
                         )
-                        state["last_h_estimate_norm"] = float(h_rot.norm().item())
+                        state["last_h_estimate_norm"] = float(
+                            h_diag_param.norm().item()
+                        )
                         state["hessian_success_count"] += 1
                     else:
                         state["hessian_skip_count"] += 1
 
                 # ── Sophia cautious step in the rotated basis ────────
+                # Build the denominator in the param basis (sign-aware
+                # EMA in the param basis), then rotate it into the same
+                # Kronecker basis as m_rot so the per-element divide
+                # makes sense. Equivalent to a Kronecker-product
+                # preconditioner (SOAP-derivative), not a
+                # Kronecker-sum (K-FAC).
                 bc1 = 1.0 - beta1 ** t
                 m_hat_rot = m_rot / bc1
-                _check("hessian_diag_rot", hessian_diag_rot)
-                denom = (gamma_scale * hessian_diag_rot.abs()).clamp_(min=eps)
-                _check("denom", denom)
-                update_rot_raw = m_hat_rot / denom
+                _check("hessian_diag_param", hessian_diag_param)
+                denom_param = (gamma_scale * hessian_diag_param.abs()).clamp_(min=eps)
+                denom_rot = (Q_L.T @ denom_param @ Q_R).abs().clamp_(min=eps)
+                _check("denom_rot", denom_rot)
+                state["last_h_ema_norm"] = float(hessian_diag_param.norm().item())
+                update_rot_raw = m_hat_rot / denom_rot
                 _check("update_rot_raw", update_rot_raw)
                 update_rot = update_rot_raw.clamp(min=-rho, max=rho)
                 _check("update_rot", update_rot)
@@ -494,6 +549,13 @@ class RACASO(Optimizer):
                 row_norm_safe = row_norms.clamp(min=eps_adam)
                 damp = (row_floor / row_norm_safe).clamp(max=1.0)
                 _check("damp", damp)
+                # L1 counter: any row actually damped (damp < 1) means
+                # the spread cap top-clipped a loud row this step. Note:
+                # the documented contract is "top-clip rows above
+                # row_max/spread_cap" — not "bound the max/min ratio"
+                # (we never amplify quiet rows). See paper §2.4/§3.
+                if bool((damp < 1.0).any().item()):
+                    state["spread_cap_fire_count"] += 1
                 update_rot = update_rot * damp.unsqueeze(-1)
                 _check("update_rot_post_spread", update_rot)
 
@@ -536,10 +598,13 @@ class RACASO(Optimizer):
         hess_ok = 0
         hess_skip = 0
         rect_skip = 0
+        spread_cap_fire = 0
+        l5_absorb_fire = 0
         last_r_t = 0.0
         last_eigh_res = 0.0
         last_clip = 0.0
         last_h_norm = 0.0
+        last_h_ema_norm = 0.0
         last_step = 0
         num_2d = 0
         for group in self.param_groups:
@@ -555,22 +620,49 @@ class RACASO(Optimizer):
                 hess_ok += state.get("hessian_success_count", 0)
                 hess_skip += state.get("hessian_skip_count", 0)
                 rect_skip += state.get("rectification_skip_count", 0)
+                spread_cap_fire += state.get("spread_cap_fire_count", 0)
+                l5_absorb_fire += state.get("l5_absorb_fire_count", 0)
                 if state.get("step", 0) > last_step:
                     last_step = state["step"]
                     last_r_t = state.get("last_r_t", 0.0)
                     last_eigh_res = state.get("last_eigh_residual", 0.0)
                     last_clip = state.get("last_clip_fraction", 0.0)
                     last_h_norm = state.get("last_h_estimate_norm", 0.0)
+                    last_h_ema_norm = state.get("last_h_ema_norm", 0.0)
         return {
             "rotation_success_count": rot_ok,
             "rotation_skip_count": rot_skip,
             "hessian_success_count": hess_ok,
             "hessian_skip_count": hess_skip,
             "rectification_skip_count": rect_skip,
+            "spread_cap_fire_count": spread_cap_fire,
+            "l5_absorb_fire_count": l5_absorb_fire,
             "last_r_t": last_r_t,
             "last_eigh_residual": last_eigh_res,
             "last_clip_fraction": last_clip,
             "last_h_estimate_norm": last_h_norm,
+            "last_h_ema_norm": last_h_ema_norm,
             "num_2d_params": num_2d,
-            "_diag_skip_reasons": dict(getattr(RACASO, "_diag_skip_reasons", {})),
+            "_diag_skip_reasons": dict(self._diag_skip_reasons),
+        }
+
+    def get_safety_counts(self) -> Dict[str, int]:
+        """Return the L1..L5 safety-chain counters as a dict.
+
+        Patches the bench harness gap where ``run_bench.py`` reads
+        ``optimizer.safety_counts`` (absent) — this method is the
+        canonical accessor. Maps:
+          - l1: spread_cap_fire_count (top-clip on rotated row norms)
+          - l2: rotation_skip_count (eigh refresh failures)
+          - l3: hessian_skip_count (HVP missing or absorbed)
+          - l4: rectification_skip_count (RAdam cold-start gate)
+          - l5: l5_absorb_fire_count (non-finite HVP absorb)
+        """
+        tel = self.get_telemetry()
+        return {
+            "l1": int(tel.get("spread_cap_fire_count", 0)),
+            "l2": int(tel.get("rotation_skip_count", 0)),
+            "l3": int(tel.get("hessian_skip_count", 0)),
+            "l4": int(tel.get("rectification_skip_count", 0)),
+            "l5": int(tel.get("l5_absorb_fire_count", 0)),
         }

@@ -59,7 +59,9 @@ def test_construction_defaults():
     p = _make_2d_param(4, 8)
     opt = RACASO([p])
     g = opt.param_groups[0]
-    assert g["lr"] == 6e-2
+    # Default lr changed from Sophia's 6e-2 to 3e-4 (bench-tested value);
+    # see paper §10 and bench/decision_hvp_ema.md for the discussion.
+    assert g["lr"] == 3e-4
     assert g["betas"] == (0.965, 0.99)
     assert g["rho"] == 0.04
     assert g["gamma"] == 0.04
@@ -428,3 +430,26 @@ def test_telemetry_signature_keys():
     assert "last_clip_fraction" in t
     assert "last_eigh_residual" in t
     assert "last_r_t" in t
+    assert "spread_cap_fire_count" in t
+    assert "l5_absorb_fire_count" in t
+    assert "last_h_ema_norm" in t
+
+
+# ── 16. Safety-count accessor (bench harness contract) ────────────────
+
+
+def test_get_safety_counts_returns_five_keys():
+    """The bench harness reads optimizer.get_safety_counts() and expects
+    a 5-key dict mapping l1..l5 to int counts."""
+    p = _make_2d_param(4, 8)
+    opt = RACASO([p], betas=(0.9, 0.99))
+    for _ in range(10):
+        p.grad = torch.randn_like(p) * 0.01
+        opt.step()
+    counts = opt.get_safety_counts()
+    assert set(counts.keys()) == {"l1", "l2", "l3", "l4", "l5"}
+    for k, v in counts.items():
+        assert isinstance(v, int), f"{k} should be int, got {type(v).__name__}"
+        assert v >= 0
+    # L4 (cold-start) should have fired at least 4 times before rho_t > 4.
+    assert counts["l4"] >= 4

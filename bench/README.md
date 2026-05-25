@@ -56,7 +56,18 @@ Columns of `bench_results.csv`, in order:
 | `l3_count`               | int        | RACASO L3 1-D Yogi fallback count |
 | `l4_count`               | int        | RACASO L4 RAdam gate count |
 | `l5_count`               | int        | RACASO L5 safe-skip count |
+| `data_source`            | str        | provenance tag: `racaso_bench_sweep` for native rows or `liger_bench_sweep` for rows imported from the sibling Liger sweep (R1/R2/R3 only) |
 | `loss_trajectory`        | str        | full per-step loss history, semicolon-separated floats |
+
+**Data-source provenance.** R1/R2/R3 (CIFAR-10/ResNet-18, char-LM
+Shakespeare, NanoGPT WikiText-2) rows are currently imported from the
+sibling Liger sweep, where the optimizer was constructed as the
+unwrapped `racaso` class. The bench code in this repo is a verbatim
+vendored copy of the same bench infrastructure, so the harness
+mechanics are identical; only the wrapper layer (i.e.,
+`racaso_hutchinson` vs naked `racaso`) differs. A native re-run is
+GPU-deferred; the current CSV is marked with `data_source` for
+transparency. See paper §8.7-§8.9 footnotes.
 
 The semicolon (not comma) separator inside `loss_trajectory` keeps the
 CSV parseable by `csv.DictReader` / `pandas.read_csv` without

@@ -31,14 +31,17 @@ from racaso import RACASO
 
 
 # Stage names in execution order — the test asserts each one is clean.
+# Post-2026-05 SOAP-style fix renamed hessian_diag_rot → hessian_diag_param
+# and added a denom_rot stage (was: denom). Keep the legacy names too so
+# trap output from older saved logs is still recognizable.
 _STAGES = [
     "pre_grad",
     "exp_avg",
     "GG_L", "GG_R",
     "Q_L", "Q_R",
     "m_rot",
-    "hessian_diag_rot",
-    "denom",
+    "hessian_diag_param",
+    "denom_rot",
     "update_rot_raw", "update_rot",
     "damp", "update_rot_post_spread",
     "update",

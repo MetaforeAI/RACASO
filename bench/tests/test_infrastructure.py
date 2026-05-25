@@ -109,7 +109,11 @@ def test_build_optimizer_returns_optimizer(name: str):
 
 
 @pytest.mark.parametrize(
-    "name", ("muon", "lion", "sophia", "soap")
+    # All four (muon, lion, sophia, soap) have since been vendored.
+    # Parametrize empty so the test is a no-op until a new
+    # not-yet-vendored baseline appears. We keep the function so the
+    # naming convention is preserved for future additions.
+    "name", ()
 )
 def test_build_optimizer_not_vendored_raises(name: str):
     params = [torch.randn(3, requires_grad=True)]
@@ -136,18 +140,15 @@ def test_build_optimizer_rejects_nonpositive_lr():
 
 
 def test_known_optimizers_includes_all_eight():
-    expected = {
-        "adam",
-        "adamw",
-        "yogi",
-        "muon",
-        "lion",
-        "sophia",
-        "soap",
-        "racaso_hutchinson",
-        "racaso_gnb",
+    """KNOWN_OPTIMIZERS should be a superset of the eight original
+    baselines (adam, adamw, yogi, muon, lion, sophia, soap, racaso).
+    Additional sibling optimizers (liger, muogi, ramuogi,
+    naive_yogi_muon, racaso_gnb) may also be present."""
+    required = {
+        "adam", "adamw", "yogi", "muon", "lion", "sophia", "soap",
+        "racaso_hutchinson", "racaso_gnb",
     }
-    assert set(KNOWN_OPTIMIZERS) == expected
+    assert required.issubset(set(KNOWN_OPTIMIZERS))
 
 
 # ---------------------------------------------------------------------------

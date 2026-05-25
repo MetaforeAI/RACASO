@@ -38,11 +38,16 @@ Canonical configs (single source of truth — see ``README.md``):
                         — bench/optimizers/muogi.py (sibling repo, vendored)
     ramuogi           : RAMuogi(lr, default RAMuogi config)
                         — bench/optimizers/ramuogi.py (sibling repo, vendored)
-    muon              : NotImplementedError until vendored from the
-                        Keller Jordan reference implementation
-    sophia            : NotImplementedError until vendored from the
-                        official Sophia repo
-    soap              : NotImplementedError until vendored from Vyas et al.
+    muon              : Muon(lr, momentum=0.95, weight_decay=0.0)
+                        — bench/optimizers/muon.py (vendored from
+                        Keller Jordan, MIT). Single-device Muon
+                        variant; 1-D params fall back to AdamW.
+    sophia            : Sophia(lr, betas=(0.965,0.99), rho=0.04)
+                        — bench/optimizers/sophia.py (vendored from
+                        Liu et al. 2023, MIT). SophiaG / GNB variant.
+    soap              : SOAP(lr, betas=(0.95,0.95), shampoo_beta=0.95)
+                        — bench/optimizers/soap.py (vendored from
+                        Vyas et al. 2024, MIT).
 """
 
 from __future__ import annotations
@@ -171,6 +176,31 @@ def _build_ramuogi(params: List[torch.Tensor], lr: float, **_) -> torch.optim.Op
     return RAMuogi(params, lr=lr)
 
 
+def _build_muon(params: List[torch.Tensor], lr: float, **_) -> torch.optim.Optimizer:
+    from bench.optimizers.muon import Muon
+
+    return Muon(params, lr=lr, momentum=0.95, weight_decay=0.0)
+
+
+def _build_sophia(params: List[torch.Tensor], lr: float, **_) -> torch.optim.Optimizer:
+    from bench.optimizers.sophia import Sophia
+
+    return Sophia(params, lr=lr, betas=(0.965, 0.99), rho=0.04, weight_decay=0.0)
+
+
+def _build_soap(params: List[torch.Tensor], lr: float, **_) -> torch.optim.Optimizer:
+    from bench.optimizers.soap import SOAP
+
+    # SOAP defaults to weight_decay=0.01; we disable for the synthetic
+    # quadratic problems (consistency with other baselines). Use the
+    # upstream's default Shampoo beta (-1, which means use betas[1]).
+    return SOAP(
+        params, lr=lr, betas=(0.95, 0.95),
+        shampoo_beta=0.95, weight_decay=0.0,
+        precondition_1d=False,
+    )
+
+
 def build_optimizer(
     name: str,
     params: List[torch.Tensor],
@@ -218,10 +248,11 @@ def build_optimizer(
         "liger": _build_liger,
         "muogi": _build_muogi,
         "ramuogi": _build_ramuogi,
+        "muon": _build_muon,
+        "sophia": _build_sophia,
+        "soap": _build_soap,
     }
     if name in builders:
         return builders[name](params, lr, problem=problem)
-    if name in ("muon", "sophia", "soap"):
-        raise NotImplementedError(_vendor_pointer(name))
 
     raise AssertionError(f"unreachable: optimizer {name} not dispatched")

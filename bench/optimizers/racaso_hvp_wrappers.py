@@ -87,9 +87,11 @@ class RACASOHutchinson(RACASO):
         def fwd(*flat_params: torch.Tensor) -> torch.Tensor:
             return self._forward_fn(list(flat_params))
 
-        # Rademacher probes per param.
+        # Rademacher probes per param (same dtype as the param so the
+        # HVP arithmetic stays in the param's numerical regime).
         probes = [
-            torch.randint_like(p, low=0, high=2, dtype=torch.float32).mul_(2).sub_(1)
+            (torch.randint(low=0, high=2, size=p.shape,
+                           device=p.device, dtype=p.dtype) * 2 - 1)
             if p.ndim >= 2 else None
             for p in params
         ]
@@ -99,7 +101,13 @@ class RACASOHutchinson(RACASO):
             z if z is not None else torch.zeros_like(p)
             for z, p in zip(probes, params)
         )
-        param_tuple = tuple(p.detach().clone().requires_grad_(True) for p in params)
+        # Pass the LIVE params directly (no .clone()). torch.func.hvp is
+        # functional — it does not in-place modify its primal argument,
+        # so handing it the live tensors is safe and avoids the
+        # duplicate forward pass the previous .clone() route caused
+        # (see paper §4.1 — the "monolithic engine" claim depends on
+        # *not* running forward twice per refresh step).
+        param_tuple = tuple(params)
 
         try:
             _, hz_tuple = torch.func.hvp(fwd, param_tuple, probe_tuple)
@@ -111,6 +119,9 @@ class RACASOHutchinson(RACASO):
             if z is None or hz is None:
                 continue
             if not torch.isfinite(hz).all():
+                # Stash NaN/Inf so the optimizer's L5 absorb counter
+                # increments instead of silently being a no-op.
+                p._racaso_hvp_estimate = (z * hz).detach()
                 continue
             p._racaso_hvp_estimate = (z * hz).detach()
 

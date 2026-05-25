@@ -1,24 +1,24 @@
-"""P5 — DivBackward0 hazard. Validates C6 (L5 safe-skip on unbounded
-second derivative).
+"""P5 — DivBackward0 hazard on MATRIX parameters. Validates C6 (L5
+safe-skip on unbounded second derivative).
 
-The forward graph is
+The forward graph is the Frobenius-generalized version of the original
+ratio:
 
-    diff = (x . y / ||x||) - target
-    loss = diff * diff             # squared so loss >= 0 and tol=1e-3 is meaningful
+    diff = (<x, y>_F / ||x||_F) - target
+    loss = diff * diff             # squared so loss >= 0 and tol is meaningful
 
-with ``||x|| = torch.norm(x)``. The 1/||x|| factor makes the *second*
-derivative blow up as ``||x||`` shrinks — the second-order term has a
-``1/||x||^3`` structure. First-order autograd is finite, so naive
-optimizers proceed; methods that take a Hessian-vector product (RACASO
-Hutchinson) hit unbounded curvature and must safe-skip (L5).
+where ``x, y ∈ R^{2×2}``, ``<x, y>_F = sum_ij x_ij y_ij``, and
+``||x||_F = sqrt(sum_ij x_ij^2)``. The 1/||x||_F factor makes the
+*second* derivative blow up as ``||x||_F`` shrinks — the second-order
+term has a ``1/||x||_F^3`` structure. First-order autograd is finite;
+methods that take a Hessian-vector product (RACASO Hutchinson) hit
+unbounded curvature and must safe-skip (L5).
 
-Sizes:
-    x, y: vectors of length 4
-    target: fixed scalar
+The matrix shape ensures RACASO's 2-D rotation pipeline engages on both
+parameters (the legacy 1-D version in p5_div_backward_v1.py routed to
+L3 Yogi and never exercised that path).
 
-We override ``forward`` so the default autograd path supplies the
-first-order gradients. The L5 trigger happens inside the optimizer's
-HVP refresh, not here.
+Sizes: x, y ∈ R^{2×2}, target fixed scalar.
 
 ``max_steps=1000``, ``converged_tol=1e-3``.
 """
@@ -33,15 +33,15 @@ from bench.problems.base import BenchProblem
 
 
 class P5DivBackward(BenchProblem):
-    """Tiny ratio-form objective with unbounded second derivative near
-    ``||x||=0``.
+    """Matrix ratio-form objective with unbounded second derivative near
+    ``||x||_F = 0``.
     """
 
     name = "p5_div_backward"
     max_steps = 1000
     converged_tol = 1e-3
 
-    _DIM: int = 4
+    _SHAPE = (2, 2)
 
     def __init__(self, seed: int, device: str = "cpu") -> None:
         super().__init__(seed, device=device)
@@ -51,21 +51,18 @@ class P5DivBackward(BenchProblem):
 
     def init_params(self) -> List[torch.Tensor]:
         gen = self._generator
-        # Initialize x at modest norm — not at zero (singular point) but
-        # close enough that the second derivative is large. y is freely
-        # initialized.
-        x = (0.3 * torch.randn(self._DIM, generator=gen, dtype=torch.float64)).to(self.device)
-        y = torch.randn(self._DIM, generator=gen, dtype=torch.float64).to(self.device)
+        # Initialize x at modest Frobenius norm — not at zero (singular
+        # point) but close enough that the second derivative is large.
+        x = (0.3 * torch.randn(*self._SHAPE, generator=gen, dtype=torch.float64)).to(self.device)
+        y = torch.randn(*self._SHAPE, generator=gen, dtype=torch.float64).to(self.device)
         x.requires_grad_(True)
         y.requires_grad_(True)
         return [x, y]
 
     def forward(self, params: List[torch.Tensor]) -> torch.Tensor:
         x, y = params
-        # Use a tiny eps inside the norm only if numerical breakdown
-        # would kill the run before the optimizer even sees a chance.
-        # We deliberately use plain torch.norm here so the DivBackward0
-        # graph structure is what RACASO's HVP refresh sees.
+        # Plain torch.norm so the DivBackward0 graph structure is what
+        # RACASO's HVP refresh sees.
         n = torch.norm(x)
         ratio = (x * y).sum() / n
         diff = ratio - self._target

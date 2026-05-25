@@ -7,13 +7,18 @@
 Two registered subclasses:
 
 * ``p3a_saddle_2d`` — ``f(x, y) = x^2 - y^2``, init ``(0.1, 0.1)``,
-  ``max_steps=2000``.
-* ``p3b_saddle_n20`` — ``f(W) = 0.5 * W^T diag([+1]*10 + [-1]*10) W``,
-  ``max_steps=2000``.
+  ``max_steps=2000``. Intrinsically a 2-D problem; routes through L3 in
+  RACASO (paper §8 documents this as a tiny-2-D regime).
+* ``p3b_saddle_n20`` — quadratic saddle on a ``5 × 4`` MATRIX parameter:
+  ``f(W) = 0.5 * sum D_ij W_ij^2``, where ``D`` is a fixed (10/+1,
+  10/-1) shuffled mask reshaped to 5×4. Matrix shape so RACASO's 2-D
+  rotation pipeline engages (the legacy 1-D version routed to L3 Yogi
+  and never tested the 2-D path; see p3_saddle_v1.py).
 
 The objective is unbounded below in the negative-curvature directions,
 so the converged criterion is **escape from origin**, not loss below a
-tolerance. ``converged()`` returns True when ``||params||^2 > 5.0``.
+tolerance. ``converged()`` returns False so the run always runs the full
+``max_steps`` budget — downstream analysis reads the trajectory.
 
 Subclasses set ``saddle = True`` so harness / plot code can identify
 saddle problems and interpret their trajectories accordingly.
@@ -55,23 +60,16 @@ class P3aSaddle2D(BenchProblem):
         return x * x - y * y
 
     def converged(self, current_loss: float, step: int) -> bool:
-        # "Convergence" = escape from origin. ``current_loss`` is not
-        # informative here since it is unbounded below; we cannot read
-        # parameter norm from a float. The harness records the loss
-        # trajectory; downstream analysis identifies escape via
-        # ``saddle=True`` and parameter norm reconstructed from
-        # known-init + trajectory. We return False here so the run
-        # always completes its full ``max_steps`` budget. This is
-        # intentional: for saddle problems the full trajectory is the
-        # signal, not first-crossing-of-tol.
         del current_loss, step
         return False
 
 
 class P3bSaddleN20(BenchProblem):
-    """20-dim quadratic saddle: 10 positive + 10 negative eigenvalues.
+    """20-dim quadratic saddle on a 5×4 MATRIX parameter.
 
-    f(W) = 0.5 * W^T diag([+1]*10 + [-1]*10) W
+    f(W) = 0.5 * sum_{i,j} D_{ij} W_{ij}^2 where D has 10 positive and
+    10 negative entries (signed-magnitude mask reshaped to 5×4). The
+    matrix shape exercises RACASO's 2-D rotation pipeline.
     """
 
     name = "p3b_saddle_n20"
@@ -79,7 +77,8 @@ class P3bSaddleN20(BenchProblem):
     converged_tol = 0.0
     saddle: bool = True
 
-    _N: int = 20
+    _SHAPE = (5, 4)
+    _N = 20
 
     def __init__(self, seed: int, device: str = "cpu") -> None:
         super().__init__(seed, device=device)
@@ -89,20 +88,25 @@ class P3bSaddleN20(BenchProblem):
                 -torch.ones(10, dtype=torch.float64),
             ]
         )
-        self._diag = eigvals.to(self.device)
+        # Shuffle so positive and negative directions are interspersed
+        # in the matrix layout — increases pressure on rotation refresh.
+        perm_gen = torch.Generator()
+        perm_gen.manual_seed(7)  # fixed across seeds for reproducibility
+        perm = torch.randperm(self._N, generator=perm_gen)
+        eigvals = eigvals[perm]
+        self._D = eigvals.reshape(self._SHAPE).to(self.device)
 
     def init_params(self) -> List[torch.Tensor]:
         gen = self._generator
-        # Small symmetric offset so every direction has a non-zero
-        # initial gradient component (helps Adam find the negative
-        # direction at all, exposing the negative-curvature failure).
-        w = (0.1 * torch.randn(self._N, generator=gen, dtype=torch.float64)).to(self.device)
-        w.requires_grad_(True)
-        return [w]
+        # Small symmetric offset; seeded so different seeds produce
+        # different runs.
+        W = (0.1 * torch.randn(*self._SHAPE, generator=gen, dtype=torch.float64)).to(self.device)
+        W.requires_grad_(True)
+        return [W]
 
     def forward(self, params: List[torch.Tensor]) -> torch.Tensor:
-        (w,) = params
-        return 0.5 * (self._diag * w * w).sum()
+        (W,) = params
+        return 0.5 * (self._D * W * W).sum()
 
     def converged(self, current_loss: float, step: int) -> bool:
         del current_loss, step
