@@ -453,3 +453,102 @@ def test_get_safety_counts_returns_five_keys():
         assert v >= 0
     # L4 (cold-start) should have fired at least 4 times before rho_t > 4.
     assert counts["l4"] >= 4
+
+
+# ── 17. Correctness locks for the rotated-basis curvature rewrite ──────
+#
+# These pin the math fixes that replaced the unsound `|Q_L^T denom Q_R|`
+# congruence (which produced sign-garbage masked by `.abs()`) with a
+# rotated-basis denominator that is positive-by-construction. See the
+# evidence log: diag(Q^T H Q) != Q^T diag(H) Q, so the rotated Hessian
+# diagonal must be probed in the rotated basis, not rotated after the fact.
+
+
+def _convex_matrix_problem(m=6, n=5, seed=7, log_cond=1.0):
+    """SPD-coupled convex quadratic f(W) = 0.5 <H W, W>; the true Hessian
+    diagonal is strictly positive in every basis, so a correct rotated-basis
+    curvature estimate must come out (essentially) all-positive.
+
+    ``log_cond`` sets the eigenvalue spread (condition number = 10**log_cond).
+    """
+    g = torch.Generator().manual_seed(seed)
+    U = torch.linalg.qr(torch.randn(m, m, generator=g))[0]
+    Hm = U @ torch.diag(torch.logspace(0, log_cond, m)) @ U.T  # SPD
+    W = torch.nn.Parameter(torch.randn(m, n, generator=g) * 0.5)
+
+    def loss_of(Wp):
+        return 0.5 * (Hm @ Wp * Wp).sum()
+
+    return W, loss_of
+
+
+def test_curvature_mode_validation():
+    p = _make_2d_param(4, 8)
+    RACASO([p], curvature_mode="hutchinson")
+    RACASO([p], curvature_mode="soap")
+    with pytest.raises(ValueError, match="curvature_mode"):
+        RACASO([p], curvature_mode="bogus")
+
+
+def test_rotated_hessian_diagonal_is_sign_correct_on_convex():
+    """The shipped hutchinson path must store a *true* rotated-basis Hessian
+    diagonal — positive on a convex (SPD) problem. The removed bug produced
+    sign-flipped entries (~65% negative) masked by `.abs()`."""
+    W, loss_of = _convex_matrix_problem()
+    opt = RACASO(
+        [W], lr=1e-2, betas=(0.9, 0.99), hessian_freq=1, refresh_freq=1,
+        rho=1.0, curvature_mode="hutchinson",
+        forward_fn=lambda params: loss_of(params[0]),
+    )
+    opt.set_hvp_context(lambda params: loss_of(params[0]), [W])
+    for _ in range(30):
+        opt.zero_grad()
+        loss_of(W).backward()
+        opt.step()
+    hdr = opt.state[W]["hessian_diag_rot"]
+    neg_fraction = (hdr < 0).float().mean().item()
+    assert neg_fraction < 0.2, (
+        f"rotated Hessian diagonal is {neg_fraction*100:.0f}% negative on a "
+        f"convex problem — the unsound rotation bug is back"
+    )
+
+
+@pytest.mark.parametrize("mode", ["hutchinson", "soap"])
+def test_both_curvature_modes_descend(mode):
+    """Both curvature modes must drive a well-conditioned convex coupled
+    quadratic down, given an adequate step budget. (On ill-conditioned
+    problems Sophia-style cautious clipping is intentionally conservative;
+    the descent guarantee is asserted in the regime the optimizer targets.)"""
+    W, loss_of = _convex_matrix_problem(log_cond=1.0)  # condition ~10
+    fwd = (lambda params: loss_of(params[0])) if mode == "hutchinson" else None
+    opt = RACASO(
+        [W], lr=3e-2, betas=(0.9, 0.99), hessian_freq=4, refresh_freq=4,
+        rho=1.0, curvature_mode=mode, forward_fn=fwd,
+    )
+    if mode == "hutchinson":
+        opt.set_hvp_context(lambda params: loss_of(params[0]), [W])
+    initial = loss_of(W).item()
+    for _ in range(500):
+        opt.zero_grad()
+        loss_of(W).backward()
+        opt.step()
+    final = loss_of(W).item()
+    assert torch.isfinite(torch.tensor(final))
+    assert final < 0.1 * initial, (
+        f"{mode} did not descend: {initial:.3f} -> {final:.3f}"
+    )
+
+
+def test_pearlmutter_identity_grad_of_inner_product_is_Hz():
+    """Sanity-lock the HVP foundation: grad_p <g(p), z> = H @ z (full
+    matvec), NOT diag(H)*z. The diagonal estimate only appears after the
+    elementwise z (x) Hz and expectation."""
+    n = 6
+    A = torch.randn(n, n)
+    H = A @ A.T - 2.0 * torch.eye(n)  # symmetric, indefinite
+    p = torch.randn(n, requires_grad=True)
+    g = torch.autograd.grad(0.5 * p @ H @ p, p, create_graph=True)[0]
+    z = (torch.randint(0, 2, (n,)) * 2 - 1).float()
+    hz = torch.autograd.grad((g * z).sum(), p)[0]
+    assert torch.allclose(hz, H @ z, atol=1e-4)
+    assert not torch.allclose(hz, torch.diag(H) * z, atol=1e-2)

@@ -36,6 +36,9 @@ In Phase 1 the sweep is a documented no-op (no problems registered) —
 it writes a header-only CSV and exits cleanly. Single-config invocation
 raises a clear error.
 
+Full sweep results (`results.csv`) are large and git-ignored; regenerate via
+`run_bench.py --sweep` or request the artifact.
+
 ## CSV schema
 
 Columns of `bench_results.csv`, in order:

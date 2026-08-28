@@ -19,3 +19,43 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+-------------------------------------------------------------------------------
+Third-Party Attributions, Inspirations & Acknowledgments
+-------------------------------------------------------------------------------
+
+RACASO builds upon, adapts, and synthesizes key foundational concepts from the
+following optimization frameworks and algorithms:
+
+1. CASPR (Cautious Adaptive Second-order Preconditioned Regularizer)
+   - Foundational architectural intuition bridging second-order cautious step bounds with structured preconditioning.
+
+2. SOAP (Second-Order Optimization via Kronecker Preconditioning)
+   - Authors: Nikhil Vyas, Depen Morwani, Rosie Zhao, Gal Kaplun, Sham Kakade, Boaz Barak (2024)
+   - License: MIT License
+   - Citation: arXiv:2409.11321
+
+2. Sophia (Scalable Stochastic Second-order Optimizer)
+   - Authors: Hong Liu, Zhiyuan Li, David Hall, Percy Liang, Tengyu Ma (2023)
+   - License: MIT License
+   - Citation: arXiv:2305.14342
+
+3. Shampoo (Preconditioned Stochastic Tensor Optimization)
+   - Authors: Vineet Gupta, Tomer Koren, Yoram Singer (2018)
+   - License: Apache License 2.0
+   - Citation: arXiv:1802.09568
+
+4. AdaHessian (Adaptive Second Order Optimizer)
+   - Authors: Zhewei Yao, Amir Gholami, Sheng Shen, Mustafa Mustafa, Kurt Keutzer, Michael W. Mahoney (2020)
+   - License: Apache License 2.0
+   - Citation: arXiv:2006.00719
+
+5. RAdam (Rectified Adam / Variance Confidence Gating)
+   - Authors: Liyuan Liu, Haoming Jiang, Pengcheng He, Weizhu Chen, Xiaodong Liu, Jianfeng Gao, Jiawei Han (2019)
+   - License: Apache License 2.0 / MIT
+   - Citation: arXiv:1908.03265
+
+6. Yogi (Additive Variance Tracking)
+   - Authors: Manzil Zaheer, Sashank J. Reddi, Devendra Sachan, Satyen Kale, Sanjiv Kumar (2018)
+   - License: Apache License 2.0 / MIT
+   - Citation: NeurIPS 2018

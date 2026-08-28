@@ -315,7 +315,6 @@ class SOAP(optim.Optimizer):
             state['Q'] = self.get_orthogonal_matrix(state['GG'])
         if state['step'] > 0 and state['step'] % state['precondition_frequency'] == 0:
             state['Q'] = self.get_orthogonal_matrix_QR(state, max_precond_dim, merge_dims)
-            # state['Q'] = self.get_fast_QR(state, max_precond_dim, merge_dims)             
 
         if state["step"] > 0:
             state["exp_avg"] = self.project(state["exp_avg"], state, merge_dims=merge_dims, max_precond_dim=max_precond_dim) 

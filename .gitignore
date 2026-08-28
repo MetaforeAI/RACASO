@@ -10,4 +10,13 @@ backups/
 venv/
 .DS_Store
 bench/datasets/_cache/
-bench/figs/
+bench/results*.csv
+bench/sweep*.log
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+paper.pdf

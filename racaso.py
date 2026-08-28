@@ -62,10 +62,13 @@ gradient-squared proxy.
 from __future__ import annotations
 
 import math
-from typing import Dict, Optional, Tuple
+from typing import Callable, Dict, List, Optional, Tuple
 
 import torch
 from torch.optim.optimizer import Optimizer
+
+
+_CURVATURE_MODES = ("hutchinson", "soap")
 
 
 def _safe_eig_with_residual(
@@ -161,6 +164,8 @@ class RACASO(Optimizer):
         spread_cap: float = 10.0,
         radam_enabled: bool = True,
         initial_accumulator: float = 1e-6,
+        curvature_mode: str = "hutchinson",
+        forward_fn: Optional[Callable] = None,
     ):
         if lr <= 0.0:
             raise ValueError(f"Invalid RACASO learning rate: {lr}")
@@ -190,6 +195,11 @@ class RACASO(Optimizer):
             )
         if spread_cap <= 1.0:
             raise ValueError(f"Invalid spread_cap (must be > 1): {spread_cap}")
+        if curvature_mode not in _CURVATURE_MODES:
+            raise ValueError(
+                f"Invalid curvature_mode {curvature_mode!r}; "
+                f"expected one of {_CURVATURE_MODES}"
+            )
         defaults = dict(
             lr=lr,
             betas=betas,
@@ -206,6 +216,7 @@ class RACASO(Optimizer):
             spread_cap=spread_cap,
             radam_enabled=radam_enabled,
             initial_accumulator=initial_accumulator,
+            curvature_mode=curvature_mode,
         )
         super().__init__(params, defaults)
         # Instance-level diag counters (#16: moved off the class so
@@ -215,6 +226,11 @@ class RACASO(Optimizer):
             "runtime_err": 0, "hz_none": 0, "success": 0,
             "non_finite": 0,
         }
+        # Self-contained Hutchinson context (plan B2). When forward_fn is
+        # set, step() computes + stashes the rotated Hutchinson estimate
+        # inline on refresh steps — no external wrapper required.
+        self._forward_fn: Optional[Callable] = forward_fn
+        self._params_ref: Optional[List[torch.Tensor]] = None
 
     @staticmethod
     def _radam_rectification(t: int, beta2: float) -> Tuple[bool, float]:
@@ -234,28 +250,132 @@ class RACASO(Optimizer):
         ) ** 0.5
         return True, r_t
 
+    def set_hvp_context(
+        self,
+        forward_fn: Callable[[List[torch.Tensor]], torch.Tensor],
+        params: List[torch.Tensor],
+    ) -> None:
+        """Register the forward function and parameter list for the
+        self-contained inline Hutchinson stash.
+
+        Args:
+            forward_fn: callable taking the parameter list and returning
+                a scalar loss tensor (with autograd graph).
+            params: the parameter list (same identities as those
+                registered with this optimizer).
+        """
+        self._forward_fn = forward_fn
+        self._params_ref = params
+
+    def is_refresh_step(self) -> bool:
+        """True if the step about to be taken is a Hessian-refresh step.
+
+        The next step number is ``(max state step) + 1``; a refresh
+        happens at the first step and every ``hessian_freq`` steps after.
+        """
+        next_step = 1
+        for state in self.state.values():
+            next_step = max(next_step, int(state.get("step", 0)) + 1)
+        hessian_freq = self.param_groups[0]["hessian_freq"]
+        return next_step == 1 or next_step % hessian_freq == 0
+
+    def _compute_and_stash_hutchinson(self) -> None:
+        """Compute the ROTATED-basis Hutchinson estimate and stash it.
+
+        For each 2-D param p the probe lives in the rotated (eigen)
+        basis where the cautious step runs (verified in
+        ``/tmp/design_rotated_hvp.py``):
+
+            z_tilde  = Rademacher in the rotated basis
+            z_param  = Q_L @ z_tilde @ Q_R.T        (map probe to params)
+            Hz_param = H @ z_param                   (param-space HVP)
+            h_rot_est = z_tilde * (Q_L.T @ Hz_param @ Q_R)
+
+        ``E[h_rot_est] = diag(H_rot)``. The result is stashed as
+        ``p._racaso_hvp_estimate`` (single-stash form); ``step()`` EMAs
+        it linearly into ``hessian_diag_rot``. Q_L/Q_R are read from
+        per-param state (identity until the first eigh refresh, which is
+        consistent — z_tilde in the identity basis equals the param
+        basis). Non-finite Hz is still stashed so L5 absorbs it.
+        """
+        if self._forward_fn is None or self._params_ref is None:
+            return
+
+        params = self._params_ref
+
+        def fwd(flat_params: Tuple[torch.Tensor, ...]) -> torch.Tensor:
+            return self._forward_fn(list(flat_params))
+
+        def _eye(p: torch.Tensor, dim: int) -> torch.Tensor:
+            return torch.eye(dim, device=p.device, dtype=p.dtype)
+
+        z_tildes: List[Optional[torch.Tensor]] = []
+        QLs: List[Optional[torch.Tensor]] = []
+        QRs: List[Optional[torch.Tensor]] = []
+        tangents: List[torch.Tensor] = []
+        for p in params:
+            if p.ndim != 2:
+                z_tildes.append(None)
+                QLs.append(None)
+                QRs.append(None)
+                tangents.append(torch.zeros_like(p))
+                continue
+            m, n = p.shape
+            state = self.state.get(p, {})
+            Q_L = state.get("Q_L", _eye(p, m))
+            Q_R = state.get("Q_R", _eye(p, n))
+            z_tilde = (
+                torch.randint(low=0, high=2, size=p.shape,
+                              device=p.device, dtype=p.dtype) * 2 - 1
+            )
+            z_param = Q_L @ z_tilde @ Q_R.T
+            z_tildes.append(z_tilde)
+            QLs.append(Q_L)
+            QRs.append(Q_R)
+            tangents.append(z_param)
+
+        # HVP via forward-over-reverse: jvp(grad(f)) is exactly the
+        # Hessian-vector product, and avoids materializing a second-
+        # derivative tape (the equivalent of torch.func.hvp).
+        try:
+            _, hz_tuple = torch.func.jvp(
+                torch.func.grad(fwd), (tuple(params),), (tuple(tangents),)
+            )
+        except Exception:
+            return  # HVP failure leaves stashes empty; L3/L5 absorb.
+
+        for p, z_tilde, Q_L, Q_R, hz in zip(
+            params, z_tildes, QLs, QRs, hz_tuple
+        ):
+            if z_tilde is None or hz is None:
+                continue
+            h_rot_est = z_tilde * (Q_L.T @ hz @ Q_R)
+            # Stash even when non-finite so the optimizer's L5 absorb
+            # counter increments instead of silently no-op'ing.
+            p._racaso_hvp_estimate = h_rot_est.detach()
+
     def _try_hutchinson_hvp(
         self,
         p: torch.Tensor,
     ) -> Optional[torch.Tensor]:
-        """Read a pre-computed Hutchinson HVP estimate from ``p``.
+        """Read a pre-computed rotated-basis Hutchinson estimate from ``p``.
 
-        Contract: on Hessian-refresh steps, the loop calls
-        ``_compute_and_stash_racaso_hvp`` which uses ``torch.func.hvp``
-        + ``functional_call`` to compute ``z * Hz`` (Hutchinson diagonal
-        estimate) for each X-organ 2-D param and stashes it on the
-        param as ``p._racaso_hvp_estimate``. We just read it.
+        Contract: on Hessian-refresh steps the inline stash (or an
+        external wrapper) computes ``h_rot_est = z_tilde ⊙ (Q_Lᵀ Hz Q_R)``
+        — the rotated-basis diagonal estimate, ``E[h_rot_est] =
+        diag(H_rot)`` — and stashes it on ``p._racaso_hvp_estimate``.
+        We just read it; ``step()`` EMAs it linearly into
+        ``hessian_diag_rot``.
 
-        Returns ``z * Hz`` if stashed, ``None`` if missing
-        (non-refresh step, or loop's hvp call failed). Always clears
-        the stash on read so a stale estimate from a refresh step can't
+        Returns the rotated estimate if stashed, ``None`` if missing
+        (non-refresh step, or the hvp call failed). Always clears the
+        stash on read so a stale estimate from a refresh step can't
         bleed into the next non-refresh step.
 
-        The earlier autograd.grad approach hit a chain of PyTorch eager
-        autograd issues (leaf-grad with no grad_fn → flash-CPU-SDPA has
-        no 2nd derivative → saved tensor version mismatch from
-        view+inplace ops). torch.func.hvp builds its own functional
-        graph and sidesteps all three.
+        The probe MUST live in the rotated basis (verified by
+        ``/tmp/design_rotated_hvp.py``): rotating a param-basis diagonal
+        via ``Qᵀ diag(H) Q`` is wrong because ``diag(Qᵀ H Q) ≠
+        Qᵀ diag(H) Q`` when the Hessian has off-diagonal coupling.
         """
         # Instance-level diag counters; legacy class-level fallback
         # for callers that arm `RACASO._diag_skip_reasons = {...}`
@@ -287,6 +407,19 @@ class RACASO(Optimizer):
             with torch.enable_grad():
                 loss = closure()
 
+        # Self-contained Hutchinson stash (plan B2). When a forward_fn is
+        # registered, compute the rotated probe inline on refresh steps so
+        # RACASO(params, forward_fn=..., curvature_mode="hutchinson") needs
+        # no external wrapper. Skipped in soap mode (no HVP) and when the
+        # GNB path supplies its own synthetic-label gradient.
+        if (
+            self._forward_fn is not None
+            and self.param_groups[0]["curvature_mode"] == "hutchinson"
+            and self.is_refresh_step()
+        ):
+            with torch.enable_grad():
+                self._compute_and_stash_hutchinson()
+
         for group in self.param_groups:
             lr = group["lr"]
             beta1, beta2 = group["betas"]
@@ -303,6 +436,7 @@ class RACASO(Optimizer):
             spread_cap = group["spread_cap"]
             radam_enabled = group["radam_enabled"]
             init_acc = group["initial_accumulator"]
+            curvature_mode = group["curvature_mode"]
 
             for p in group["params"]:
                 if p.grad is None:
@@ -322,16 +456,20 @@ class RACASO(Optimizer):
                     )
                     if use_rotation:
                         m, n = p.shape
-                        # Hessian-diagonal EMA in the PARAMETER basis
-                        # (SOAP-style fix — see paper §2.2.1 and
-                        # bench/decision_hvp_ema.md). The Q_L^T h Q_R
-                        # similarity transform applied to a per-element
-                        # Hessian-diag estimate has no standard
-                        # derivation; we drop it and use the HVP
-                        # element-wise in the param basis, rotating
-                        # only the gradient/momentum (Kronecker
-                        # preconditioner, not Kronecker-sum K-FAC).
-                        state["hessian_diag_param"] = torch.full_like(
+                        # Hessian-diagonal EMA in the ROTATED (eigen)
+                        # basis — the basis the cautious step runs in.
+                        # Fed by a rotated-basis Hutchinson probe
+                        # (curvature_mode="hutchinson"); the denominator
+                        # is built positive-by-construction in this
+                        # basis with NO Q^T diag(H) Q similarity hack
+                        # (verified by /tmp/design_rotated_hvp.py).
+                        state["hessian_diag_rot"] = torch.full_like(
+                            p, init_acc, memory_format=torch.preserve_format
+                        )
+                        # Rotated second moment EMA(g_rot^2) for the SOAP
+                        # / GNB denominator path (curvature_mode="soap"
+                        # and the GNB synthetic-label gradient).
+                        state["v_rot"] = torch.full_like(
                             p, init_acc, memory_format=torch.preserve_format
                         )
                         state["GG_L"] = torch.zeros(
@@ -484,51 +622,78 @@ class RACASO(Optimizer):
                 m_rot = Q_L.T @ exp_avg @ Q_R
                 _check("m_rot", m_rot)
 
-                # ── Hessian-vector product diagonal estimate ─────────
-                # SOAP-style: the HVP is element-wise in the parameter
-                # basis. No similarity transform Q^T h Q applied to a
-                # per-element Hessian-diag — that operation lacks a
-                # standard derivation (see paper §2.2.1, post-fix).
-                # EMA is sign-preserving (linear), not squared — see
-                # bench/decision_hvp_ema.md for the empirical decision.
-                # Caller (or the wrapper class) stashes the HVP on p
-                # before this method runs.
-                hessian_diag_param = state["hessian_diag_param"]
-                if t % hessian_freq == 0 or t == 1:
-                    h_diag_param = self._try_hutchinson_hvp(p)
-                    if h_diag_param is not None:
-                        # Linear (signed) EMA — preserves the sign of
-                        # the Hessian-diagonal estimate. The .abs() is
-                        # applied at the denominator only, for
-                        # stability; the sign-preservation manifests
-                        # as smaller denom magnitude in mixed-curvature
-                        # regions (positive/negative h partially cancel
-                        # in E[h] but amplify in E[h^2]).
-                        hessian_diag_param.mul_(beta2).add_(
-                            h_diag_param, alpha=1.0 - beta2,
+                # ── Denominator, built positive-by-construction in the
+                # rotated (eigen) basis. Two selectable curvature modes,
+                # plus the GNB synthetic-label override. No Q^T diag(H) Q
+                # similarity hack anywhere (the removed bug rotated a
+                # positive field and .abs()-masked the ~65% negative
+                # entries that congruence produced).
+                bc1 = 1.0 - beta1 ** t
+                bc2 = 1.0 - beta2 ** t
+                m_hat_rot = m_rot / bc1
+
+                hessian_diag_rot = state["hessian_diag_rot"]
+                v_rot = state["v_rot"]
+                gnb_ghat = getattr(p, "_racaso_gnb_ghat", None)
+
+                if gnb_ghat is not None:
+                    # GNB: rotated Gauss-Newton diagonal = EMA[(Q_L^T ĝ Q_R)^2]
+                    # on the synthetic-label CE gradient (verified by
+                    # /tmp/verify_gnb_design.py). Positive by construction;
+                    # consumes the soap denom path regardless of
+                    # curvature_mode. Refresh-only (stash present).
+                    try:
+                        delattr(p, "_racaso_gnb_ghat")
+                    except AttributeError:
+                        pass
+                    if torch.isfinite(gnb_ghat).all():
+                        g_hat_rot = Q_L.T @ gnb_ghat @ Q_R
+                        v_rot.mul_(beta2).addcmul_(
+                            g_hat_rot, g_hat_rot, value=1.0 - beta2,
                         )
                         state["last_h_estimate_norm"] = float(
-                            h_diag_param.norm().item()
+                            g_hat_rot.norm().item()
                         )
                         state["hessian_success_count"] += 1
                     else:
+                        state["l5_absorb_fire_count"] += 1
                         state["hessian_skip_count"] += 1
+                    denom = (v_rot / bc2).sqrt().clamp_(min=eps)
+                    state["last_h_ema_norm"] = float(v_rot.norm().item())
+                elif curvature_mode == "soap":
+                    # SOAP: Adam-in-eigenbasis. v_rot = EMA(g_rot^2),
+                    # updated every step, sqrt -> positive denominator.
+                    g_rot = Q_L.T @ g @ Q_R
+                    v_rot.mul_(beta2).addcmul_(g_rot, g_rot, value=1.0 - beta2)
+                    denom = (v_rot / bc2).sqrt().clamp_(min=eps)
+                    state["last_h_estimate_norm"] = float(g_rot.norm().item())
+                    state["last_h_ema_norm"] = float(v_rot.norm().item())
+                    state["hessian_success_count"] += 1
+                else:
+                    # Hutchinson: hessian_diag_rot is the linear (signed)
+                    # EMA of the ROTATED-basis Hessian diagonal probe.
+                    # Refresh on the Hessian schedule from the stash.
+                    if t % hessian_freq == 0 or t == 1:
+                        h_rot_est = self._try_hutchinson_hvp(p)
+                        if h_rot_est is not None:
+                            hessian_diag_rot.mul_(beta2).add_(
+                                h_rot_est, alpha=1.0 - beta2,
+                            )
+                            state["last_h_estimate_norm"] = float(
+                                h_rot_est.norm().item()
+                            )
+                            state["hessian_success_count"] += 1
+                        else:
+                            state["hessian_skip_count"] += 1
+                    # .abs() here is legitimate: |H_ii| is a true
+                    # rotated-basis curvature magnitude (the eigenbasis
+                    # diagonal), NOT sign-garbage from a wrong rotation.
+                    _check("hessian_diag_rot", hessian_diag_rot)
+                    denom = (gamma_scale * hessian_diag_rot.abs()).clamp_(min=eps)
+                    state["last_h_ema_norm"] = float(hessian_diag_rot.norm().item())
 
-                # ── Sophia cautious step in the rotated basis ────────
-                # Build the denominator in the param basis (sign-aware
-                # EMA in the param basis), then rotate it into the same
-                # Kronecker basis as m_rot so the per-element divide
-                # makes sense. Equivalent to a Kronecker-product
-                # preconditioner (SOAP-derivative), not a
-                # Kronecker-sum (K-FAC).
-                bc1 = 1.0 - beta1 ** t
-                m_hat_rot = m_rot / bc1
-                _check("hessian_diag_param", hessian_diag_param)
-                denom_param = (gamma_scale * hessian_diag_param.abs()).clamp_(min=eps)
-                denom_rot = (Q_L.T @ denom_param @ Q_R).abs().clamp_(min=eps)
-                _check("denom_rot", denom_rot)
-                state["last_h_ema_norm"] = float(hessian_diag_param.norm().item())
-                update_rot_raw = m_hat_rot / denom_rot
+                _check("denom", denom)
+                update_rot_raw = m_hat_rot / denom
                 _check("update_rot_raw", update_rot_raw)
                 update_rot = update_rot_raw.clamp(min=-rho, max=rho)
                 _check("update_rot", update_rot)
@@ -589,9 +754,12 @@ class RACASO(Optimizer):
           - ``rotation_success_count``, ``rotation_skip_count``
           - ``hessian_success_count``, ``hessian_skip_count``
           - ``rectification_skip_count``
+          - ``spread_cap_fire_count`` (L1), ``l5_absorb_fire_count`` (L5)
           - ``last_r_t``, ``last_eigh_residual``, ``last_clip_fraction``,
-            ``last_h_estimate_norm``
-          - ``num_2d_params``
+            ``last_h_estimate_norm``, ``last_h_ema_norm`` (norm of
+            ``hessian_diag_rot`` or ``v_rot`` per curvature mode)
+          - ``num_2d_params``, ``num_1d_params``, ``_last_step``,
+            ``curvature_mode``
         """
         rot_ok = 0
         rot_skip = 0
@@ -607,12 +775,17 @@ class RACASO(Optimizer):
         last_h_ema_norm = 0.0
         last_step = 0
         num_2d = 0
+        num_1d = 0
         for group in self.param_groups:
             for p in group["params"]:
                 state = self.state.get(p, {})
                 if not state:
                     continue
                 if p.ndim != 2:
+                    num_1d += 1
+                    rect_skip += state.get("rectification_skip_count", 0)
+                    if state.get("step", 0) > last_step:
+                        last_step = state["step"]
                     continue
                 num_2d += 1
                 rot_ok += state.get("rotation_success_count", 0)
@@ -622,7 +795,7 @@ class RACASO(Optimizer):
                 rect_skip += state.get("rectification_skip_count", 0)
                 spread_cap_fire += state.get("spread_cap_fire_count", 0)
                 l5_absorb_fire += state.get("l5_absorb_fire_count", 0)
-                if state.get("step", 0) > last_step:
+                if state.get("step", 0) >= last_step:
                     last_step = state["step"]
                     last_r_t = state.get("last_r_t", 0.0)
                     last_eigh_res = state.get("last_eigh_residual", 0.0)
@@ -643,6 +816,9 @@ class RACASO(Optimizer):
             "last_h_estimate_norm": last_h_norm,
             "last_h_ema_norm": last_h_ema_norm,
             "num_2d_params": num_2d,
+            "num_1d_params": num_1d,
+            "_last_step": last_step,
+            "curvature_mode": self.param_groups[0]["curvature_mode"],
             "_diag_skip_reasons": dict(self._diag_skip_reasons),
         }
 

@@ -16,9 +16,9 @@ clean Python process — pytest qualifies (no heavyweight/Triton import).
 from __future__ import annotations
 
 import math
+from pathlib import Path
 from typing import List
 
-import pandas as pd
 import pytest
 import torch
 
@@ -193,32 +193,73 @@ def test_run_one_reproducibility():
 
 
 # ---------------------------------------------------------------------------
-# Plot stubs — NotImplementedError with the right pointer.
+# Plot rendering — the functions that actually exist run without error on a
+# tiny in-memory results set. plot_bench reads CSV rows as a list of dicts
+# (not a DataFrame) and renders to an Agg backend; we render to tmp_path and
+# assert the output files are produced.
 # ---------------------------------------------------------------------------
 
 
-def test_plot_stubs_raise_not_implemented():
-    df = pd.DataFrame(columns=list(CSV_COLUMNS))
-    stubs = [
-        lambda: plot_bench.plot_loss_curves(df, "p1", "out.png"),
-        lambda: plot_bench.plot_wall_clock_pareto(df, "p1", "out.png"),
-        lambda: plot_bench.plot_lr_sensitivity(df, "p1", "out.png"),
-        lambda: plot_bench.plot_optimizer_vs_problem_heatmap(df, "out.png"),
-        lambda: plot_bench.plot_safety_chain_activations(df, "out.png"),
-        lambda: plot_bench.plot_hutchinson_vs_gnb_curvature(df, "p1", "out.png"),
-    ]
-    for stub in stubs:
-        with pytest.raises(NotImplementedError) as excinfo:
-            stub()
-        assert "Phase 4" in str(excinfo.value)
+def _tiny_rows() -> List[dict]:
+    """Two rows for one problem/optimizer over two seeds, with a 3-step
+    trajectory and non-zero safety counters, matching CSV_COLUMNS."""
+    base = {
+        "problem": "test_tiny_quadratic",
+        "optimizer": "adam",
+        "lr": "0.01",
+        "seed": "0",
+        "steps": "3",
+        "convergence_step": "-1",
+        "final_loss": "0.25",
+        "wall_clock_per_step_us": "1.0",
+        "nan_count": "0",
+        "l1_count": "1",
+        "l2_count": "0",
+        "l3_count": "2",
+        "l4_count": "0",
+        "l5_count": "0",
+        "data_source": "synthetic",
+        "loss_trajectory": "1.0;0.5;0.25",
+    }
+    second = dict(base, seed="1", loss_trajectory="1.0;0.4;0.2")
+    assert set(base) == set(CSV_COLUMNS)
+    return [base, second]
+
+
+def test_loss_curves_renders_without_error(tmp_path):
+    rows = _tiny_rows()
+    out = tmp_path / "fig.png"
+    plot_bench._loss_curves(rows, ["test_tiny_quadratic"], "tiny", out)
+    assert out.exists() and out.stat().st_size > 0
+
+
+def test_loss_curves_skips_when_no_match(tmp_path):
+    """No matching problem -> no figure written, no exception."""
+    out = tmp_path / "fig.png"
+    plot_bench._loss_curves(_tiny_rows(), ["nonexistent"], "tiny", out)
+    assert not out.exists()
+
+
+def test_safety_counters_renders_without_error(tmp_path):
+    rows = _tiny_rows()
+    out = tmp_path / "safety.png"
+    plot_bench._safety_counters(rows, out)
+    assert out.exists() and out.stat().st_size > 0
+
+
+def test_safety_counters_skips_when_empty(tmp_path):
+    out = tmp_path / "safety.png"
+    plot_bench._safety_counters([], out)
+    assert not out.exists()
 
 
 # ---------------------------------------------------------------------------
-# load_results — parses trajectory column back.
+# _read_rows — parses a CSV file into a list of dicts and applies the
+# excluded-optimizer filter; _parse_trajectory recovers the float list.
 # ---------------------------------------------------------------------------
 
 
-def test_load_results_parses_trajectory(tmp_path):
+def test_read_rows_parses_csv(tmp_path):
     csv_path = tmp_path / "tiny.csv"
     header = ",".join(CSV_COLUMNS)
     # One row with a 3-step trajectory.
@@ -239,11 +280,40 @@ def test_load_results_parses_trajectory(tmp_path):
             "0",  # l3_count
             "0",  # l4_count
             "0",  # l5_count
+            "synthetic",  # data_source
             traj,
         ]
     )
     csv_path.write_text(f"{header}\n{row}\n", encoding="utf-8")
 
-    df = plot_bench.load_results(str(csv_path))
-    assert len(df) == 1
-    assert df.loc[0, "loss_trajectory"] == [1.0, 0.5, 0.25]
+    rows = plot_bench._read_rows(Path(csv_path))
+    assert len(rows) == 1
+    assert rows[0]["optimizer"] == "adam"
+    assert plot_bench._parse_trajectory(rows[0]["loss_trajectory"]) == [1.0, 0.5, 0.25]
+
+
+def test_read_rows_drops_excluded_optimizers(tmp_path):
+    """_read_rows filters out _EXCLUDED_OPTIMIZERS (e.g. ramuogi)."""
+    excluded = sorted(plot_bench._EXCLUDED_OPTIMIZERS)
+    if not excluded:
+        pytest.skip("no excluded optimizers configured")
+    csv_path = tmp_path / "tiny.csv"
+    header = ",".join(CSV_COLUMNS)
+
+    def _row(opt: str) -> str:
+        cells = {c: "0" for c in CSV_COLUMNS}
+        cells.update(
+            problem="test_tiny_quadratic",
+            optimizer=opt,
+            data_source="synthetic",
+            loss_trajectory="1.0;0.5",
+        )
+        return ",".join(cells[c] for c in CSV_COLUMNS)
+
+    body = "\n".join([_row("adam"), _row(excluded[0])])
+    csv_path.write_text(f"{header}\n{body}\n", encoding="utf-8")
+
+    rows = plot_bench._read_rows(Path(csv_path))
+    kept = {r["optimizer"] for r in rows}
+    assert "adam" in kept
+    assert excluded[0] not in kept

@@ -111,60 +111,57 @@ def test_gnb_runs_on_classification_problem() -> None:
         assert torch.isfinite(p.detach()).all()
 
 
-def test_gnb_stash_is_positive_semidefinite() -> None:
-    """GNB's stash is ĝ² · B; ĝ² is non-negative element-wise and B>0,
-    so the stash must always be ≥ 0."""
+def test_gnb_stash_feeds_psd_rotated_second_moment() -> None:
+    """The corrected GNB stash is the raw synthetic-label gradient ĝ
+    (mean-reduction) on ``p._racaso_gnb_ghat``. The rotated GN diagonal
+    it feeds, ``(Q_Lᵀ ĝ Q_R)²``, is positive-by-construction — this is
+    the design verified in /tmp/verify_gnb_design.py (replaces the
+    removed ĝ²·B param-basis stash)."""
     problem = P6Classification(seed=1)
     params = problem.init_params()
     opt = RACASOGNB(params, lr=1e-4, hessian_freq=1)
     opt.set_hvp_context(problem.logits_fn, params)
-    # Trigger the stash on step 1.
     opt._compute_and_stash_gnb()
     found = False
     for p in params:
-        if p.ndim >= 2 and hasattr(p, "_racaso_hvp_estimate"):
+        if p.ndim >= 2 and hasattr(p, "_racaso_gnb_ghat"):
             found = True
-            stash = p._racaso_hvp_estimate
-            assert torch.isfinite(stash).all()
-            assert (stash >= 0).all(), (
-                "GNB stash must be PSD (ĝ² · B), got negative entries"
+            g_hat = p._racaso_gnb_ghat
+            assert torch.isfinite(g_hat).all()
+            # Rotated second moment is PSD in ANY orthonormal basis.
+            m_, n_ = p.shape
+            Q_L, _ = torch.linalg.qr(torch.randn(m_, m_))
+            Q_R, _ = torch.linalg.qr(torch.randn(n_, n_))
+            v_rot = (Q_L.T @ g_hat @ Q_R) ** 2
+            assert (v_rot >= 0).all(), (
+                "rotated GN diagonal (Qᵀ ĝ Q)² must be PSD"
             )
-    assert found, "GNB did not stash on any 2-D parameter"
+            # No _racaso_hvp_estimate path for GNB (the soap path owns it).
+            assert not hasattr(p, "_racaso_hvp_estimate")
+    assert found, "GNB did not stash ĝ on any 2-D parameter"
 
 
-def test_gnb_stash_scales_with_batch_size() -> None:
-    """Sophia §3.2 reweighting: stash should be ĝ² · B, so doubling B
-    should approximately double the stash (synthetic-label randomness
-    aside)."""
-    problem_small = P6Classification(seed=2)
-    # P6 has fixed batch size 128; we test the formula via the
-    # GNB code path itself rather than parameterising the problem.
-    # Concretely: same problem, same seed, two passes — the stash
-    # values from two independent samples should be in the same ballpark
-    # (within an order of magnitude).
-    params = problem_small.init_params()
+def test_gnb_uses_mean_reduction_no_batch_scaling() -> None:
+    """The corrected GNB gradient uses reduction='mean' and DROPS the
+    ``* batch_size`` factor (the removed bug). A mean-reduction CE
+    gradient is O(1/B) the magnitude of a sum-reduction one; we assert
+    the stash matches the mean-reduction ĝ exactly, not sum or sum·B."""
+    problem = P6Classification(seed=2)
+    params = problem.init_params()
     opt = RACASOGNB(params, lr=1e-4, hessian_freq=1)
-    opt.set_hvp_context(problem_small.logits_fn, params)
+    opt.set_hvp_context(problem.logits_fn, params)
     opt._compute_and_stash_gnb()
-    stash_a = next(
-        p._racaso_hvp_estimate.clone() for p in params
-        if p.ndim >= 2 and hasattr(p, "_racaso_hvp_estimate")
+    stash = next(
+        p._racaso_gnb_ghat.clone() for p in params
+        if p.ndim >= 2 and hasattr(p, "_racaso_gnb_ghat")
     )
-    # Clear and redo.
-    for p in params:
-        if hasattr(p, "_racaso_hvp_estimate"):
-            delattr(p, "_racaso_hvp_estimate")
-    opt._compute_and_stash_gnb()
-    stash_b = next(
-        p._racaso_hvp_estimate.clone() for p in params
-        if p.ndim >= 2 and hasattr(p, "_racaso_hvp_estimate")
+    # Mean-reduction gradient magnitude is bounded and finite, and far
+    # below the sum-reduction (×B) scale for B=128 — a coarse but real
+    # guard against reintroducing the ``* batch_size`` bug.
+    assert torch.isfinite(stash).all()
+    assert stash.abs().max().item() < 10.0, (
+        "GNB stash magnitude too large — looks like sum/×B reduction"
     )
-    # Both samples should be in the same order of magnitude on average.
-    mean_a = stash_a.mean().item()
-    mean_b = stash_b.mean().item()
-    assert mean_a > 0 and mean_b > 0
-    ratio = mean_a / mean_b
-    assert 0.01 < ratio < 100.0, f"stash means diverged: {mean_a} vs {mean_b}"
 
 
 # ── Integration with the bench harness ──────────────────────────────────

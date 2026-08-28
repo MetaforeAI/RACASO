@@ -31,17 +31,18 @@ from racaso import RACASO
 
 
 # Stage names in execution order — the test asserts each one is clean.
-# Post-2026-05 SOAP-style fix renamed hessian_diag_rot → hessian_diag_param
-# and added a denom_rot stage (was: denom). Keep the legacy names too so
-# trap output from older saved logs is still recognizable.
+# The correctness rewrite builds the denominator positive-by-construction
+# in the rotated basis: hessian_diag_rot is the rotated-basis Hessian-diag
+# EMA, and the denom stage replaced the removed (broken) denom_rot
+# congruence Q_L^T denom_param Q_R.
 _STAGES = [
     "pre_grad",
     "exp_avg",
     "GG_L", "GG_R",
     "Q_L", "Q_R",
     "m_rot",
-    "hessian_diag_param",
-    "denom_rot",
+    "hessian_diag_rot",
+    "denom",
     "update_rot_raw", "update_rot",
     "damp", "update_rot_post_spread",
     "update",
